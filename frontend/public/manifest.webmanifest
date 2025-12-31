@@ -1,0 +1,62 @@
+{
+  "name": "BOVINEXT - Gestão Pecuária Inteligente",
+  "short_name": "BOVINEXT",
+  "description": "Plataforma completa de gestão pecuária com IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "categories": ["agriculture", "business", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "32x32 48x48 64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-simple.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Visão geral da fazenda",
+      "url": "/dashboard",
+      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Nova Transação",
+      "short_name": "Transação",
+      "description": "Adicionar novo manejo",
+      "url": "/transacoes?action=new",
+      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Nova Meta",
+      "short_name": "Meta",
+      "description": "Criar nova meta",
+      "url": "/metas?action=new",
+      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png"
+    }
+  ]
+}
