@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,8 +10,8 @@ import { demoPage } from '../content/extendedPublicPages';
 export default function DemoPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Demo | BoviNext White-label"
-      metaDescription="Entenda o que a demo do BoviNext precisa provar para vender a base white-label media."
+      metaTitle="Demo | WhiLab White-label"
+      metaDescription="Entenda o que a demo do WhiLab precisa provar para vender a base white-label media."
       eyebrow={demoPage.eyebrow}
       title={demoPage.title}
       description={demoPage.description}
@@ -43,3 +43,4 @@ export default function DemoPage() {
     </MarketingPageFrame>
   );
 }
+

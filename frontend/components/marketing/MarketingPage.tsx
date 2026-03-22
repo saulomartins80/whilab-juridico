@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import MegaMenu from './MegaMenu';
+import { dashboardBranding } from '../../config/branding';
 
 type Stat = {
   label: string;
@@ -125,7 +126,7 @@ export function MarketingPageFrame({
       {/* Footer */}
       <footer className="border-t border-white/[0.06] bg-[#121212]">
         <div className="mx-auto max-w-[1200px] px-5 md:px-10 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-[#969696]">&copy; {new Date().getFullYear()} BoviNext. Todos os direitos reservados.</p>
+          <p className="text-[13px] text-[#969696]">&copy; {new Date().getFullYear()} {dashboardBranding.brandName}. Todos os direitos reservados.</p>
           <div className="flex gap-6 text-[13px] text-[#969696]">
             <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
             <Link href="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Github, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { dashboardBranding } from '../../config/branding';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -8,8 +9,8 @@ export const Footer: React.FC = () => {
   const footerLinks = {
     produto: [
       { label: 'Recursos', href: '/recursos' },
-      { label: 'Soluções', href: '/solucoes' },
-      { label: 'Preços', href: '/precos' },
+      { label: 'Solucoes', href: '/solucoes' },
+      { label: 'Precos', href: '/precos' },
       { label: 'Demo', href: '/dashboard' },
     ],
     empresa: [
@@ -38,18 +39,18 @@ export const Footer: React.FC = () => {
         <div className="app-shell-hero p-6 sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
-              <span className="app-shell-chip">White-label ready</span>
+              <span className="app-shell-chip">Pecuaria premium</span>
               <h2 className="mt-4 text-2xl font-semibold text-slate-950 dark:text-white sm:text-3xl">
-                Uma base comercial premium para lançar marcas sem refazer o produto do zero.
+                Uma plataforma comercial pronta para lancar operacoes pecuarias com mais clareza, controle e marca propria.
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                BoviNext combina shell neutra, IA e módulos verticais demonstrativos para facilitar rebranding, venda e expansão para novas operações.
+                {dashboardBranding.brandName} combina operacao pecuaria, IA aplicada e base white-label para acelerar implantacao, revenda e expansao.
               </p>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/auth/register" className="app-shell-button-primary">
-                Começar agora
+                Comecar agora
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link
@@ -65,13 +66,13 @@ export const Footer: React.FC = () => {
         <div className="mt-10 grid gap-10 md:grid-cols-4">
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="inline-flex items-center gap-3">
-              <span className="app-shell-badge">BX</span>
+              <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
               <span className="text-2xl font-semibold tracking-[0.18em] text-slate-950 dark:text-white">
-                BoviNext
+                {dashboardBranding.brandName}
               </span>
             </Link>
             <p className="max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">
-              Plataforma white-label com aparência executiva, pronta para se adaptar à identidade de cada cliente.
+              Plataforma pecuaria premium com base white-label, pronta para implantar, revender e adaptar por operacao.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -121,7 +122,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="app-shell-section-title">Jurídico</h3>
+            <h3 className="app-shell-section-title">Juridico</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
@@ -138,7 +139,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-12 border-t border-slate-200/80 pt-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-          <p>&copy; {currentYear} BoviNext. Todos os direitos reservados.</p>
+          <p>&copy; {currentYear} {dashboardBranding.brandName}. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

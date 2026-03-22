@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { cookiesPage } from '../content/extendedPublicPages';
 export default function CookiesPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Cookies | BoviNext White-label"
-      metaDescription="Veja como a base do BoviNext lida com cookies essenciais, preferencias e analytics opcionais."
+      metaTitle="Cookies | WhiLab White-label"
+      metaDescription="Veja como a base do WhiLab lida com cookies essenciais, preferencias e analytics opcionais."
       eyebrow={cookiesPage.eyebrow}
       title={cookiesPage.title}
       description={cookiesPage.description}
@@ -34,3 +34,4 @@ export default function CookiesPage() {
     </MarketingPageFrame>
   );
 }
+

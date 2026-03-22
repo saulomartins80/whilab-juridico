@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { clientsPage } from '../content/publicPages';
 export default function ClientesPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Clientes ideais | BoviNext White-label"
-      metaDescription="Veja para quem o BoviNext faz sentido: agencias, consultores, estudios e operacoes que querem marca propria."
+      metaTitle="Clientes ideais | WhiLab White-label"
+      metaDescription="Veja para quem o WhiLab faz sentido: agencias, consultores, estudios e operacoes que querem marca propria."
       eyebrow={clientsPage.eyebrow}
       title={clientsPage.title}
       description={clientsPage.description}
@@ -35,3 +35,4 @@ export default function ClientesPage() {
     </MarketingPageFrame>
   );
 }
+

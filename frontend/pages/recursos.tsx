@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingFaqGrid,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { resourcesPage } from '../content/publicPages';
 export default function RecursosPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Recursos | BoviNext White-label"
-      metaDescription="Conheca o kit de entrega do BoviNext: setup, dashboard, rebranding, docs e base tecnica."
+      metaTitle="Recursos | WhiLab White-label"
+      metaDescription="Conheca o kit de entrega do WhiLab: setup, dashboard, rebranding, docs e base tecnica."
       eyebrow={resourcesPage.eyebrow}
       title={resourcesPage.title}
       description={resourcesPage.description}
@@ -35,3 +35,4 @@ export default function RecursosPage() {
     </MarketingPageFrame>
   );
 }
+

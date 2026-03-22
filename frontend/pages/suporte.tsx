@@ -1,4 +1,4 @@
-import Head from 'next/head';
+﻿import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { 
@@ -42,9 +42,9 @@ const SuportePage = () => {
     {
       id: 'email',
       title: 'E-mail',
-      description: 'suporte@bovinext.com.br',
+      description: 'suporte@whilab.com.br',
       icon: <Mail className="w-6 h-6" />,
-      action: () => window.location.href = 'mailto:suporte@bovinext.com.br',
+      action: () => window.location.href = 'mailto:suporte@whilab.com.br',
       color: 'bg-red-500'
     },
     {

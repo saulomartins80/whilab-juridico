@@ -1,7 +1,7 @@
 {
-  "name": "BOVINEXT - Gestão Pecuária Inteligente",
-  "short_name": "BOVINEXT",
-  "description": "Plataforma completa de gestão pecuária com IA",
+  "name": "WHILAB - Operacao Pecuaria Premium",
+  "short_name": "WHILAB",
+  "description": "Plataforma pecuaria premium com dashboard, IA aplicada e estrutura pronta para implantar.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "pt-BR",
-  "categories": ["agriculture", "business", "productivity"],
+  "categories": ["business", "productivity", "agriculture"],
   "icons": [
     {
       "src": "/favicon.ico",
@@ -28,14 +28,14 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Visão geral da fazenda",
+      "description": "Painel executivo da operacao",
       "url": "/dashboard",
       "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
     },
     {
-      "name": "Nova Transação",
-      "short_name": "Transação",
-      "description": "Adicionar novo manejo",
+      "name": "Nova Operacao",
+      "short_name": "Operacao",
+      "description": "Registrar nova movimentacao",
       "url": "/transacoes?action=new",
       "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
     },
@@ -45,18 +45,6 @@
       "description": "Criar nova meta",
       "url": "/metas?action=new",
       "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png"
-    },
-    {
-      "src": "/screenshot-narrow.png",
-      "sizes": "750x1334",
-      "type": "image/png"
     }
   ]
 }

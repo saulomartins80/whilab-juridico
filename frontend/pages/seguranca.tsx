@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,8 +10,8 @@ import { securityPage } from '../content/extendedPublicPages';
 export default function SegurancaPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Seguranca | BoviNext White-label"
-      metaDescription="Conheca os principios de seguranca operacional do BoviNext para auth, ambiente e entrega."
+      metaTitle="Seguranca | WhiLab White-label"
+      metaDescription="Conheca os principios de seguranca operacional do WhiLab para auth, ambiente e entrega."
       eyebrow={securityPage.eyebrow}
       title={securityPage.title}
       description={securityPage.description}
@@ -42,3 +42,4 @@ export default function SegurancaPage() {
     </MarketingPageFrame>
   );
 }
+

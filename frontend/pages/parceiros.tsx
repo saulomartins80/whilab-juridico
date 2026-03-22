@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,8 +10,8 @@ import { partnersPage } from '../content/extendedPublicPages';
 export default function ParceirosPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Parceiros | BoviNext White-label"
-      metaDescription="Veja como o programa de parceiros do BoviNext se conecta a revenda, setup e adaptacao por nicho."
+      metaTitle="Parceiros | WhiLab White-label"
+      metaDescription="Veja como o programa de parceiros do WhiLab se conecta a revenda, setup e adaptacao por nicho."
       eyebrow={partnersPage.eyebrow}
       title={partnersPage.title}
       description={partnersPage.description}
@@ -43,3 +43,4 @@ export default function ParceirosPage() {
     </MarketingPageFrame>
   );
 }
+

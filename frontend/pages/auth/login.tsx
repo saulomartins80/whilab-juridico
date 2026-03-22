@@ -135,11 +135,11 @@ export default function LoginPage() {
 
             <h1 className="text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.08] tracking-[-0.03em]">
               Acesse sua<br />
-              <span className="text-[#22d3ee]">gestao pecuaria.</span>
+              <span className="text-[#22d3ee]">operacao premium.</span>
             </h1>
 
             <p className="mt-5 max-w-[440px] text-[16px] leading-relaxed text-[#969696]">
-              Entre no {dashboardBranding.brandName} para acompanhar seu rebanho, manejos, producao e vendas em tempo real com inteligencia artificial.
+              Entre no {dashboardBranding.brandName} para acompanhar rebanho, manejo, producao e vendas com uma camada comercial pronta para implantar, operar e revender.
             </p>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
@@ -164,7 +164,7 @@ export default function LoginPage() {
             </div>
 
             <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-8 flex flex-wrap gap-2">
-              {['Plataforma completa', 'White-label pronto', 'Suporte dedicado'].map((point) => (
+              {['Plataforma completa', 'Marca propria', 'Suporte dedicado'].map((point) => (
                 <span key={point} className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[12px] font-medium text-white/60">
                   <Check className="w-3.5 h-3.5 text-[#22d3ee]" />
                   {point}

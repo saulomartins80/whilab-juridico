@@ -1,8 +1,8 @@
-export const companyPage = {
+﻿export const companyPage = {
   eyebrow: 'Operacao de produto',
   title: 'Uma empresa por tras da entrega, nao um codigo solto sem contexto.',
   description:
-    'A pagina de empresa precisa sustentar confianca comercial. Aqui, o BoviNext se apresenta como um ativo white-label serio, com proposta clara, escopo controlado e espaco real para implantacao e servico.',
+    'A pagina de empresa precisa sustentar confianca comercial. Aqui, o WhiLab se apresenta como um ativo white-label serio, com proposta clara, escopo controlado e espaco real para implantacao e servico.',
   stats: [
     { label: 'Posicionamento', value: 'white-label medio' },
     { label: 'Entrega', value: 'codigo + docs' },
@@ -69,7 +69,7 @@ export const blogPage = {
   ],
   checklist: [
     'Todo artigo precisa empurrar o leitor para demo, contato ou oferta.',
-    'Nada de manter copy herdada da BoviNext Premium ou de outros contextos.',
+    'Nada de manter copy herdada da WhiLab Premium ou de outros contextos.',
     'SEO organico e distribuicao paga devem trabalhar sobre a mesma tese de produto.',
     'A autoridade do blog vem de clareza comercial e densidade tecnica honesta.',
   ],
@@ -219,7 +219,7 @@ export const pressPage = {
     {
       title: 'Narrativa oficial',
       description:
-        'Um resumo curto e repetivel sobre o que o BoviNext entrega e para quem ele faz sentido.',
+        'Um resumo curto e repetivel sobre o que o WhiLab entrega e para quem ele faz sentido.',
     },
     {
       title: 'Brand assets',
@@ -233,7 +233,7 @@ export const pressPage = {
     },
   ],
   checklist: [
-    'Nada de press release herdado da BoviNext Premium.',
+    'Nada de press release herdado da WhiLab Premium.',
     'Toda mensagem publica precisa proteger a tese do white-label medio.',
     'Ativos de marca e descricao do produto devem estar alinhados com a home.',
   ],
@@ -514,3 +514,4 @@ export const securityPage = {
     },
   ],
 };
+

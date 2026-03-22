@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,11 +10,11 @@ import { contactPage } from '../content/publicPages';
 export default function ContatoPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Contato | BoviNext White-label"
-      metaDescription="Converse sobre licenca, setup, rebranding e adaptacao do BoviNext white-label."
+      metaTitle="Contato | WhiLab White-label"
+      metaDescription="Converse sobre licenca, setup, rebranding e adaptacao do WhiLab white-label."
       eyebrow="Contato comercial"
       title="Conversa boa aqui ja precisa nascer perto de proposta, setup e fechamento."
-      description="A frente de contato do BoviNext existe para encurtar o caminho entre interesse, escopo e venda. Menos ruído, mais clareza comercial."
+      description="A frente de contato do WhiLab existe para encurtar o caminho entre interesse, escopo e venda. Menos ruído, mais clareza comercial."
       stats={[
         { label: 'Resposta', value: 'objetiva' },
         { label: 'Escopo', value: 'produto + servicos' },
@@ -48,3 +48,4 @@ export default function ContatoPage() {
     </MarketingPageFrame>
   );
 }
+

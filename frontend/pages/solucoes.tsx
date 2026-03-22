@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { solutionsPage } from '../content/publicPages';
 export default function SolucoesPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Solucoes | BoviNext White-label"
-      metaDescription="Veja como o BoviNext organiza home, auth, dashboard, IA e rebranding em uma base vendavel."
+      metaTitle="Solucoes | WhiLab White-label"
+      metaDescription="Veja como o WhiLab organiza home, auth, dashboard, IA e rebranding em uma base vendavel."
       eyebrow={solutionsPage.eyebrow}
       title={solutionsPage.title}
       description={solutionsPage.description}
@@ -36,3 +36,4 @@ export default function SolucoesPage() {
     </MarketingPageFrame>
   );
 }
+

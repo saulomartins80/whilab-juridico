@@ -60,7 +60,7 @@ const WhatsAppFloat = ({
       role: 'Vendas e Consultoria',
       avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face',
       phone: phoneNumber,
-      message: `Ola! Somos a ${dashboardBranding.supportTeamName}. Como podemos ajudar voce com gestao pecuaria?`,
+      message: `Ola! Somos a ${dashboardBranding.supportTeamName}. Como podemos ajudar voce com sua operacao pecuaria?`,
       icon: <ShoppingCart className="w-4 h-4" />,
       status: 'online'
     },

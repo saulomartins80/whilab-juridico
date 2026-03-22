@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { privacyPage } from '../content/extendedPublicPages';
 export default function PrivacidadePage() {
   return (
     <MarketingPageFrame
-      metaTitle="Privacidade | BoviNext White-label"
-      metaDescription="Entenda como o BoviNext trata autenticacao, dados de operacao e responsabilidade de implantacao."
+      metaTitle="Privacidade | WhiLab White-label"
+      metaDescription="Entenda como o WhiLab trata autenticacao, dados de operacao e responsabilidade de implantacao."
       eyebrow={privacyPage.eyebrow}
       title={privacyPage.title}
       description={privacyPage.description}
@@ -34,3 +34,4 @@ export default function PrivacidadePage() {
     </MarketingPageFrame>
   );
 }
+

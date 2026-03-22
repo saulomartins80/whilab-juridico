@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingFaqGrid,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { pricingPage } from '../content/publicPages';
 export default function PrecosPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Precos | BoviNext White-label"
-      metaDescription="Faixas de preco recomendadas para o BoviNext white-label, com produto base e upsells."
+      metaTitle="Precos | WhiLab White-label"
+      metaDescription="Faixas de preco recomendadas para o WhiLab white-label, com produto base e upsells."
       eyebrow="Precificacao"
       title="Produto medio, margem saudavel e espaco claro para upsell."
       description="A precificacao certa protege caixa, melhora conversao e abre espaco para instalacao, rebranding e adaptacao por nicho."
@@ -63,3 +63,4 @@ export default function PrecosPage() {
     </MarketingPageFrame>
   );
 }
+

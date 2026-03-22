@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { pressPage } from '../content/extendedPublicPages';
 export default function ImprensaPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Imprensa | BoviNext White-label"
-      metaDescription="Acesse a narrativa publica, os ativos de marca e o contexto oficial do BoviNext."
+      metaTitle="Imprensa | WhiLab White-label"
+      metaDescription="Acesse a narrativa publica, os ativos de marca e o contexto oficial do WhiLab."
       eyebrow={pressPage.eyebrow}
       title={pressPage.title}
       description={pressPage.description}
@@ -35,3 +35,4 @@ export default function ImprensaPage() {
     </MarketingPageFrame>
   );
 }
+

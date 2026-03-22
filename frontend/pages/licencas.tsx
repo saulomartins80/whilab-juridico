@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { licensesPage } from '../content/extendedPublicPages';
 export default function LicencasPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Licencas | BoviNext White-label"
-      metaDescription="Entenda o modelo de licenca do BoviNext e como codigo, setup e servicos adicionais se separam."
+      metaTitle="Licencas | WhiLab White-label"
+      metaDescription="Entenda o modelo de licenca do WhiLab e como codigo, setup e servicos adicionais se separam."
       eyebrow={licensesPage.eyebrow}
       title={licensesPage.title}
       description={licensesPage.description}
@@ -34,3 +34,4 @@ export default function LicencasPage() {
     </MarketingPageFrame>
   );
 }
+

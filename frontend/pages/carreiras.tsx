@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { careersPage } from '../content/extendedPublicPages';
 export default function CarreirasPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Carreiras | BoviNext White-label"
-      metaDescription="Entenda o tipo de time e cultura que sustenta a evolucao do BoviNext como produto white-label."
+      metaTitle="Carreiras | WhiLab White-label"
+      metaDescription="Entenda o tipo de time e cultura que sustenta a evolucao do WhiLab como produto white-label."
       eyebrow={careersPage.eyebrow}
       title={careersPage.title}
       description={careersPage.description}
@@ -35,3 +35,4 @@ export default function CarreirasPage() {
     </MarketingPageFrame>
   );
 }
+

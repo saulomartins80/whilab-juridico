@@ -1,8 +1,8 @@
-export const aboutPage = {
+﻿export const aboutPage = {
   eyebrow: 'Base white-label media',
-  title: 'BoviNext e a base comercial que vira marca propria sem parecer improviso.',
+  title: 'WhiLab e a base comercial que vira marca propria sem parecer improviso.',
   description:
-    'O BoviNext esta sendo transformado em um produto medio, premium e facil de adaptar. A vertical pecuaria continua como demonstracao pratica, enquanto a camada principal vira uma base SaaS white-label com dashboard, auth, IA e estrutura comercial.',
+    'O WhiLab esta sendo transformado em um produto medio, premium e facil de adaptar. A vertical pecuaria continua como demonstracao pratica, enquanto a camada principal vira uma base SaaS white-label com dashboard, auth, IA e estrutura comercial.',
   stats: [
     { label: 'Produto', value: 'medio e vendavel' },
     { label: 'Demo', value: 'vertical isolada' },
@@ -13,7 +13,7 @@ export const aboutPage = {
     {
       title: 'Tese certa',
       description:
-        'Nao e uma mini BoviNext Premium nem um template vazio. O foco e uma base de produto com valor comercial real.',
+        'Nao e uma mini WhiLab Premium nem um template vazio. O foco e uma base de produto com valor comercial real.',
     },
     {
       title: 'Vertical controlada',
@@ -34,7 +34,7 @@ export const aboutPage = {
   ],
   faqs: [
     {
-      question: 'O BoviNext vai deixar de ser pecuaria?',
+      question: 'O WhiLab vai deixar de ser pecuaria?',
       answer:
         'Nao. A pecuaria fica como demo vertical e prova pratica, mas o produto deixa de depender dela para se vender.',
     },
@@ -44,9 +44,9 @@ export const aboutPage = {
         'Sim. A proposta e entregar codigo, setup, estrutura de deploy e guia de rebranding, com limites bem definidos.',
     },
     {
-      question: 'Isso compete com a BoviNext Premium?',
+      question: 'Isso compete com a WhiLab Premium?',
       answer:
-        'Nao. O objetivo e gerar caixa com um produto medio e white-label, enquanto a BoviNext Premium continua como produto mais robusto.',
+        'Nao. O objetivo e gerar caixa com um produto medio e white-label, enquanto a WhiLab Premium continua como produto mais robusto.',
     },
     {
       question: 'Qual e o foco tecnico agora?',
@@ -60,7 +60,7 @@ export const solutionsPage = {
   eyebrow: 'O que o comprador leva',
   title: 'Uma base pronta para vender, adaptar e entregar com a propria marca.',
   description:
-    'As solucoes do BoviNext nao sao modulos soltos. Elas formam uma estrutura de produto white-label media, com componentes suficientes para parecer plataforma de verdade sem inflar escopo.',
+    'As solucoes do WhiLab nao sao modulos soltos. Elas formam uma estrutura de produto white-label media, com componentes suficientes para parecer plataforma de verdade sem inflar escopo.',
   stats: [
     { label: 'Shell', value: 'premium' },
     { label: 'IA', value: 'contextual' },
@@ -231,7 +231,7 @@ export const contactPage = {
       title: 'Contato comercial',
       description:
         'Use essa frente para conversar sobre licenca, adaptacao por nicho e formato de entrega.',
-      value: 'contato@bovinext.com',
+      value: 'contato@whilab.com.br',
     },
     {
       title: 'WhatsApp executivo',
@@ -353,3 +353,4 @@ export const pricingPage = {
     },
   ],
 };
+

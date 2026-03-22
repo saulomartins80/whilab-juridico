@@ -1,4 +1,4 @@
-import Head from 'next/head';
+﻿import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -196,8 +196,8 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>BoviNext | Gestao Pecuaria Inteligente</title>
-        <meta name="description" content="Plataforma SaaS white-label de gestao pecuaria com IA, dashboard executivo, Supabase e estrutura pronta para escalar." />
+        <title>WhiLab | Operacao Pecuaria Premium</title>
+        <meta name="description" content="Plataforma pecuaria premium com dashboard executivo, IA aplicada, base white-label e estrutura pronta para implantar, operar e revender." />
         <meta name="theme-color" content="#121212" />
       </Head>
 
@@ -221,15 +221,15 @@ export default function HomePage() {
             <div className="max-w-[640px]">
               <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible" className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-1.5 mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]" />
-                <span className="text-[13px] font-medium text-[#969696]">Gestao Pecuaria Inteligente</span>
+                <span className="text-[13px] font-medium text-[#969696]">Operacao Pecuaria Premium</span>
               </motion.div>
 
               <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate="visible" className="text-[clamp(3rem,7vw,5.8rem)] font-semibold leading-[1.02] tracking-[-0.04em]">
-                Seu rebanho<br />merece<span className="text-[#22d3ee]"> dados reais.</span>
+                Seu rebanho<br />merece<span className="text-[#22d3ee]"> controle real.</span>
               </motion.h1>
 
               <motion.p custom={2} variants={fadeUp} initial="hidden" animate="visible" className="mt-6 max-w-[560px] text-[16px] md:text-[18px] leading-relaxed text-[#969696]">
-                O BoviNext une gestao pecuaria, inteligencia artificial e infraestrutura moderna para transformar a operacao do campo em decisoes baseadas em dados — do manejo a venda.
+                WhiLab une pecuaria, inteligencia artificial e infraestrutura moderna para transformar a operacao do campo em decisoes mais claras, rastreaveis e comerciais.
               </motion.p>
 
               <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
@@ -248,16 +248,16 @@ export default function HomePage() {
               <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.18),transparent_58%)] blur-3xl" />
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-4 shadow-[0_40px_110px_rgba(2,8,20,0.42)] backdrop-blur-xl">
                 <div className="relative overflow-hidden rounded-[1.6rem] border border-white/[0.08]">
-                  <Image src="/features/dashboard.jpg" alt="Dashboard BoviNext" width={1280} height={900} priority className="h-[420px] w-full object-cover" />
+                  <Image src="/real/dashboard-finnextho.png" alt="Dashboard WhiLab" width={1280} height={900} priority className="h-[420px] w-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/72 via-transparent to-transparent" />
                   <div className="absolute left-5 right-5 top-5 flex items-center justify-between gap-3">
                     <div className="rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70 backdrop-blur">Dashboard executivo</div>
-                    <div className="hidden rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[#22d3ee] backdrop-blur sm:block">BoviNext</div>
+                    <div className="hidden rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[#22d3ee] backdrop-blur sm:block">WhiLab</div>
                   </div>
                   <div className="absolute bottom-5 left-5 right-5 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
                     <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 p-4 backdrop-blur-xl">
-                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#22d3ee]">Visao completa do rebanho</p>
-                      <p className="mt-2 text-sm leading-6 text-white/80">KPIs de producao, manejo, saude e vendas em uma unica tela.</p>
+                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#22d3ee]">Visao completa da operacao</p>
+                      <p className="mt-2 text-sm leading-6 text-white/80">KPIs de rebanho, producao, vendas e rotina operacional em uma unica tela.</p>
                     </div>
                     <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 px-4 py-3 backdrop-blur-xl">
                       <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">Modelo</p>
@@ -271,7 +271,7 @@ export default function HomePage() {
 
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="absolute bottom-0 inset-x-0 border-t border-white/[0.06]">
             <Marquee>
-              {['Gestao pecuaria', 'Inteligencia artificial', 'Supabase', 'White-label', 'Dashboard executivo', 'Manejo inteligente'].map((t) => (
+              {['Pecuaria premium', 'Inteligencia artificial', 'Supabase', 'White-label', 'Dashboard executivo', 'Manejo inteligente'].map((t) => (
                 <span key={t} className="flex items-center gap-3 text-[14px] font-medium text-white/20 uppercase tracking-[0.15em]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]/50" />{t}
                 </span>
@@ -284,7 +284,7 @@ export default function HomePage() {
         <Section className="py-24" id="about">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
-              <SectionLabel>Sobre o BoviNext</SectionLabel>
+              <SectionLabel>Sobre o WhiLab</SectionLabel>
               <SectionHeading>Tecnologia que entende o campo.</SectionHeading>
               <SectionSub>Nascemos para resolver a distancia entre a gestao pecuaria real e as ferramentas digitais disponiveis. Combinamos IA, dados e experiencia de usuario para quem opera no campo e decide no escritorio.</SectionSub>
             </div>
@@ -360,12 +360,12 @@ export default function HomePage() {
         <Section className="py-24" id="resultados">
           <SectionLabel>Resultados</SectionLabel>
           <SectionHeading>Impacto real no campo.</SectionHeading>
-          <SectionSub>Veja como o BoviNext transforma operacoes pecuarias.</SectionSub>
+          <SectionSub>Veja como a plataforma transforma operacoes pecuarias.</SectionSub>
           <div className="mt-14 space-y-4">
             {[
-              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/features/dashboard.jpg' },
-              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/features/investments.jpg' },
-              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/features/security.jpg' },
+              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/real/dashboard-finnextho.png' },
+              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/real/reports-finnextho.png' },
+              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/real/assistant-finnextho.png' },
             ].map((cs, i) => (
               <motion.div key={cs.name} variants={fadeUp} custom={i} className="group rounded-2xl border border-white/[0.08] bg-[#121212] overflow-hidden">
                 <div className="grid lg:grid-cols-2">
@@ -395,10 +395,10 @@ export default function HomePage() {
         {/* COMPARACAO */}
         <Section className="py-24">
           <SectionLabel>Diferencial</SectionLabel>
-          <SectionHeading>Por que escolher o BoviNext.</SectionHeading>
+          <SectionHeading>Por que escolher o WhiLab.</SectionHeading>
           <div className="mt-14 rounded-2xl border border-white/[0.08] overflow-hidden">
             <table className="w-full text-left">
-              <thead><tr className="border-b border-white/[0.08]"><th className="px-6 py-4 text-[13px] font-medium text-[#969696]" /><th className="px-6 py-4 text-[14px] font-semibold text-[#22d3ee]">BoviNext</th><th className="px-6 py-4 text-[14px] font-semibold text-[#969696]">Tradicionais</th></tr></thead>
+              <thead><tr className="border-b border-white/[0.08]"><th className="px-6 py-4 text-[13px] font-medium text-[#969696]" /><th className="px-6 py-4 text-[14px] font-semibold text-[#22d3ee]">WhiLab</th><th className="px-6 py-4 text-[14px] font-semibold text-[#969696]">Tradicionais</th></tr></thead>
               <tbody>
                 {[
                   { label: 'Abordagem', bovi: 'Digital-first com IA integrada', other: 'Planilhas e controle manual' },
@@ -426,7 +426,7 @@ export default function HomePage() {
           <motion.div variants={fadeUp} custom={3} className="mt-14 rounded-2xl border border-white/[0.08] bg-[#121212] p-8 md:p-10">
             <div className="grid md:grid-cols-[1fr_auto] gap-10 items-start">
               <div>
-                <p className="text-[18px] md:text-[20px] leading-relaxed text-white/80">&quot;Antes do BoviNext, a gestao era feita em cadernos e planilhas. Hoje temos visao completa em tempo real, e a IA nos alerta sobre problemas antes que virem prejuizo.&quot;</p>
+                <p className="text-[18px] md:text-[20px] leading-relaxed text-white/80">&quot;Antes do WhiLab, a gestao era feita em cadernos e planilhas. Hoje temos visao completa em tempo real, e a IA nos alerta sobre problemas antes que virem prejuizo.&quot;</p>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#22d3ee] to-[#06b6d4] flex items-center justify-center text-[12px] font-bold text-[#121212]">RS</div>
                   <div><p className="text-[14px] font-semibold">Ricardo Silva</p><p className="text-[13px] text-[#969696]">Gestor, Fazenda Santa Clara</p></div>
@@ -492,8 +492,8 @@ export default function HomePage() {
           <SectionSub>Tudo que voce precisa saber antes de comecar.</SectionSub>
           <div className="mt-14 max-w-[700px]">
             {[
-              { q: 'O que e o BoviNext?', a: 'Plataforma SaaS de gestao pecuaria inteligente com dashboard, controle de rebanho, manejos, producao, vendas e IA, tudo em infraestrutura Supabase.' },
-              { q: 'Funciona para gado de corte e leite?', a: 'Sim. O BoviNext atende operacoes de corte, leite e mistas com modulos e KPIs especificos para cada modelo.' },
+              { q: 'O que e a WhiLab?', a: 'Plataforma pecuaria premium com dashboard executivo, controle de rebanho, manejos, producao, vendas e IA em infraestrutura Supabase.' },
+              { q: 'Funciona para gado de corte e leite?', a: 'Sim. O WhiLab atende operacoes de corte, leite e mistas com modulos e KPIs especificos para cada modelo.' },
               { q: 'Preciso de internet na fazenda?', a: 'Para acesso completo sim. Estamos desenvolvendo funcionalidades offline com sincronizacao automatica.' },
               { q: 'Como funciona o white-label?', a: 'No plano Enterprise voce recebe a plataforma completa com sua marca, cores, dominio e copy para revender.' },
               { q: 'Quanto tempo leva a implantacao?', a: 'De 3 a 7 dias para operacoes basicas. Ate 15 dias para operacoes maiores com importacao de dados.' },
@@ -521,10 +521,10 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row items-start justify-between gap-10">
               <div className="max-w-[280px]">
                 <div className="flex items-center gap-2.5 mb-3">
-                  <Image src="/logo.svg" alt="BoviNext" width={24} height={24} />
-                  <p className="text-[15px] font-semibold">BoviNext</p>
+                  <Image src="/logo.svg" alt="WhiLab" width={24} height={24} />
+                  <p className="text-[15px] font-semibold">WhiLab</p>
                 </div>
-                <p className="text-[13px] text-[#969696] leading-relaxed">Plataforma de gestao pecuaria inteligente com IA, dashboard executivo e infraestrutura pronta para escalar.</p>
+                <p className="text-[13px] text-[#969696] leading-relaxed">Plataforma pecuaria premium com IA, dashboard executivo e infraestrutura pronta para implantar, operar e revender.</p>
               </div>
               <div className="flex gap-12 sm:gap-16">
                 <div>
@@ -554,8 +554,8 @@ export default function HomePage() {
               </div>
             </div>
             <div className="mt-14 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3">
-              <p className="text-[12px] text-white/20">&copy; 2026 BoviNext. Todos os direitos reservados.</p>
-              <p className="text-[12px] text-white/20">Gestao pecuaria inteligente com <span className="text-white/40">IA</span></p>
+              <p className="text-[12px] text-white/20">&copy; 2026 WhiLab. Todos os direitos reservados.</p>
+              <p className="text-[12px] text-white/20">Operacao pecuaria premium com <span className="text-white/40">IA</span></p>
             </div>
           </div>
         </footer>
@@ -563,3 +563,5 @@ export default function HomePage() {
     </>
   );
 }
+
+

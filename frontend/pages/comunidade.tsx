@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { communityPage } from '../content/extendedPublicPages';
 export default function ComunidadePage() {
   return (
     <MarketingPageFrame
-      metaTitle="Comunidade | BoviNext White-label"
-      metaDescription="Veja como a comunidade do BoviNext pode sustentar distribuicao, prova e parceiros."
+      metaTitle="Comunidade | WhiLab White-label"
+      metaDescription="Veja como a comunidade do WhiLab pode sustentar distribuicao, prova e parceiros."
       eyebrow={communityPage.eyebrow}
       title={communityPage.title}
       description={communityPage.description}
@@ -35,3 +35,4 @@ export default function ComunidadePage() {
     </MarketingPageFrame>
   );
 }
+

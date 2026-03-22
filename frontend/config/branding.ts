@@ -36,7 +36,7 @@ const buildAssistantName = (brandName: string): string => {
 
 const brandName =
   trim(process.env.NEXT_PUBLIC_BRAND_NAME) ||
-  'BoviNext';
+  'Pasturai';
 
 const assistantName =
   trim(process.env.NEXT_PUBLIC_ASSISTANT_NAME) ||
@@ -49,7 +49,11 @@ const brandSlug =
 
 const supportEmailExample =
   trim(process.env.NEXT_PUBLIC_SUPPORT_EMAIL_EXAMPLE) ||
-  `usuario@${brandSlug}.com`;
+  `contato@${brandSlug}.com.br`;
+
+const canonicalHost =
+  trim(process.env.NEXT_PUBLIC_CANONICAL_HOST) ||
+  `${brandSlug}.com.br`;
 
 export const dashboardBranding = {
   brandName,
@@ -68,17 +72,28 @@ export const dashboardBranding = {
     `${brandName} workspace`,
   shellSubtitle:
     trim(process.env.NEXT_PUBLIC_SHELL_SUBTITLE) ||
-    'Base white-label premium',
+    'Plataforma pecuaria premium',
   shellDescription:
     trim(process.env.NEXT_PUBLIC_SHELL_DESCRIPTION) ||
-    'Shell neutro com modulos verticais demonstrativos, pronto para virar produto de marca propria.',
+    'Operacao pecuaria com dashboard executivo, IA aplicada e estrutura pronta para implantar, revender e evoluir.',
   whiteLabelPrompt:
     trim(process.env.NEXT_PUBLIC_WHITE_LABEL_PROMPT) ||
-    'Ajuste nome, cores e narrativa sem desmontar o produto.',
+    'Troque marca, dominio e narrativa sem desmontar a base comercial.',
   supportTeamName:
     trim(process.env.NEXT_PUBLIC_SUPPORT_TEAM_NAME) ||
     `equipe ${brandName}`,
   supportEmailExample,
+  canonicalHost,
+  siteUrl: `https://${canonicalHost}`,
+  marketingTagline:
+    trim(process.env.NEXT_PUBLIC_MARKETING_TAGLINE) ||
+    'Operacao pecuaria premium pronta para marca propria.',
+  seoKeywords:
+    trim(process.env.NEXT_PUBLIC_SEO_KEYWORDS) ||
+    'pecuaria premium, software pecuario, gestao de rebanho, manejo, producao, dashboard pecuario, plataforma pecuaria',
+  verticalLabel:
+    trim(process.env.NEXT_PUBLIC_VERTICAL_LABEL) ||
+    'Pecuaria premium',
   logoAlt:
     trim(process.env.NEXT_PUBLIC_LOGO_ALT) ||
     `Logo ${brandName}`,
@@ -90,7 +105,7 @@ export const dashboardBranding = {
     assistantName,
   badgeLabel:
     trim(process.env.NEXT_PUBLIC_BRAND_BADGE) ||
-    buildBadgeLabel(brandName),
+    'WH',
   authStorageKey:
     trim(process.env.NEXT_PUBLIC_AUTH_STORAGE_KEY) ||
     `${brandSlug}-auth-token`,

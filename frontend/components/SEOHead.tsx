@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { dashboardBranding } from '../config/branding';
 
 interface SEOHeadProps {
   title: string;
@@ -13,64 +14,58 @@ interface SEOHeadProps {
 export default function SEOHead({
   title,
   description,
-  keywords = 'bovinext, gestão pecuária, inteligência artificial, rebanho bovino, pecuária de precisão, automação rural',
+  keywords = dashboardBranding.seoKeywords,
   canonical,
-  ogImage = 'https://bovinext.com/og-image.jpg',
+  ogImage = `${dashboardBranding.siteUrl}/features/dashboard.jpg`,
   ogType = 'website',
-  noindex = false
+  noindex = false,
 }: SEOHeadProps) {
-  const fullTitle = `${title} | BOVINEXT - Gestão Pecuária com IA`;
-  const url = canonical ? `https://bovinext.com${canonical}` : 'https://bovinext.com';
+  const fullTitle = `${title} | ${dashboardBranding.brandNameUpper} - ${dashboardBranding.marketingTagline}`;
+  const url = canonical ? `${dashboardBranding.siteUrl}${canonical}` : dashboardBranding.siteUrl;
 
   return (
     <Head>
-      {/* Title e Description */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      
-      {/* Canonical URL */}
+
       <link rel="canonical" href={url} />
-      
-      {/* Robots */}
+
       <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
       <meta name="googlebot" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
-      
-      {/* Open Graph */}
+
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:site_name" content="BOVINEXT" />
+      <meta property="og:site_name" content={dashboardBranding.brandNameUpper} />
       <meta property="og:locale" content="pt_BR" />
-      
-      {/* Twitter Card */}
+
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
-      
-      {/* Structured Data */}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": title,
-            "description": description,
-            "url": url,
-            "publisher": {
-              "@type": "Organization",
-              "name": "BOVINEXT",
-              "url": "https://bovinext.com",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://bovinext.com/bovinext.png"
-              }
-            }
-          })
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: title,
+            description,
+            url,
+            publisher: {
+              '@type': 'Organization',
+              name: dashboardBranding.brandNameUpper,
+              url: dashboardBranding.siteUrl,
+              logo: {
+                '@type': 'ImageObject',
+                url: `${dashboardBranding.siteUrl}/logo.svg`,
+              },
+            },
+          }),
         }}
       />
     </Head>

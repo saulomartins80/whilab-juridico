@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingFaqGrid,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { legalPage } from '../content/extendedPublicPages';
 export default function JuridicoPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Juridico | BoviNext White-label"
-      metaDescription="Veja os principios juridicos e operacionais que estruturam a venda do BoviNext."
+      metaTitle="Juridico | WhiLab White-label"
+      metaDescription="Veja os principios juridicos e operacionais que estruturam a venda do WhiLab."
       eyebrow={legalPage.eyebrow}
       title={legalPage.title}
       description={legalPage.description}
@@ -34,3 +34,4 @@ export default function JuridicoPage() {
     </MarketingPageFrame>
   );
 }
+

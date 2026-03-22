@@ -1,4 +1,4 @@
-// components/ProfileMenu.tsx
+﻿// components/ProfileMenu.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, LogOut, Settings, User, HelpCircle, Mail } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -110,7 +110,7 @@ export default function ProfileMenu() {
       divider: true,
       external: true,
       action: () => { 
-        window.open('mailto:suporte@bovinext.com', '_blank');
+        window.open('mailto:suporte@whilab.com.br', '_blank');
         setIsOpen(false); // Close menu after action
         return;
       }
@@ -120,7 +120,7 @@ export default function ProfileMenu() {
       label: 'Documentação',
       external: true,
       action: () => { 
-        window.open('https://docs.bovinext.com', '_blank');
+        window.open('https://docs.whilab.com.br', '_blank');
         setIsOpen(false); // Close menu after action
         return;
       }
@@ -231,3 +231,4 @@ export default function ProfileMenu() {
     </div>
   );
 }
+

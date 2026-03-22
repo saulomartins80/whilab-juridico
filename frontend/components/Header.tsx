@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { ArrowRight, Menu, Moon, Sun, X } from 'lucide-react';
 
 import { useTheme } from '../context/ThemeContext';
+import { dashboardBranding } from '../config/branding';
 
 // Public marketing header. The authenticated dashboard uses ProtectedHeader.
 interface HeaderProps {
@@ -33,13 +34,13 @@ export default function Header({ toggleMobileSidebar }: HeaderProps) {
     <header className="app-shell-header fixed top-0 z-50 w-full">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <span className="app-shell-badge">BX</span>
+          <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
           <span className="hidden flex-col leading-tight sm:flex">
             <span className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 dark:text-white">
-              BoviNext
+              {dashboardBranding.brandName}
             </span>
             <span className="text-xs text-slate-500 dark:text-slate-400">
-              White-label AI pronta para vender
+              {dashboardBranding.shellSubtitle}
             </span>
           </span>
         </Link>

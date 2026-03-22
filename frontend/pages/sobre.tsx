@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,8 +10,8 @@ import { aboutPage } from '../content/publicPages';
 export default function SobrePage() {
   return (
     <MarketingPageFrame
-      metaTitle="Sobre | BoviNext White-label"
-      metaDescription="Entenda a tese do BoviNext como base SaaS white-label media, premium e facil de adaptar."
+      metaTitle="Sobre | WhiLab White-label"
+      metaDescription="Entenda a tese do WhiLab como base SaaS white-label media, premium e facil de adaptar."
       eyebrow={aboutPage.eyebrow}
       title={aboutPage.title}
       description={aboutPage.description}
@@ -44,3 +44,4 @@ export default function SobrePage() {
     </MarketingPageFrame>
   );
 }
+

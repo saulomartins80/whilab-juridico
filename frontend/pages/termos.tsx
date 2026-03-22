@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { termsPage } from '../content/extendedPublicPages';
 export default function TermosPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Termos | BoviNext White-label"
-      metaDescription="Leia os termos de uso do BoviNext para a base de produto, ambiente e documentacao."
+      metaTitle="Termos | WhiLab White-label"
+      metaDescription="Leia os termos de uso do WhiLab para a base de produto, ambiente e documentacao."
       eyebrow={termsPage.eyebrow}
       title={termsPage.title}
       description={termsPage.description}
@@ -34,3 +34,4 @@ export default function TermosPage() {
     </MarketingPageFrame>
   );
 }
+

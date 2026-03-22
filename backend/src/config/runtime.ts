@@ -75,7 +75,7 @@ const allowedOrigins = unique(
 
 export const runtimeConfig = {
   projectKey: trim(process.env.APP_PROJECT_KEY) || trim(process.env.NEXT_PUBLIC_APP_KEY) || 'bovinext',
-  brandName: trim(process.env.APP_BRAND_NAME) || trim(process.env.NEXT_PUBLIC_BRAND_NAME) || 'BoviNext',
+  brandName: trim(process.env.APP_BRAND_NAME) || trim(process.env.NEXT_PUBLIC_BRAND_NAME) || 'WhiLab',
   backendUrl,
   frontendUrl,
   allowedOrigins,

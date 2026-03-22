@@ -1,4 +1,4 @@
-{
+﻿{
   "navigation": {
     "resources": "Recursos",
     "solutions": "Soluciones",
@@ -125,7 +125,7 @@
       "cookies": "Cookies",
       "licenses": "Licencias"
     },
-    "copyright": "© {{year}} BOVINEXT. Todos los derechos reservados.",
+    "copyright": "© {{year}} WHILAB. Todos los derechos reservados.",
     "termsOfService": "Términos de Servicio",
     "privacyPolicy": "Política de Privacidad"
   },
@@ -152,3 +152,4 @@
     "redo": "Rehacer"
   }
 } 
+

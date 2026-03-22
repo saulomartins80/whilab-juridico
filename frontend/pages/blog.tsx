@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingFaqGrid,
@@ -10,8 +10,8 @@ import { blogPage } from '../content/extendedPublicPages';
 export default function BlogPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Blog | BoviNext White-label"
-      metaDescription="Veja como o blog do BoviNext deve sustentar marca, SEO e demanda para o produto white-label."
+      metaTitle="Blog | WhiLab White-label"
+      metaDescription="Veja como o blog do WhiLab deve sustentar marca, SEO e demanda para o produto white-label."
       eyebrow={blogPage.eyebrow}
       title={blogPage.title}
       description={blogPage.description}
@@ -43,3 +43,4 @@ export default function BlogPage() {
     </MarketingPageFrame>
   );
 }
+

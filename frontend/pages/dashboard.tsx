@@ -89,7 +89,7 @@ export default function DashboardPage() {
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Sua plataforma de gestao inteligente esta pronta.
+                Sua plataforma pecuaria premium esta pronta para operar.
               </p>
 
               <div className="mt-6 space-y-3 text-left">
@@ -138,14 +138,14 @@ export default function DashboardPage() {
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-3 py-1 text-xs font-medium text-green-700 dark:text-green-400">
                   <Beef className="h-3.5 w-3.5" />
-                  Painel de gestao
+                  Painel executivo
                 </div>
                 <h1 className="mt-4 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
                   Ola, {userName}
                 </h1>
                 <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400 sm:text-base">
-                  Acompanhe seu rebanho, manejos, producao e vendas em um so lugar.
-                  Suas metricas e alertas estao atualizados abaixo.
+                  Acompanhe rebanho, manejos, producao e vendas em um so lugar.
+                  Suas metricas e alertas estao atualizados para a operacao de hoje.
                 </p>
               </div>
 

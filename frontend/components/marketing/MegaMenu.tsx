@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,9 +23,10 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
+import { dashboardBranding } from '../../config/branding';
 
 /* ================================================================
-   MEGA MENU — BoviNext Navigation
+   MEGA MENU — WhiLab Navigation
    Componente reutilizavel para todas as paginas publicas
    ================================================================ */
 
@@ -161,8 +162,8 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.svg" alt="BoviNext" width={28} height={28} />
-            <span className="text-[16px] font-semibold tracking-tight text-white">BoviNext</span>
+            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={28} height={28} />
+            <span className="text-[16px] font-semibold tracking-tight text-white">{dashboardBranding.brandName}</span>
           </Link>
 
           {/* Nav groups */}
@@ -284,8 +285,8 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
       >
         <div className="flex items-center justify-between px-5 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.svg" alt="BoviNext" width={24} height={24} />
-            <span className="text-[15px] font-semibold tracking-tight text-white">BoviNext</span>
+            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={24} height={24} />
+            <span className="text-[15px] font-semibold tracking-tight text-white">{dashboardBranding.brandName}</span>
           </Link>
 
           <button
@@ -415,3 +416,4 @@ export default function MegaMenu() {
     </>
   );
 }
+

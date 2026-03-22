@@ -1,4 +1,4 @@
-import {
+﻿import {
   MarketingCardGrid,
   MarketingChecklist,
   MarketingPageFrame,
@@ -9,8 +9,8 @@ import { companyPage } from '../content/extendedPublicPages';
 export default function EmpresaPage() {
   return (
     <MarketingPageFrame
-      metaTitle="Empresa | BoviNext White-label"
-      metaDescription="Conheca a operacao por tras do BoviNext e como ela organiza licenca, setup e adaptacao."
+      metaTitle="Empresa | WhiLab White-label"
+      metaDescription="Conheca a operacao por tras do WhiLab e como ela organiza licenca, setup e adaptacao."
       eyebrow={companyPage.eyebrow}
       title={companyPage.title}
       description={companyPage.description}
@@ -35,3 +35,4 @@ export default function EmpresaPage() {
     </MarketingPageFrame>
   );
 }
+
