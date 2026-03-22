@@ -240,17 +240,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = useCallback(async (email: string, password: string, nome: string, fazenda?: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
-      // Usar proxy interno do Next
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, display_name: nome, fazenda_nome: fazenda || '' })
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: nome,
+            display_name: nome,
+            fazenda: fazenda || '',
+            fazenda_nome: fazenda || '',
+          },
+        },
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.success) {
-        const msg = data?.message || data?.error || 'Erro ao criar conta. Tente novamente.';
-        throw new Error(msg);
+
+      if (error) {
+        throw new Error(error.message || 'Erro ao criar conta. Tente novamente.');
       }
+
+      const registeredUser = data?.user;
+      if (!registeredUser) {
+        throw new Error('Cadastro nao retornou usuario valido.');
+      }
+
       setState(prev => ({ ...prev, loading: false, error: null }));
       router.push('/auth/login?registration=success');
     } catch (error: unknown) {
