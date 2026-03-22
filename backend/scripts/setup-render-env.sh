@@ -6,7 +6,7 @@
 echo "🚀 Configurando variáveis de ambiente no Render..."
 
 # Variáveis que você precisa definir manualmente (substitua pelos valores reais)
-SERVICE_NAME="bovinext-backend"
+SERVICE_NAME="whilab-backend"
 
 # Configurar variáveis de ambiente
 echo "📝 Configurando variáveis de ambiente..."
@@ -14,15 +14,15 @@ echo "📝 Configurando variáveis de ambiente..."
 # Variáveis com valores padrão
 render env set NODE_ENV production --service $SERVICE_NAME
 render env set PORT 10000 --service $SERVICE_NAME
-render env set APP_PROJECT_KEY "${APP_PROJECT_KEY:-bovinext}" --service $SERVICE_NAME
-render env set APP_BRAND_NAME "${APP_BRAND_NAME:-BOVINEXT}" --service $SERVICE_NAME
-render env set APP_PUBLIC_URL "${APP_PUBLIC_URL:-http://localhost:3001}" --service $SERVICE_NAME
-render env set APP_BACKEND_URL "${APP_BACKEND_URL:-http://localhost:4000}" --service $SERVICE_NAME
-render env set FRONTEND_URL "${FRONTEND_URL:-http://localhost:3001}" --service $SERVICE_NAME
+render env set APP_PROJECT_KEY "${APP_PROJECT_KEY:-whilab}" --service $SERVICE_NAME
+render env set APP_BRAND_NAME "${APP_BRAND_NAME:-WhiLab}" --service $SERVICE_NAME
+render env set APP_PUBLIC_URL "${APP_PUBLIC_URL:-https://whilab.com.br}" --service $SERVICE_NAME
+render env set APP_BACKEND_URL "${APP_BACKEND_URL:-https://api.whilab.com.br}" --service $SERVICE_NAME
+render env set FRONTEND_URL "${FRONTEND_URL:-https://whilab.com.br}" --service $SERVICE_NAME
 render env set REDIS_URL "redis://red-d1gsqdvgi27c73c34r8g:6379" --service $SERVICE_NAME
 render env set RATE_LIMIT_WINDOW_MS 900000 --service $SERVICE_NAME
 render env set RATE_LIMIT_MAX 1000 --service $SERVICE_NAME
-render env set ALLOWED_ORIGINS "${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001}" --service $SERVICE_NAME
+render env set ALLOWED_ORIGINS "${ALLOWED_ORIGINS:-https://whilab.com.br,https://www.whilab.com.br}" --service $SERVICE_NAME
 
 # Variáveis que precisam ser configuradas manualmente
 echo "⚠️  Configure as seguintes variáveis manualmente no dashboard do Render:"

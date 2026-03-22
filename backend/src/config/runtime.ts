@@ -50,15 +50,17 @@ const unique = (values: Array<string | undefined | null>): string[] => {
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
+const fallbackFrontendUrl = isProduction ? 'https://whilab.com.br' : 'http://localhost:3001';
+const fallbackBackendUrl = isProduction ? 'https://api.whilab.com.br' : 'http://localhost:4000';
 const frontendUrl = trimTrailingSlash(
   trim(process.env.APP_PUBLIC_URL) ||
   trim(process.env.FRONTEND_URL) ||
-  'http://localhost:3001'
+  fallbackFrontendUrl
 );
 const backendUrl = trimTrailingSlash(
   trim(process.env.APP_BACKEND_URL) ||
   trim(process.env.NEXT_PUBLIC_API_URL) ||
-  'http://localhost:4000'
+  fallbackBackendUrl
 );
 
 const allowedOrigins = unique(
@@ -74,7 +76,7 @@ const allowedOrigins = unique(
 );
 
 export const runtimeConfig = {
-  projectKey: trim(process.env.APP_PROJECT_KEY) || trim(process.env.NEXT_PUBLIC_APP_KEY) || 'bovinext',
+  projectKey: trim(process.env.APP_PROJECT_KEY) || trim(process.env.NEXT_PUBLIC_APP_KEY) || 'whilab',
   brandName: trim(process.env.APP_BRAND_NAME) || trim(process.env.NEXT_PUBLIC_BRAND_NAME) || 'WhiLab',
   backendUrl,
   frontendUrl,

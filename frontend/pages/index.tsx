@@ -248,7 +248,7 @@ export default function HomePage() {
               <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.18),transparent_58%)] blur-3xl" />
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-4 shadow-[0_40px_110px_rgba(2,8,20,0.42)] backdrop-blur-xl">
                 <div className="relative overflow-hidden rounded-[1.6rem] border border-white/[0.08]">
-                  <Image src="/real/dashboard-finnextho.png" alt="Dashboard WhiLab" width={1280} height={900} priority className="h-[420px] w-full object-cover" />
+                  <Image src="/real/whilab-hero-dashboard.png" alt="Dashboard WhiLab" width={1280} height={900} priority className="h-[420px] w-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/72 via-transparent to-transparent" />
                   <div className="absolute left-5 right-5 top-5 flex items-center justify-between gap-3">
                     <div className="rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70 backdrop-blur">Dashboard executivo</div>
@@ -363,9 +363,9 @@ export default function HomePage() {
           <SectionSub>Veja como a plataforma transforma operacoes pecuarias.</SectionSub>
           <div className="mt-14 space-y-4">
             {[
-              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/real/dashboard-finnextho.png' },
-              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/real/reports-finnextho.png' },
-              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/real/assistant-finnextho.png' },
+              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/real/whilab-hero-dashboard.png' },
+              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/real/whilab-operations-overview.png' },
+              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/real/whilab-assistant-panel.png' },
             ].map((cs, i) => (
               <motion.div key={cs.name} variants={fadeUp} custom={i} className="group rounded-2xl border border-white/[0.08] bg-[#121212] overflow-hidden">
                 <div className="grid lg:grid-cols-2">

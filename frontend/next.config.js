@@ -6,7 +6,9 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const apiUrl =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === 'production' ? 'https://api.whilab.com.br' : 'http://localhost:4000');
 
 const securityHeaders = [
   {
@@ -21,7 +23,7 @@ const nextConfig = {
   
   // Environment variables para produção
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
+    NEXT_PUBLIC_API_URL: apiUrl,
   },
   images: {
     unoptimized: false,

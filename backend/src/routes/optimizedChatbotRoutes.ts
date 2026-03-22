@@ -23,7 +23,7 @@ router.get("/health", (req: express.Request, res: express.Response) => {
     success: true,
     status: "healthy",
     timestamp: new Date().toISOString(),
-    version: "2.0.0-bovinext",
+    version: "2.0.0-whilab",
     assistant: AI_BRAND.assistantName,
     message: BRAND_TEXT.healthMessage,
     features: ["intent_detection", "auto_execution", "cattle_expertise"],

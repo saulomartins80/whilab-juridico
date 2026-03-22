@@ -1,23 +1,21 @@
-// config/stripe.ts - Configuração do Stripe
 import Stripe from 'stripe';
 
-// Configuração do Stripe
+import { buildFrontendUrl } from './runtime';
+
 export const STRIPE_CONFIG = {
   secretKey: process.env.STRIPE_SECRET_KEY || '',
   publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
   currency: 'brl',
-  successUrl: process.env.STRIPE_SUCCESS_URL || 'http://localhost:3001/success',
-  cancelUrl: process.env.STRIPE_CANCEL_URL || 'http://localhost:3001/cancel',
+  successUrl: process.env.STRIPE_SUCCESS_URL || buildFrontendUrl('/success'),
+  cancelUrl: process.env.STRIPE_CANCEL_URL || buildFrontendUrl('/cancel'),
 };
 
-// Instância do Stripe
 export const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
   apiVersion: '2025-08-27.basil',
   typescript: true,
 });
 
-// Função para criar sessão de pagamento
 export async function createCheckoutSession(priceId: string, customerEmail?: string) {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -36,12 +34,11 @@ export async function createCheckoutSession(priceId: string, customerEmail?: str
 
     return session;
   } catch (error) {
-    console.error('Erro ao criar sessão de checkout:', error);
+    console.error('Erro ao criar sessao de checkout:', error);
     throw error;
   }
 }
 
-// Função para criar cliente
 export async function createCustomer(email: string, name?: string) {
   try {
     const customer = await stripe.customers.create({
@@ -56,7 +53,6 @@ export async function createCustomer(email: string, name?: string) {
   }
 }
 
-// Função para listar produtos
 export async function listProducts() {
   try {
     const products = await stripe.products.list({
@@ -70,7 +66,6 @@ export async function listProducts() {
   }
 }
 
-// Função para listar preços
 export async function listPrices() {
   try {
     const prices = await stripe.prices.list({
@@ -79,12 +74,11 @@ export async function listPrices() {
 
     return prices;
   } catch (error) {
-    console.error('Erro ao listar preços:', error);
+    console.error('Erro ao listar precos:', error);
     throw error;
   }
 }
 
-// Função para verificar webhook
 export function verifyWebhookSignature(payload: string, signature: string) {
   try {
     const event = stripe.webhooks.constructEvent(

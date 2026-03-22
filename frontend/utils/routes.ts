@@ -24,7 +24,6 @@ export const PROTECTED_ROUTES = [
   '/payment',
   '/ebook',
   '/sistema',
-  '/suporte',
   '/test-toast',
   '/payment/sucesso'
 ];
@@ -34,6 +33,7 @@ export const AUTH_PAGES = [
   '/auth/login', 
   '/auth/register', 
   '/auth/forgot-password', 
+  '/auth/reset-password',
   '/auth/complete-registration'
 ];
 

@@ -231,7 +231,7 @@ export const contactPage = {
       title: 'Contato comercial',
       description:
         'Use essa frente para conversar sobre licenca, adaptacao por nicho e formato de entrega.',
-      value: 'contato@whilab.com.br',
+      value: 'vendas@whilab.com.br',
     },
     {
       title: 'WhatsApp executivo',
@@ -243,7 +243,7 @@ export const contactPage = {
       title: 'Implantacao e setup',
       description:
         'Frente ideal para instalacao assistida, deploy e rebranding do white-label.',
-      value: 'Agendamento sob demanda',
+      value: 'atendimentos@whilab.com.br',
     },
   ],
   checklist: [

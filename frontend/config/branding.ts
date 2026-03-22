@@ -36,7 +36,7 @@ const buildAssistantName = (brandName: string): string => {
 
 const brandName =
   trim(process.env.NEXT_PUBLIC_BRAND_NAME) ||
-  'Pasturai';
+  'WhiLab';
 
 const assistantName =
   trim(process.env.NEXT_PUBLIC_ASSISTANT_NAME) ||
@@ -45,15 +45,15 @@ const assistantName =
 const brandSlug =
   trim(process.env.NEXT_PUBLIC_BRAND_SLUG) ||
   slugify(brandName) ||
-  'bovinext';
+  'whilab';
 
 const supportEmailExample =
   trim(process.env.NEXT_PUBLIC_SUPPORT_EMAIL_EXAMPLE) ||
-  `contato@${brandSlug}.com.br`;
+  `suporte@${brandSlug}.com.br`;
 
 const canonicalHost =
   trim(process.env.NEXT_PUBLIC_CANONICAL_HOST) ||
-  `${brandSlug}.com.br`;
+  'whilab.com.br';
 
 export const dashboardBranding = {
   brandName,

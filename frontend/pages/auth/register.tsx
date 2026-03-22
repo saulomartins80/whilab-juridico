@@ -158,7 +158,7 @@ export default function RegisterPage() {
               </div>
               <div className="text-left">
                 <h1 className="text-lg font-bold text-white">Criar conta</h1>
-                <p className="text-green-100 text-xs">{dashboardBranding.brandName} - Operacao Pecuaria Premium</p>
+                <p className="text-green-100 text-xs">{dashboardBranding.brandName} - Operacao conectada ao campo</p>
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <label htmlFor="fazenda" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nome da fazenda
+                    Nome da operacao
                   </label>
                   <div className="relative">
                     <Home className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -214,7 +214,7 @@ export default function RegisterPage() {
                       value={formData.fazenda}
                       onChange={handleInputChange}
                       className="block w-full pl-8 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="Fazenda Bela Vista"
+                      placeholder="Estancia Bela Vista"
                     />
                   </div>
                 </div>

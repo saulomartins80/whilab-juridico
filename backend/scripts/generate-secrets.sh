@@ -25,7 +25,7 @@ echo "✅ HSM_API_KEY gerado"
 
 # 4. QWAC Certificate (simulado)
 echo "Gerando QWAC_CERT..."
-openssl req -x509 -newkey rsa:4096 -keyout secrets/qwac_key.pem -out secrets/qwac_cert.pem -days 365 -nodes -subj "/C=BR/ST=SP/L=Sao Paulo/O=Bovinext/CN=openfinance.bovinext.com"
+openssl req -x509 -newkey rsa:4096 -keyout secrets/qwac_key.pem -out secrets/qwac_cert.pem -days 365 -nodes -subj "/C=BR/ST=SP/L=Sao Paulo/O=WhiLab/CN=openfinance.whilab.com.br"
 echo "✅ QWAC_CERT gerado"
 
 # 5. Audit API Key
@@ -77,12 +77,12 @@ MONGO_ROOT_PASSWORD=$(cat secrets/mongo_root_password.txt)
 NODE_ENV=production
 HSM_ENDPOINT=http://hsm-simulator:5000
 MONGO_ROOT_USER=admin
-MONGO_DATABASE=bovinext
+MONGO_DATABASE=whilab
 MONGO_URI=mongodb://admin:${MONGO_ROOT_PASSWORD}@mongodb:27017/${MONGO_DATABASE}?authSource=admin
 REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
 
 # Configurações de segurança
-CORS_ORIGIN=http://localhost:3001
+CORS_ORIGIN=https://whilab.com.br
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 EOF

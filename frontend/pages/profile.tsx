@@ -300,7 +300,7 @@ export default function Profile() {
   };
 
   // Redireciona para a página de gerenciamento de assinatura
-  const handleManageSubscription = async () => {
+  const _handleManageSubscription = async () => {
     toast.info('Gerenciamento de assinatura será implementado em breve.');
     console.log('[Profile] Iniciando criação de sessão do portal...');
   };
@@ -625,7 +625,7 @@ export default function Profile() {
                         <div className="flex flex-col sm:flex-row gap-3">
                           <button
                             type="button"
-                            onClick={handleManageSubscription}
+                            onClick={() => router.push('/assinaturas')}
                             disabled={isLoading}
                             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 transition-colors"
                           >

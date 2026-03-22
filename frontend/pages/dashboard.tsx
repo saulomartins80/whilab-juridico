@@ -89,7 +89,7 @@ export default function DashboardPage() {
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Sua plataforma pecuaria premium esta pronta para operar.
+                Seu workspace esta pronto para operar com dados, rotina e acompanhamento centralizados.
               </p>
 
               <div className="mt-6 space-y-3 text-left">
@@ -145,7 +145,7 @@ export default function DashboardPage() {
                 </h1>
                 <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400 sm:text-base">
                   Acompanhe rebanho, manejos, producao e vendas em um so lugar.
-                  Suas metricas e alertas estao atualizados para a operacao de hoje.
+                  Suas metricas e alertas estao organizados para a operacao de hoje.
                 </p>
               </div>
 
