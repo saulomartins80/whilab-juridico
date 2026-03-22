@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -87,8 +86,8 @@ const nextConfig = {
   // ✅ CORREÇÃO: Movido para fora do experimental no Next.js 15
   serverExternalPackages: [],
   
-  // ✅ CORREÇÃO: Configurações de webpack para melhorar performance mobile
-  webpack: (config, { dev, isServer, dir }) => {
+  // Keep webpack customization conservative so Next 15 can generate server pages reliably.
+  webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       // Otimizar HMR para resolver Fast Refresh issues
       config.watchOptions = {
@@ -107,103 +106,7 @@ const nextConfig = {
         },
       };
     }
-    
-    // Otimizações para produção - Bundle splitting agressivo
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 244000,
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            
-            // Framework chunk (React, Next.js) - crítico
-            framework: {
-              chunks: 'all',
-              name: 'framework',
-              test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-              priority: 40,
-              enforce: true,
-            },
-            
-            // Firebase chunk separado - lazy load
-            firebase: {
-              name: 'firebase',
-              chunks: 'async',
-              test: /[\/]node_modules[\/](@firebase|firebase)[\/]/,
-              priority: 35,
-              enforce: true,
-              maxSize: 200000,
-            },
-            
-            // Stripe chunk separado - lazy load
-            stripe: {
-              name: 'stripe',
-              chunks: 'async',
-              test: /[\/]node_modules[\/](@stripe|stripe)[\/]/,
-              priority: 30,
-              enforce: true,
-              maxSize: 150000,
-            },
-            
-            // Framer Motion chunk separado
-            framer: {
-              name: 'framer',
-              chunks: 'async',
-              test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
-              priority: 28,
-              enforce: true,
-            },
-            
-            // Vendor libraries grandes
-            lib: {
-              test(module) {
-                return module.size() > 160000 && /node_modules[/\\]/.test(module.identifier());
-              },
-              name(module) {
-                const hash = crypto.createHash('sha1');
-                hash.update(module.libIdent ? module.libIdent({ context: dir }) : module.identifier());
-                return hash.digest('hex').substring(0, 8);
-              },
-              priority: 25,
-              minChunks: 1,
-              reuseExistingChunk: true,
-              chunks: 'async',
-            },
-            
-            // Common chunks
-            commons: {
-              name: 'commons',
-              minChunks: 2,
-              priority: 20,
-              chunks: 'initial',
-              reuseExistingChunk: true,
-            },
-            
-            // Shared chunks
-            shared: {
-              name: 'shared',
-              chunks: 'all',
-              minChunks: 2,
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-        
-        // Otimizações adicionais para mobile
-        usedExports: true,
-        sideEffects: false,
-        concatenateModules: true,
-        mangleExports: 'size',
-        moduleIds: 'deterministic',
-        chunkIds: 'deterministic',
-      };
-    }
-    
+
     // Otimizações gerais
     config.resolve.alias = {
       ...config.resolve.alias,

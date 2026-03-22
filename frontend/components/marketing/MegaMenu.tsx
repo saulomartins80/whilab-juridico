@@ -66,7 +66,7 @@ const navGroups: NavGroup[] = [
         links: [
           { label: 'Precos', href: '/precos', desc: 'Planos e escada de valor.', icon: TrendingUp },
           { label: 'Licencas', href: '/licencas', desc: 'Estrutura de licenciamento.', icon: FileText },
-          { label: 'Dashboard', href: '/dashboard', desc: 'Acesso ao ambiente autenticado.', icon: BarChart2 },
+          { label: 'Entrar no painel', href: '/auth/login', desc: 'Acesso ao ambiente autenticado.', icon: BarChart2 },
         ],
       },
     ],
@@ -189,7 +189,7 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
             })}
 
             {/* Direct links */}
-            <Link href="#precos" className="px-4 py-2 text-[14px] font-medium text-white/60 hover:text-white transition-colors rounded-full">
+            <Link href="/precos" className="px-4 py-2 text-[14px] font-medium text-white/60 hover:text-white transition-colors rounded-full">
               Precos
             </Link>
           </div>

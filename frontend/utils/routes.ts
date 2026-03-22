@@ -20,7 +20,6 @@ export const PROTECTED_ROUTES = [
   '/configuracoes',
   '/profile',
   '/relatorios',
-  '/assinaturas',
   '/payment',
   '/ebook',
   '/sistema',
@@ -41,6 +40,7 @@ export const AUTH_PAGES = [
 // These are automatically determined as any route NOT in PROTECTED_ROUTES or AUTH_PAGES
 export const SAMPLE_PUBLIC_ROUTES = [
   '/',
+  '/assinaturas',
   '/recursos',
   '/solucoes', 
   '/precos',
