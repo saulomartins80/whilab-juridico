@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SupabaseService } from '../../../src/services/SupabaseService';
+import { supabaseService } from '../../../src/services/SupabaseService';
+import { resolveRequestUserId } from '../../../src/utils/requestContext';
 import { Producao } from '../../../src/types/bovinext.types';
-
-const supabaseService = new SupabaseService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -22,6 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getProducoes(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const { 
     tipo, 
     animal, 
@@ -42,6 +46,7 @@ async function getProducoes(req: NextApiRequest, res: NextApiResponse) {
   if (gmdMax) filters.gmdMax = parseFloat(gmdMax as string);
 
   const producoes = await supabaseService.getProducoes({
+    userId,
     filters,
     limit: parseInt(limit as string),
     offset: parseInt(offset as string)
@@ -55,16 +60,27 @@ async function getProducoes(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function createProducao(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const producaoData: Omit<Producao, 'id'> = req.body;
+  const tipo = (producaoData as any).tipo || (producaoData as any).tipo_producao;
+  const animal = (producaoData as any).animal || (producaoData as any).animal_id;
+  const data = (producaoData as any).data || (producaoData as any).data_producao;
 
   // Validação básica
-  if (!producaoData.tipo || !producaoData.animal || !producaoData.data) {
+  if (!tipo || !animal || !data) {
     return res.status(400).json({
-      error: 'Campos obrigatórios: tipo, animal, data'
+      error: 'Campos obrigatórios: tipo, animal, data (ou tipo_producao, animal_id, data_producao)'
     });
   }
 
-  const novaProducao = await supabaseService.createProducao(producaoData);
+  const novaProducao = await supabaseService.createProducao({
+    ...producaoData,
+    user_id: userId
+  });
 
   return res.status(201).json({
     success: true,

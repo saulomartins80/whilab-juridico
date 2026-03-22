@@ -1,141 +1,178 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheck, FiX } from 'react-icons/fi';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Check, BarChart2, Shield, X, Brain, Beef } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
+import { dashboardBranding } from '../config/branding';
 import LoadingSpinner from '../components/LoadingSpinner';
 import BovinextDashboardContent from '../components/BovinextDashboardContent';
 
-import styles from './Dashboard.module.css';
-
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-  className?: string;
-}
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading, authChecked } = useAuth();
   const [showWelcome, setShowWelcome] = useState(false);
 
-  // Check for welcome parameter
   useEffect(() => {
     if (router.isReady && router.query.welcome === 'true') {
       setShowWelcome(true);
-      // Remove the welcome parameter from URL
       router.replace('/dashboard', undefined, { shallow: true });
     }
-  }, [router.isReady, router.query.welcome, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query.welcome]);
 
-  // Estados de carregamento
   if (loading || !authChecked) {
     return (
-      <div className={styles.loadingContainer}>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
         <LoadingSpinner fullScreen />
       </div>
     );
   }
 
-  // Se não há usuário, mostra uma mensagem em vez de redirecionar
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Acesso Restrito
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 text-center shadow-xl"
+        >
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-100 dark:bg-green-900/30">
+            <Shield className="h-8 w-8 text-green-600 dark:text-green-400" />
+          </div>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+            Acesso restrito
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Você precisa estar logado para acessar o dashboard.
+          <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+            Voce precisa fazer login para acessar o painel de gestao da plataforma.
           </p>
           <button
             onClick={() => router.push('/auth/login')}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700"
           >
-            Fazer Login
+            Fazer login
+            <ArrowRight className="h-4 w-4" />
           </button>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
+  const userName = (user as any)?.name || (user as any)?.user_metadata?.name || (user as any)?.email?.split('@')[0] || 'Produtor';
+
   return (
     <>
-      {/* Welcome Message Modal */}
+      {/* Welcome modal */}
       <AnimatePresence>
         {showWelcome && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
             onClick={() => setShowWelcome(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full mx-auto text-center border border-gray-200 dark:border-gray-700"
+              exit={{ scale: 0.92, opacity: 0 }}
+              className="relative mx-auto w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 text-center shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-6">
-                <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-100 dark:bg-green-900/30">
+                <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
-              
-              <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
-                Bem-vindo ao BOVINEXT!
+
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Bem-vindo ao {dashboardBranding.brandName}!
               </h2>
-              
-              <p className="mb-6 text-gray-600 dark:text-gray-300">
-                Sua conta foi criada com sucesso. Agora você pode começar a gerenciar sua pecuária de forma inteligente e revolucionária.
+
+              <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                Sua plataforma de gestao inteligente esta pronta.
               </p>
-              
-              <div className="space-y-3 mb-6 text-left">
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                  <FiCheck className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Dashboard pecuário configurado</span>
+
+              <div className="mt-6 space-y-3 text-left">
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <BarChart2 className="mr-3 h-4 w-4 flex-shrink-0 text-green-500" />
+                  <span>Dashboard com KPIs em tempo real</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                  <FiCheck className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>IA FINN Bovino ativada</span>
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <Brain className="mr-3 h-4 w-4 flex-shrink-0 text-green-500" />
+                  <span>IA integrada para alertas e previsoes</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                  <FiCheck className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>WhatsApp Business conectado</span>
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <Shield className="mr-3 h-4 w-4 flex-shrink-0 text-green-500" />
+                  <span>Dados protegidos com criptografia</span>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => setShowWelcome(false)}
-                className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-200 font-medium"
+                className="mt-6 w-full rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700"
               >
-                Começar a usar
+                Comecar agora
               </button>
-              
+
               <button
                 onClick={() => setShowWelcome(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-4 top-4 text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-300"
               >
-                <FiX className="h-5 w-5" />
+                <X className="h-5 w-5" />
               </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <DashboardLayout>
-        <BovinextDashboardContent />
-      </DashboardLayout>
-    </>
-  );
-}
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="mx-auto w-full max-w-[1600px] px-4 pb-8 pt-6 sm:px-6 lg:px-8">
+          {/* Hero section */}
+          <motion.section
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 sm:p-8 shadow-sm"
+          >
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-green-500/5 blur-[80px]" />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-3 py-1 text-xs font-medium text-green-700 dark:text-green-400">
+                  <Beef className="h-3.5 w-3.5" />
+                  Painel de gestao
+                </div>
+                <h1 className="mt-4 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+                  Ola, {userName}
+                </h1>
+                <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400 sm:text-base">
+                  Acompanhe seu rebanho, manejos, producao e vendas em um so lugar.
+                  Suas metricas e alertas estao atualizados abaixo.
+                </p>
+              </div>
 
-// Componente de Layout separado com props opcionais
-function DashboardLayout({ children, className = '' }: DashboardLayoutProps) {
-  return (
-    <div className={`${styles.container} ${className}`}>
-      <div className={styles.content}>
-        {children}
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/rebanho"
+                  className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
+                >
+                  Meu rebanho
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/manejo"
+                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 transition hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  Novo manejo
+                </Link>
+              </div>
+            </div>
+          </motion.section>
+
+          {/* Dashboard content */}
+          <div className="mt-6">
+            <BovinextDashboardContent />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

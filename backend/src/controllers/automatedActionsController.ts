@@ -6,6 +6,7 @@ import { Meta } from '../models/Meta';
 import { EnterpriseAIEngine } from '../services/EnterpriseAIEngine';
 import { v4 as uuidv4 } from 'uuid';
 import { contextManager, ConversationState } from '../services/ContextManager';
+import { AI_BRAND, BRAND_TEXT } from '../config/aiPrompts';
 
 const aiService = new EnterpriseAIEngine();
 
@@ -171,7 +172,7 @@ export async function detectUserIntent(message: string, userContext: UserContext
       requiresConfirmation: false,
       successMessage: '',
       errorMessage: '',
-      response: 'Olá! Sou o BOVI, seu assistente pecuário inteligente! Como posso ajudar com sua fazenda hoje?'
+      response: BRAND_TEXT.welcomeMessage
     };
     intentCache.set(cacheKey, defaultIntent);
     return defaultIntent;
@@ -363,7 +364,7 @@ async function detectFullIntent(message: string, userContext: UserContext, conve
     if (conversationHistory && conversationHistory.length > 0) {
       const recentMessages = conversationHistory.slice(-3);
       conversationContext = `\n\nContexto da conversa recente:\n${recentMessages.map((msg: any, index: number) => 
-        `${index + 1}. ${msg.sender === 'user' ? 'Usuário' : 'BOVI'}: ${msg.content}`
+        `${index + 1}. ${msg.sender === 'user' ? 'Usuário' : AI_BRAND.assistantName}: ${msg.content}`
       ).join('\n')}`;
     }
 
@@ -375,7 +376,7 @@ async function detectFullIntent(message: string, userContext: UserContext, conve
 - Metas: ${userContext.totalMetas}${conversationContext}
 Mensagem do usuário: "${message}"
 
-IMPORTANTE: Você é BOVI, assistente especializado em pecuária. Analise se o usuário quer:
+IMPORTANTE: Você é ${AI_BRAND.assistantName}, assistente especializado em pecuária. Analise se o usuário quer:
 - Registrar custos da fazenda (ração, vacinas, veterinário, etc.)
 - Criar metas para a fazenda (equipamentos, expansão, melhoramento)
 - Registrar investimentos rurais (gado, terra, equipamentos)
@@ -386,7 +387,7 @@ Analise a mensagem e retorne um JSON com:
 - intent: tipo de ação (CREATE_TRANSACTION, CREATE_INVESTMENT, CREATE_GOAL, ANALYZE_DATA, GENERATE_REPORT, UNKNOWN)
 - entities: dados extraídos (valor, descrição, categoria, prazo, etc.)
 - confidence: confiança da detecção (0.0 a 1.0)
-- response: resposta natural como BOVI
+- response: resposta natural como ${AI_BRAND.assistantName}
 - requiresConfirmation: se precisa confirmação
 JSON:`;
 
@@ -406,7 +407,7 @@ JSON:`;
         requiresConfirmation: false,
         successMessage: '',
         errorMessage: '',
-        response: actionResult?.response || 'Como posso ajudar com sua fazenda hoje?'
+        response: actionResult?.response || BRAND_TEXT.welcomeMessage
       };
     }
 
@@ -755,7 +756,7 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
         res.status(200).json({
           success: true,
           type: 'TEXT_RESPONSE',
-          text: detectedAction.response || 'Olá! Sou o BOVI, como posso ajudar com sua fazenda hoje?',
+          text: detectedAction.response || BRAND_TEXT.welcomeMessage,
           messageId: uuidv4()
         });
         return;
@@ -828,7 +829,7 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
       res.status(200).json({
         success: true,
         type: 'TEXT_RESPONSE',
-        text: 'Olá! Sou o BOVI, seu assistente pecuário. Como posso ajudar?',
+        text: BRAND_TEXT.welcomeMessage,
         messageId: uuidv4()
       });
       return;

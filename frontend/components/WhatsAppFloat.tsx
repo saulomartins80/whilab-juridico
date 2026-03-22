@@ -1,21 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiSend, 
-  FiMinimize2 
-} from 'react-icons/fi';
+import {
+  Send,
+  Minimize2,
+  MessageCircle,
+  X,
+  User,
+  Headset,
+  ShoppingCart,
+  Clock,
+  CheckCheck
+} from 'lucide-react';
 import Image from 'next/image';
-import { 
-  FaWhatsapp,
-  FaTimes,
-  FaUser,
-  FaHeadset,
-  FaShoppingCart,
-  FaClock,
-  FaCheckDouble
-} from 'react-icons/fa';
 
 import { useTheme } from '../context/ThemeContext';
+import { dashboardBranding } from '../config/branding';
 
 interface ContactOption {
   id: string;
@@ -38,9 +37,9 @@ interface WhatsAppFloatProps {
 
 const WhatsAppFloat = ({ 
   phoneNumber = '5511999999999',
-  // message = 'Olá! Gostaria de saber mais sobre o BOVINEXT.',
+  // message = 'Ola! Gostaria de saber mais sobre o dashboard.',
   position = 'bottom-right',
-  companyName = 'BOVINEXT',
+  companyName = dashboardBranding.brandName,
   // brandColor = '#10B981'
 }: WhatsAppFloatProps) => {
   const { resolvedTheme } = useTheme();
@@ -61,8 +60,8 @@ const WhatsAppFloat = ({
       role: 'Vendas e Consultoria',
       avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face',
       phone: phoneNumber,
-      message: 'Olá! Somos a equipe BOVINEXT. Como podemos ajudar você com gestão pecuária?',
-      icon: <FaShoppingCart className="w-4 h-4" />,
+      message: `Ola! Somos a ${dashboardBranding.supportTeamName}. Como podemos ajudar voce com gestao pecuaria?`,
+      icon: <ShoppingCart className="w-4 h-4" />,
       status: 'online'
     },
     {
@@ -72,7 +71,7 @@ const WhatsAppFloat = ({
       avatar: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?w=80&h=80&fit=crop&crop=face',
       phone: phoneNumber,
       message: 'Olá! Precisa de suporte técnico? Nossa equipe especializada está pronta para ajudá-lo!',
-      icon: <FaHeadset className="w-4 h-4" />,
+      icon: <Headset className="w-4 h-4" />,
       status: 'online'
     },
     {
@@ -81,8 +80,8 @@ const WhatsAppFloat = ({
       role: 'Informações Gerais',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=face',
       phone: phoneNumber,
-      message: 'Olá! Como posso ajudá-lo com informações sobre a BOVINEXT?',
-      icon: <FaUser className="w-4 h-4" />,
+      message: `Ola! Como posso ajuda-lo com informacoes sobre a ${dashboardBranding.brandName}?`,
+      icon: <User className="w-4 h-4" />,
       status: 'online'
     }
   ];
@@ -175,7 +174,7 @@ const WhatsAppFloat = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-2">
-                      <FaWhatsapp className="w-4 h-4" />
+                      <MessageCircle className="w-4 h-4" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-sm">{companyName}</h4>
@@ -191,14 +190,14 @@ const WhatsAppFloat = ({
                       className="p-1 rounded-full hover:bg-white/20 transition-colors"
                       aria-label="Minimizar chat"
                     >
-                      <FiMinimize2 className="w-3 h-3" />
+                      <Minimize2 className="w-3 h-3" />
                     </button>
                     <button
                       onClick={toggleChat}
                       className="p-1 rounded-full hover:bg-white/20 transition-colors"
                       aria-label="Fechar chat"
                     >
-                      <FaTimes className="w-3 h-3" />
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
@@ -210,18 +209,18 @@ const WhatsAppFloat = ({
               }`}>
                 <div className="flex items-start space-x-2">
                   <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaWhatsapp className="w-3 h-3 text-white" />
+                    <MessageCircle className="w-3 h-3 text-white" />
                   </div>
                   <div className="flex-1">
                     <div className={`inline-block p-2 rounded-lg rounded-tl-sm max-w-xs ${
                       resolvedTheme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-800'
                     }`}>
                       <p className="text-xs">
-                        Olá! 👋 Como posso ajudá-lo hoje?
+                        Oi! Como posso ajudar hoje?
                       </p>
                     </div>
                     <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <FaCheckDouble className="w-2 h-2 mr-1 text-blue-500" />
+                      <CheckCheck className="w-2 h-2 mr-1 text-blue-500" />
                       <span>{currentTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                   </div>
@@ -235,7 +234,7 @@ const WhatsAppFloat = ({
                     className="flex items-center space-x-2 mt-2"
                   >
                     <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                      <FaWhatsapp className="w-3 h-3 text-white" />
+                      <MessageCircle className="w-3 h-3 text-white" />
                     </div>
                     <div className={`flex items-center space-x-1 p-2 rounded-lg rounded-tl-sm ${
                       resolvedTheme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
@@ -302,7 +301,7 @@ const WhatsAppFloat = ({
                             </p>
                           </div>
                         </div>
-                        <FiSend className={`w-3 h-3 ${
+                        <Send className={`w-3 h-3 ${
                           resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                         }`} />
                       </div>
@@ -315,7 +314,7 @@ const WhatsAppFloat = ({
                   resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
                 }`}>
                   <div className="flex items-center space-x-1 mb-1">
-                    <FaClock className={`w-3 h-3 ${
+                    <Clock className={`w-3 h-3 ${
                       resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                     }`} />
                     <span className={`text-xs font-medium ${
@@ -386,7 +385,7 @@ const WhatsAppFloat = ({
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <FaTimes className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              <X className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </motion.div>
           ) : (
             <motion.div
@@ -396,7 +395,7 @@ const WhatsAppFloat = ({
               exit={{ rotate: -90, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <FaWhatsapp className="w-6 h-6 md:w-7 md:h-7 text-white" />
+              <MessageCircle className="w-6 h-6 md:w-7 md:h-7 text-white" />
             </motion.div>
           )}
         </AnimatePresence>

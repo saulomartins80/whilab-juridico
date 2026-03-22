@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SupabaseService } from '../../../src/services/SupabaseService';
+import { supabaseService } from '../../../src/services/SupabaseService';
 import { Venda } from '../../../src/types/bovinext.types';
-
-const supabaseService = new SupabaseService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;

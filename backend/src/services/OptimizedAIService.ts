@@ -6,6 +6,15 @@ import { Meta } from '../models/Meta';
 import { Investimento } from '../models/Investimento';
 import { EventEmitter } from 'events';
 import { bovinextSupabaseService } from './BovinextSupabaseService';
+import logger from '../utils/logger';
+import { CHATBOT_OPTIMIZATION_CONFIG, QUICK_RESPONSES } from '../config/chatbotOptimization';
+import {
+  AI_BRAND,
+  SYSTEM_PROMPT,
+  ADDITIONAL_INSTRUCTIONS,
+  AI_MODEL_CONFIG,
+  QUICK_RESPONSES as AI_QUICK_RESPONSES,
+} from '../config/aiPrompts';
 
 // Interface para mensagens de chat
 interface ChatMessage {
@@ -15,23 +24,71 @@ interface ChatMessage {
 }
 
 // ===== CONFIGURAÇÃO OTIMIZADA =====
-let openai: OpenAI | null = null;
+type AITarget = {
+  client: OpenAI;
+  provider: 'deepseek' | 'openai';
+  model: string;
+} | null;
 
-const getDeepSeekClient = (): OpenAI => {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY não configurada');
+let deepseekClient: OpenAI | null = null;
+let openaiClient: OpenAI | null = null;
+
+const getConfiguredAIClient = (): AITarget => {
+  const deepseekApiKey = process.env.DEEPSEEK_API_KEY?.trim();
+  if (deepseekApiKey) {
+    if (!deepseekClient) {
+      deepseekClient = new OpenAI({
+        apiKey: deepseekApiKey,
+        baseURL: 'https://api.deepseek.com/v1',
+        timeout: 30000,
+      });
+    }
+
+    return {
+      client: deepseekClient,
+      provider: 'deepseek',
+      model: process.env.DEEPSEEK_MODEL?.trim() || 'deepseek-chat'
+    };
   }
 
-  if (!openai) {
-    openai = new OpenAI({
-      apiKey,
-      baseURL: 'https://api.deepseek.com/v1',
-      timeout: 30000,
-    });
+  const openaiApiKey = process.env.OPENAI_API_KEY?.trim();
+  if (openaiApiKey) {
+    if (!openaiClient) {
+      openaiClient = new OpenAI({
+        apiKey: openaiApiKey,
+        timeout: 30000,
+      });
+    }
+
+    return {
+      client: openaiClient,
+      provider: 'openai',
+      model: process.env.OPENAI_CHAT_MODEL?.trim() || 'gpt-4o-mini'
+    };
   }
 
-  return openai;
+  return null;
+};
+
+const splitResponseIntoChunks = (text: string, chunkSize = 120): string[] => {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized) return [];
+
+  const chunks: string[] = [];
+  let current = '';
+
+  for (const word of normalized.split(' ')) {
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > chunkSize && current) {
+      chunks.push(current);
+      current = word;
+    } else {
+      current = next;
+    }
+  }
+
+  if (current) chunks.push(current);
+  return chunks;
 };
 
 // ===== SISTEMA DE CACHE INTELIGENTE =====
@@ -140,9 +197,10 @@ class FastIntentDetector {
       /(?:o que|que).*comprei/i
     ],
     view_summary: [
-      /(?:saldo|resumo|situação).*(?:atual|fazenda)/i,
-      /como.*(?:está|esta).*(?:situação|fazenda)/i,
-      /balanço.*fazenda/i
+      /(?:saldo|resumo|situa[c?][a?]o).*(?:atual|fazenda)/i,
+      /como.*(?:est[a?]|esta).*(?:situa[c?][a?]o|fazenda)/i,
+      /balan[c?]o.*fazenda/i,
+      /(?:resumir|resuma|quero.*resumo).*(?:fazenda|opera[c?][a?]o|neg[o?]cio)/i
     ],
     create_goal: [
       /(?:criar|registrar|cadastrar).*(?:meta|objetivo|plano)/i,
@@ -155,8 +213,9 @@ class FastIntentDetector {
     ],
     create_investment: [
       /invest[ir]|comprar|adquirir|equipamento|trator|gado/i,
-      /terra|hectare|propriedade|fazenda/i,
-      /máquina|implemento|cerca|curral/i,
+      /(?:comprar|adquirir|investir).*(?:terra|hectare|propriedade|fazenda)/i,
+      /(?:terra|hectare).*(?:para|como).*investimento/i,
+      /m[a?]quina|implemento|cerca|curral/i,
       /registrar.*investimento|novo.*investimento/i,
       /comprei.*trator|comprei.*gado/i
     ],
@@ -615,38 +674,94 @@ export class OptimizedAIService {
   private contextManager = new OptimizedContext();
   private responseCount = 0;
 
-  // Sistema de prompts adaptado para BOVINEXT
+  // Sistema de prompts — importado de config/aiPrompts.ts (white-label)
   private SYSTEM_PROMPTS = {
-    BOVI_CORE: `Você é BOVI, o assistente pecuário inteligente do BOVINEXT. Seja natural, amigável e especializado em pecuária.
-
-Suas principais funções:
-- Registrar custos e receitas da fazenda
-- Acompanhar metas e investimentos rurais
-- Analisar performance do rebanho
-- Dar insights sobre mercado bovino
-- Ajudar com planejamento da fazenda
-
-CONHECIMENTO ESPECIALIZADO:
-- Zootecnia e manejo de gado de corte
-- Mercado bovino e preços da arroba
-- Equipamentos e tecnologia rural
-- Nutrição e saúde animal
-- Reprodução e melhoramento genético
-
-Sempre seja:
-✅ Conciso e objetivo
-✅ Amigável mas profissional
-✅ Focado em soluções práticas para fazenda
-✅ Proativo em sugerir melhorias
-
-❌ Não seja verboso ou repetitivo
-❌ Não mencione limitações técnicas
-❌ Não peça desculpas desnecessárias
-❌ Não use termos financeiros genéricos - use termos rurais`
+    MAIN: SYSTEM_PROMPT
   };
 
   constructor() {
     // Inicializar prompts
+  }
+
+  private formatCurrency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(Number.isFinite(value) ? value : 0);
+  }
+
+  private getLocalIntentSummary(message: string, userData: any, userContext?: any): string {
+    const intent = this.intentDetector.detect(message);
+    const animals = Array.isArray(userData?.animals) ? userData.animals : [];
+    const manejos = Array.isArray(userData?.manejos) ? userData.manejos : [];
+    const vendas = Array.isArray(userData?.vendas) ? userData.vendas : [];
+    const producao = Array.isArray(userData?.producao) ? userData.producao : [];
+    const metas = Array.isArray(userData?.goals) ? userData.goals : [];
+    const investments = Array.isArray(userData?.investments) ? userData.investments : [];
+    const transactions = Array.isArray(userData?.transactions) ? userData.transactions : [];
+    const farmName = userContext?.fazenda_nome || userContext?.name || 'sua fazenda';
+    const ownerName = userContext?.userName || userContext?.nome || 'fazendeiro';
+
+    const animalSummary = animals.slice(0, 5).map((animal: any) => animal.identificacao || animal.brinco || 'Animal').join(', ');
+    const manejoSummary = manejos.slice(0, 3).map((manejo: any) => manejo.tipo_manejo || 'manejo').join(', ');
+    const vendaSummary = vendas.slice(0, 3).map((venda: any) => this.formatCurrency(Number(venda.valor_total || 0))).join(', ');
+    const producaoSummary = producao.slice(0, 3).map((item: any) => item.tipo || 'produção').join(', ');
+
+    switch (intent.intent) {
+      case 'view_animals':
+        if (!animals.length) {
+          return `Ainda não encontrei animais cadastrados em ${farmName}. Posso te ajudar a registrar o primeiro animal ou revisar os dados da fazenda.`;
+        }
+        return `Você tem ${animals.length} animais cadastrados${animals.length ? `, com ${animals.filter((animal: any) => animal.status === 'ativo').length} ativos` : ''}. Exemplos: ${animalSummary || 'sem identificação'}.`;
+      case 'view_management':
+        if (!manejos.length) {
+          return `Não encontrei manejos registrados em ${farmName}. Se quiser, posso te ajudar a registrar vacinação, pesagem ou tratamento.`;
+        }
+        return `Encontrei ${manejos.length} manejos recentes. Exemplos: ${manejoSummary || 'manejos disponíveis'}.`;
+      case 'view_investments':
+        if (!investments.length) {
+          return `Não encontrei investimentos registrados em ${farmName}. Posso te ajudar a registrar equipamentos, compra de gado ou infraestrutura.`;
+        }
+        return `Há ${investments.length} investimentos registrados. Se quiser, eu posso resumir os principais valores e categorias.`;
+      case 'view_summary':
+        return `Resumo rápido de ${farmName}: ${animals.length} animais, ${manejos.length} manejos, ${vendas.length} vendas, ${producao.length} registros de produção, ${metas.length} metas e ${transactions.length} transações.`;
+      case 'create_goal':
+        return 'Posso te ajudar a registrar essa meta. Se quiser acelerar, me passe o valor, o prazo e o nome da meta.';
+      case 'create_transaction':
+        return 'Posso registrar essa transação. Se você me informar valor, descrição e tipo de gasto, eu organizo o restante.';
+      case 'create_investment':
+        return 'Posso registrar esse investimento. Me diga o valor e o nome do ativo para eu estruturar certinho.';
+      case 'analyze_data':
+        return `Posso analisar os dados de ${farmName} com base no contexto atual. Hoje vejo ${animals.length} animais, ${vendas.length} vendas e ${producao.length} registros de produção.`;
+      case 'help':
+        return 'Posso ajudar com rebanho, manejo, vendas, produção, metas e investimentos. Tente: "mostrar meu rebanho" ou "resumir a fazenda".';
+      case 'greeting':
+        return QUICK_RESPONSES.GREETING;
+      default:
+        return CHATBOT_OPTIMIZATION_CONFIG.FALLBACK_RESPONSES[0] || QUICK_RESPONSES.UNKNOWN || `Entendi sua mensagem, ${ownerName}. Posso ajudar com rebanho, manejo, vendas, produção, metas e investimentos.`;
+    }
+  }
+
+  private buildFallbackPayload(
+    userId: string,
+    message: string,
+    conversationHistory: ChatMessage[],
+    userContext?: any,
+    userData?: any
+  ) {
+    const intentResult = this.intentDetector.detect(message);
+    const text = this.getLocalIntentSummary(message, userData, userContext);
+
+    return {
+      text,
+      intent: intentResult.intent,
+      confidence: intentResult.confidence,
+      entities: intentResult.entities,
+      requiresConfirmation: false,
+      actionData: null,
+      responseTime: 0,
+      cached: false
+    };
   }
 
   async generateResponse(
@@ -665,6 +780,7 @@ Sempre seja:
     actionData?: any;
   }> {
     const startTime = Date.now();
+    let fallbackPayload: any = null;
     
     try {
       // 1. Verificar cache primeiro
@@ -684,7 +800,7 @@ Sempre seja:
       }
 
       // 2. Processar mensagem com IA
-      console.log(`🤖 BOVI processando mensagem: "${message}"`);
+      console.log(`🤖 ${AI_BRAND.assistantName} processando mensagem: "${message}"`);
       
       // 3. Atualizar contexto
       this.contextManager.updateContext(userId, message, '');
@@ -693,13 +809,13 @@ Sempre seja:
       let userData = null;
       try {
         userData = await this.contextManager.getUserFarmData(userId);
-        console.log(`[BOVI] Dados da fazenda carregados:`, {
+        console.log(`[${AI_BRAND.logTag}] Dados da fazenda carregados:`, {
           metas: userData?.goals?.length || 0,
           transacoes: userData?.transactions?.length || 0,
           investimentos: userData?.investments?.length || 0
         });
       } catch (error) {
-        console.error('[BOVI] Erro ao carregar dados da fazenda:', error);
+        console.error(`[${AI_BRAND.logTag}] Erro ao carregar dados da fazenda:`, error);
       }
 
       // 5. Gerar contexto com dados reais do usuário
@@ -741,33 +857,43 @@ ${transactions.slice(0, 5).map(t => `- ${t.descricao || 'Transação'}: R$ ${t.v
 ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor || 0}`).join('\n') || 'Nenhum investimento'}`;
       }
 
-      const prompt = `${this.SYSTEM_PROMPTS.BOVI_CORE}
+      const prompt = `${this.SYSTEM_PROMPTS.MAIN}
 
-IMPORTANTE PARA BOVI: 
-1. SEMPRE consulte os dados reais da fazenda antes de responder
-2. Se o usuário pergunta sobre rebanho/animais/manejos/vendas/produção, mostre os dados reais
-3. Se não existir o que ele está perguntando, informe que não encontrou
-4. A fazenda JÁ TEM DADOS - use-os nas respostas!
-5. Use terminologia pecuária adequada (arroba, GMD, UA/ha, etc.)
+${ADDITIONAL_INSTRUCTIONS}
 
 Contexto: ${context}${userDataContext}
 Usuário: ${message}
-BOVI:`;
+${AI_BRAND.assistantName}:`;
 
-      const openaiClient = getDeepSeekClient();
-
-      const completion = await openaiClient.chat.completions.create({
-        model: 'deepseek-chat',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
-        max_tokens: 1500,
-      });
-
-      const response = completion.choices[0]?.message?.content || 'Como posso ajudar com sua fazenda?';
-
-      // 6. Detectar intenção
       const intentResult = this.intentDetector.detect(message);
-      console.log(`[BOVI] Intent detectado: ${intentResult.intent}, confiança: ${intentResult.confidence}`);
+      fallbackPayload = this.buildFallbackPayload(userId, message, conversationHistory, userContext, userData);
+      const configuredAI = getConfiguredAIClient();
+
+      if (!configuredAI) {
+        logger.info('[OptimizedAIService] Nenhuma chave externa configurada. Usando fallback local.');
+        return {
+          ...fallbackPayload,
+          responseTime: Date.now() - startTime
+        };
+      }
+
+      let response = fallbackPayload.text;
+      try {
+        const completion = await configuredAI.client.chat.completions.create({
+          model: configuredAI.model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: AI_MODEL_CONFIG.temperature,
+          max_tokens: AI_MODEL_CONFIG.maxTokens,
+        });
+
+        response = completion.choices[0]?.message?.content || fallbackPayload.text;
+        logger.info(`[OptimizedAIService] Resposta gerada via ${configuredAI.provider}`);
+      } catch (aiError) {
+        logger.warn('[OptimizedAIService] Falha no provedor externo, usando fallback local:', aiError);
+        response = fallbackPayload.text;
+      }
+
+      console.log(`[${AI_BRAND.logTag}] Intent detectado: ${intentResult.intent}, confianca: ${intentResult.confidence}`);
       
       // Sistema simplificado - sem botões de confirmação
       const validActionIntents = ['create_investment', 'create_goal', 'create_transaction'];
@@ -776,7 +902,7 @@ BOVI:`;
                                    intentResult.entities && 
                                    Object.keys(intentResult.entities).length > 0;
       
-      console.log(`[BOVI] Execução direta: ${shouldExecuteDirectly}`);
+      console.log(`[${AI_BRAND.logTag}] Execucao direta: ${shouldExecuteDirectly}`);
       
       let actionData = null;
       const requiresConfirmation = false; // DESABILITADO
@@ -801,11 +927,14 @@ BOVI:`;
       return result;
 
     } catch (error) {
-      console.error('[BOVI] Error generating response:', error);
+      console.error(`[${AI_BRAND.logTag}] Error generating response:`, error);
+      const localFallback = fallbackPayload?.text || QUICK_RESPONSES.UNKNOWN;
       return {
-        text: 'Desculpe, tive um problema técnico. Pode tentar novamente?',
+        text: localFallback,
         responseTime: Date.now() - startTime,
-        confidence: 0.0,
+        confidence: fallbackPayload?.confidence ?? 0.0,
+        intent: fallbackPayload?.intent,
+        entities: fallbackPayload?.entities || {},
         actionData: null
       };
     }
@@ -827,7 +956,7 @@ BOVI:`;
     let fullResponse = '';
 
     try {
-      console.log(`🤖 BOVI streaming mensagem: "${message}"`);
+      console.log(`🤖 ${AI_BRAND.assistantName} streaming mensagem: "${message}"`);
 
       this.contextManager.updateContext(userId, message, '');
 
@@ -835,7 +964,7 @@ BOVI:`;
       try {
         userData = await this.contextManager.getUserFarmData(userId);
       } catch (error) {
-        console.error('[BOVI] Erro ao carregar dados da fazenda:', error);
+        console.error(`[${AI_BRAND.logTag}] Erro ao carregar dados da fazenda:`, error);
       }
 
       const context = await this.buildContextPrompt(conversationHistory, userContext);
@@ -876,44 +1005,59 @@ ${transactions.slice(0, 5).map(t => `- ${t.descricao || 'Transação'}: R$ ${t.v
 ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor || 0}`).join('\n') || 'Nenhum investimento'}`;
       }
 
-      const prompt = `${this.SYSTEM_PROMPTS.BOVI_CORE}
+      const prompt = `${this.SYSTEM_PROMPTS.MAIN}
 
-IMPORTANTE PARA BOVI: 
-1. SEMPRE consulte os dados reais da fazenda antes de responder
-2. Se o usuário pergunta sobre rebanho/animais/manejos/vendas/produção, mostre os dados reais
-3. Se não existir o que ele está perguntando, informe que não encontrou
-4. A fazenda JÁ TEM DADOS - use-os nas respostas!
-5. Use terminologia pecuária adequada (arroba, GMD, UA/ha, etc.)
+${ADDITIONAL_INSTRUCTIONS}
 
 Contexto: ${context}${userDataContext}
 Usuário: ${message}
-BOVI:`;
+${AI_BRAND.assistantName}:`;
 
-      const openaiClient = getDeepSeekClient();
+      const intentResult = this.intentDetector.detect(message);
+      const fallbackPayload: any = this.buildFallbackPayload(userId, message, conversationHistory, userContext, userData);
+      const configuredAI = getConfiguredAIClient();
 
-      const stream = await openaiClient.chat.completions.create(
-        {
-          model: 'deepseek-chat',
-          messages: [{ role: 'user', content: prompt }],
-          temperature: 0.7,
-          max_tokens: 1500,
-          stream: true,
-        },
-        options?.signal ? { signal: options.signal } : undefined,
-      );
-
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || '';
-        if (content) {
-          fullResponse += content;
-          onChunk(content);
+      if (!configuredAI) {
+        logger.info('[OptimizedAIService] Streaming sem provedor externo. Usando fallback local.');
+        for (const chunk of splitResponseIntoChunks(fallbackPayload.text)) {
+          fullResponse += `${chunk} `;
+          onChunk(chunk);
         }
+        return fullResponse.trim();
       }
 
-      console.log(`[BOVI] Streaming concluído em ${Date.now() - startTime}ms`);
+      try {
+        const stream = await configuredAI.client.chat.completions.create(
+          {
+            model: configuredAI.model,
+            messages: [{ role: 'user', content: prompt }],
+            temperature: AI_MODEL_CONFIG.temperature,
+            max_tokens: AI_MODEL_CONFIG.maxTokensStreaming,
+            stream: true,
+          },
+          options?.signal ? { signal: options.signal } : undefined,
+        );
+
+        for await (const chunk of stream) {
+          const content = chunk.choices[0]?.delta?.content || '';
+          if (content) {
+            fullResponse += content;
+            onChunk(content);
+          }
+        }
+      } catch (aiError) {
+        logger.warn('[OptimizedAIService] Stream externo falhou, usando fallback local:', aiError);
+        for (const chunk of splitResponseIntoChunks(fallbackPayload.text)) {
+          fullResponse += `${chunk} `;
+          onChunk(chunk);
+        }
+        return fullResponse.trim();
+      }
+
+      console.log(`[${AI_BRAND.logTag}] Streaming concluido em ${Date.now() - startTime}ms`);
       return fullResponse;
     } catch (error) {
-      console.error('[BOVI] Error streaming response:', error);
+      console.error(`[${AI_BRAND.logTag}] Error streaming response:`, error);
       throw error;
     }
   }
@@ -932,7 +1076,7 @@ BOVI:`;
       context += 'HISTÓRICO COMPLETO DA CONVERSA:\n';
       conversationHistory.forEach((msg) => {
         const roleValue = (msg as any).role || (msg as any).sender;
-        const role = roleValue === 'user' ? 'Fazendeiro' : 'BOVI';
+        const role = roleValue === 'user' ? 'Fazendeiro' : AI_BRAND.assistantName;
         context += `${role}: ${msg.content}\n`;
       });
     }
@@ -997,7 +1141,7 @@ BOVI:`;
       text: result.text,
       analysisData: {
         responseTime: result.responseTime,
-        engine: 'optimized-bovinext',
+        engine: `optimized-${AI_BRAND.productTag.toLowerCase()}`,
         confidence: result.confidence || 0.8,
         cached: result.cached || false
       }

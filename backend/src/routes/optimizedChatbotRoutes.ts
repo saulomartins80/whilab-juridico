@@ -13,6 +13,7 @@ import {
 import { OptimizedChatbotController } from "../controllers/OptimizedChatbotController";
 import { authenticateToken } from "../middlewares/auth";
 import { asyncHandler } from "../middlewares/asyncHandler";
+import { AI_BRAND, BRAND_TEXT } from "../config/aiPrompts";
 
 const router = express.Router();
 
@@ -23,7 +24,8 @@ router.get("/health", (req: express.Request, res: express.Response) => {
     status: "healthy",
     timestamp: new Date().toISOString(),
     version: "2.0.0-bovinext",
-    assistant: "BOVI",
+    assistant: AI_BRAND.assistantName,
+    message: BRAND_TEXT.healthMessage,
     features: ["intent_detection", "auto_execution", "cattle_expertise"],
   });
 });
@@ -238,7 +240,7 @@ router.get("/metrics", (req: express.Request, res: express.Response) => {
       },
       uptime: `${Math.round(process.uptime())}s`,
       timestamp: new Date().toISOString(),
-      assistant: "BOVI",
+      assistant: AI_BRAND.assistantName,
       features: {
         intentDetection: true,
         autoExecution: true,
@@ -266,7 +268,7 @@ router.use(
       success: false,
       message: error.message || "Erro interno do servidor",
       timestamp: new Date().toISOString(),
-      assistant: "BOVI",
+      assistant: AI_BRAND.assistantName,
       ...(isDevelopment && {
         stack: error.stack,
         details: error,

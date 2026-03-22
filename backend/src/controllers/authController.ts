@@ -1,15 +1,18 @@
 import { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { authService } from '../services/authService';
 import logger from '../utils/logger';
+import { buildFrontendUrl } from '../config/runtime';
+import { extractRequestToken } from '../utils/authContext';
+
+const normalizeString = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
 
 export class AuthController {
   async login(req: Request, res: Response) {
     try {
-      // Verificar erros de validação
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        logger.warn('Tentativa de login com dados inválidos', {
+        logger.warn('Tentativa de login com dados invalidos', {
           errors: errors.array(),
           ip: req.ip,
           userAgent: req.get('User-Agent')
@@ -17,52 +20,43 @@ export class AuthController {
 
         return res.status(400).json({
           success: false,
-          message: 'Dados de entrada inválidos',
+          message: 'Dados de entrada invalidos',
           errors: errors.array()
         });
       }
 
-      const { email, password } = req.body;
+      const email = normalizeString(req.body?.email).toLowerCase();
+      const password = normalizeString(req.body?.password);
 
-      // Validação adicional
       if (!email || !password) {
         return res.status(400).json({
           success: false,
-          message: 'Email e senha são obrigatórios'
+          message: 'Email e senha sao obrigatorios'
         });
       }
 
-      // Sanitização básica
-      const sanitizedEmail = email.trim().toLowerCase();
-      const sanitizedPassword = password.trim();
-
       const { user, session, profile } = await authService.login(email, password);
-      
-      // Verificação de email desabilitada (backend confirma automaticamente)
 
-      // Criar objeto de usuário com tipos explícitos
-      const userResponse = {
-        id: user.id,
-        email: user.email,
-        ...(profile || {})
-      };
-      
       res.json({
         success: true,
-        user: userResponse,
+        user: {
+          id: user.id,
+          email: user.email,
+          ...(profile || {})
+        },
         access_token: session?.access_token,
         refresh_token: session?.refresh_token
       });
     } catch (error: any) {
       console.error('Erro no login:', error);
-      
+
       if (error.message === 'Invalid login credentials') {
         return res.status(401).json({
           success: false,
-          message: 'Email ou senha inválidos'
+          message: 'Email ou senha invalidos'
         });
       }
-      
+
       res.status(500).json({
         success: false,
         message: 'Erro ao fazer login',
@@ -73,19 +67,17 @@ export class AuthController {
 
   async register(req: Request, res: Response) {
     try {
-      // Sanitização básica antecipada
       req.body = {
         ...req.body,
-        email: typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email,
-        password: typeof req.body.password === 'string' ? req.body.password.trim() : req.body.password,
-        display_name: typeof req.body.display_name === 'string' ? req.body.display_name.trim() : req.body.display_name,
-        fazenda_nome: typeof req.body.fazenda_nome === 'string' ? req.body.fazenda_nome.trim() : req.body.fazenda_nome,
+        email: normalizeString(req.body.email).toLowerCase(),
+        password: normalizeString(req.body.password),
+        display_name: normalizeString(req.body.display_name),
+        fazenda_nome: normalizeString(req.body.fazenda_nome)
       };
 
-      // Verificar erros de validação
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        logger.warn('Tentativa de registro com dados inválidos', {
+        logger.warn('Tentativa de registro com dados invalidos', {
           errors: errors.array(),
           ip: req.ip,
           userAgent: req.get('User-Agent')
@@ -93,75 +85,62 @@ export class AuthController {
 
         return res.status(400).json({
           success: false,
-          message: 'Dados de entrada inválidos',
+          message: 'Dados de entrada invalidos',
           errors: errors.array()
         });
       }
 
       const { email, password, ...userData } = req.body;
 
-      // Validação adicional
       if (!email || !password) {
         return res.status(400).json({
           success: false,
-          message: 'Email e senha são obrigatórios'
+          message: 'Email e senha sao obrigatorios'
         });
       }
 
-      // Sanitização básica
-      const sanitizedEmail = email.trim().toLowerCase();
-      const sanitizedPassword = password.trim();
-
-      // Validação de senha forte
-      if (sanitizedPassword.length < 8) {
+      if ((password as string).length < 8) {
         return res.status(400).json({
           success: false,
           message: 'A senha deve ter pelo menos 8 caracteres'
         });
       }
 
-      // Validação de email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(sanitizedEmail)) {
+      if (!emailRegex.test(email as string)) {
         return res.status(400).json({
           success: false,
-          message: 'Email inválido'
+          message: 'Email invalido'
         });
       }
 
-      const { user, session, profile, emailConfirmed } = await authService.register(email, password, userData);
-
-      // Criar objeto de usuário com tipos explícitos
-      const userResponse = {
-        id: user.id,
-        email: user.email,
-        ...(profile || {})
-      };
-
-      // Mensagem baseada no status de confirmação
-      const message = 'Usuário criado com sucesso. Você já pode fazer login.';
+      const { user, session, profile, emailConfirmed } = await authService.register(email as string, password as string, userData);
 
       res.status(201).json({
         success: true,
-        message,
-        user: userResponse,
+        message: 'Usuario criado com sucesso. Voce ja pode fazer login.',
+        user: {
+          id: user.id,
+          email: user.email,
+          ...(profile || {})
+        },
         access_token: session?.access_token,
         refresh_token: session?.refresh_token,
         emailConfirmed
       });
     } catch (error: any) {
       console.error('Erro no registro:', error);
-      
+
       if (error.code === '23505') {
         return res.status(400).json({
           success: false,
-          message: 'Este email já está em uso'
+          message: 'Este email ja esta em uso'
         });
       }
-      
+
       res.status(500).json({
         success: false,
-        message: 'Erro ao criar usuário',
+        message: 'Erro ao criar usuario',
         error: error.message
       });
     }
@@ -183,49 +162,35 @@ export class AuthController {
 
   async getSession(req: Request, res: Response) {
     try {
-      const session = await authService.getSession();
-      
+      const token = extractRequestToken(req);
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          message: 'Nao autenticado'
+        });
+      }
+
+      const session = await authService.getSession(token);
       if (!session) {
         return res.status(401).json({
           success: false,
-          message: 'Não autenticado'
+          message: 'Nao autenticado'
         });
       }
-      
-      const user = await authService.getUser();
-      
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Usuário não encontrado'
-        });
-      }
-      
-      // Importar o cliente Supabase
-      const { supabase } = require('../config/supabase');
-      
-      // Buscar perfil do usuário
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
-        .single();
 
-      if (profileError) throw profileError;
-      
       res.json({
         success: true,
         user: {
-          id: user.id,
-          email: user.email,
-          ...profile
+          id: session.user.id,
+          email: session.user.email,
+          ...((session.profile as Record<string, unknown>) || {})
         }
       });
     } catch (error: any) {
-      console.error('Erro ao verificar sessão:', error);
+      console.error('Erro ao verificar sessao:', error);
       res.status(500).json({
         success: false,
-        message: 'Erro ao verificar sessão',
+        message: 'Erro ao verificar sessao',
         error: error.message
       });
     }
@@ -233,38 +198,34 @@ export class AuthController {
 
   async resendVerification(req: Request, res: Response) {
     try {
-      const { email } = req.body;
-      
+      const email = normalizeString(req.body?.email).toLowerCase();
       if (!email) {
         return res.status(400).json({
           success: false,
-          message: 'Email é obrigatório'
+          message: 'Email e obrigatorio'
         });
       }
-      
-      // Importar o cliente Supabase
+
       const { supabase } = require('../config/supabase');
-      
-      // Isso envia um email de confirmação para o usuário
-      const { data, error } = await supabase.auth.resend({
+      const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
         options: {
-          emailRedirectTo: `${process.env.FRONTEND_URL}/auth/confirm-email`
+          emailRedirectTo: buildFrontendUrl('/auth/confirm-email')
         }
       });
-      
+
       if (error) throw error;
-      
+
       res.json({
         success: true,
-        message: 'Email de verificação reenviado com sucesso'
+        message: 'Email de verificacao reenviado com sucesso'
       });
     } catch (error: any) {
-      console.error('Erro ao reenviar email de verificação:', error);
+      console.error('Erro ao reenviar email de verificacao:', error);
       res.status(500).json({
         success: false,
-        message: 'Erro ao reenviar email de verificação',
+        message: 'Erro ao reenviar email de verificacao',
         error: error.message
       });
     }
@@ -272,13 +233,13 @@ export class AuthController {
 
   async forgotPassword(req: Request, res: Response) {
     try {
-      const { email } = req.body;
+      const email = normalizeString(req.body?.email).toLowerCase();
       if (!email) {
-        return res.status(400).json({ success: false, message: 'Email é obrigatório' });
+        return res.status(400).json({ success: false, message: 'Email e obrigatorio' });
       }
 
       const { supabase } = require('../config/supabase');
-      const redirectTo = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/auth/reset-password`;
+      const redirectTo = buildFrontendUrl('/auth/reset-password');
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo
@@ -296,7 +257,7 @@ export class AuthController {
     try {
       const { userId, newPassword } = req.body;
       if (!userId || !newPassword) {
-        return res.status(400).json({ success: false, message: 'userId e newPassword são obrigatórios' });
+        return res.status(400).json({ success: false, message: 'userId e newPassword sao obrigatorios' });
       }
 
       const { supabase } = require('../config/supabase');
@@ -316,7 +277,7 @@ export class AuthController {
     try {
       const { userId } = req.body;
       if (!userId) {
-        return res.status(400).json({ success: false, message: 'userId é obrigatório' });
+        return res.status(400).json({ success: false, message: 'userId e obrigatorio' });
       }
 
       const { supabase } = require('../config/supabase');

@@ -227,7 +227,7 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
   const kpiData: KPICardData[] = [
     {
       id: 'rebanho',
-      title: 'REBANHO TOTAL',
+      title: 'BASE ATIVA',
       value: stats.totalAnimais,
       change: 2.3,
       changeType: 'increase',
@@ -236,7 +236,7 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       color: 'emerald',
       suffix: ' animais',
       target: 1500,
-      description: 'Total de animais ativos na fazenda'
+      description: 'Total de ativos monitorados na operação'
     },
     {
       id: 'receita',
@@ -250,11 +250,11 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       color: 'blue',
       prefix: 'R$ ',
       target: 1500000,
-      description: 'Faturamento total do mês'
+      description: 'Faturamento total do período'
     },
     {
       id: 'gmd',
-      title: 'GMD MÉDIO',
+      title: 'ÍNDICE MÉDIO',
       value: stats.gmdMedio,
       change: 5.8,
       changeType: 'increase',
@@ -264,11 +264,11 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       suffix: ' kg/dia',
       decimals: 2,
       target: 1.5,
-      description: 'Ganho médio diário do rebanho'
+      description: 'Variação média do indicador no período'
     },
     {
       id: 'arroba',
-      title: 'PREÇO DA ARROBA',
+      title: 'ÍNDICE DE MERCADO',
       value: stats.precoArroba,
       change: 1.2,
       changeType: 'decrease',
@@ -277,11 +277,11 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       color: 'amber',
       prefix: 'R$ ',
       decimals: 2,
-      description: 'Cotação atual do mercado'
+      description: 'Referência de mercado acompanhada no módulo'
     },
     {
       id: 'leite',
-      title: 'PRODUÇÃO DE LEITE',
+      title: 'VOLUME OPERACIONAL',
       value: stats.producaoLeite,
       formattedValue: `(${(stats.producaoLeite / 1000).toFixed(1)}k L)`,
       change: 8.3,
@@ -291,7 +291,7 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       color: 'cyan',
       suffix: ' litros',
       target: 20000,
-      description: 'Produção mensal de leite'
+      description: 'Volume mensal acompanhado no fluxo'
     },
     {
       id: 'margem',
@@ -309,7 +309,7 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
     },
     {
       id: 'eficiencia',
-      title: 'EFICIÊNCIA REPRODUTIVA',
+      title: 'EFICIÊNCIA DO PROCESSO',
       value: stats.eficienciaReprodutiva,
       change: 2.5,
       changeType: 'increase',
@@ -319,11 +319,11 @@ export default function KPICards({ stats, loading = false }: KPICardsProps) {
       suffix: '%',
       decimals: 1,
       target: 90,
-      description: 'Taxa de prenhez do rebanho'
+      description: 'Taxa de conversão do fluxo'
     },
     {
       id: 'alertas',
-      title: 'ALERTAS ATIVOS',
+      title: 'ALERTAS EM FOCO',
       value: stats.alertasAtivos,
       change: stats.alertasAtivos > 0 ? 15 : 0,
       changeType: stats.alertasAtivos > 0 ? 'increase' : 'neutral',

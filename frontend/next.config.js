@@ -156,15 +156,6 @@ const nextConfig = {
               enforce: true,
             },
             
-            // React Icons chunk separado
-            icons: {
-              name: 'icons',
-              chunks: 'async',
-              test: /[\\/]node_modules[\\/](react-icons)[\\/]/,
-              priority: 26,
-              enforce: true,
-            },
-            
             // Vendor libraries grandes
             lib: {
               test(module) {

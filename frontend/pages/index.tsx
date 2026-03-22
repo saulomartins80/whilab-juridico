@@ -1,1357 +1,565 @@
-// pages/index.tsx - BOVINEXT REDESIGN RADICAL
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
-import CountUp from 'react-countup';
-import { 
-  FiArrowRight, 
-  FiPlay, 
-  FiStar, 
-  FiTrendingUp, 
-  FiX, 
-  FiLinkedin, 
-  FiInstagram, 
-  FiMenu, 
-  FiSun, 
-  FiMoon, 
-  FiGlobe, 
-  FiShield, 
-  FiUsers, 
-  FiAward, 
-  FiSmartphone, 
-  FiMonitor, 
-  FiTablet,
-  FiHexagon,
-  FiMessageCircle,
-  FiPhone,
-  FiMail,
-  FiClock,
-  FiZap,
-  FiTarget
-} from 'react-icons/fi';
-import { 
-  GiCow,
-  GiArtificialIntelligence,
-  GiNetworkBars,
-  GiProgression,
-  GiCookie
-} from 'react-icons/gi';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import {
+  ArrowUpRight,
+  BarChart2,
+  Brain,
+  Check,
+  Database,
+  Minus,
+  Paintbrush,
+  Plus,
+  Target,
+  TrendingUp,
+} from 'lucide-react';
 
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
+import { supabase } from '../lib/supabaseClient';
+import MegaMenu from '../components/marketing/MegaMenu';
 
-// Novo logo moderno para BOVINEXT
-const BovinextLogo = ({ className = "w-10 h-10" }) => (
-  <svg viewBox="0 0 100 100" className={className}>
-    <defs>
-      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#00E676" />
-        <stop offset="50%" stopColor="#00C853" />
-        <stop offset="100%" stopColor="#2E7D32" />
-      </linearGradient>
-    </defs>
-    <path 
-      d="M50 15 L75 40 L65 50 L50 35 L35 50 L25 40 Z" 
-      fill="url(#gradient)"
-    />
-    <path 
-      d="M35 50 L15 70 L30 85 L50 65 L70 85 L85 70 L65 50 L50 65 Z" 
-      fill="url(#gradient)"
-      opacity="0.9"
-    />
-  </svg>
-);
+/* ================================================================
+   DESIGN TOKENS
+   ================================================================ */
 
-// Componente de Partículas Flutuantes - Estilo cursor.sh
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 15 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 2,
-    duration: 3 + Math.random() * 4,
-    size: Math.random() * 4 + 1,
-  }));
+const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.55, ease },
+  }),
+};
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07 } },
+};
+
+/* ================================================================
+   PRIMITIVOS
+   ================================================================ */
+
+function Section({ children, className = '', id }: { children: ReactNode; className?: string; id?: string }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-green-500/20 to-green-600/20"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            x: [0, Math.random() * 10 - 5, 0],
-            opacity: [0.1, 0.8, 0.1],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: particle.duration,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
+    <motion.section
+      ref={ref}
+      id={id}
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
+      variants={stagger}
+      className={`relative px-5 md:px-10 ${className}`}
+    >
+      <div className="mx-auto max-w-[1200px]">{children}</div>
+    </motion.section>
+  );
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <motion.p variants={fadeUp} custom={0} className="text-[13px] font-medium text-[#969696] tracking-wide mb-3">
+      {children}
+    </motion.p>
+  );
+}
+
+function SectionHeading({ children }: { children: ReactNode }) {
+  return (
+    <motion.h2 variants={fadeUp} custom={1} className="text-[clamp(2rem,4.5vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-white">
+      {children}
+    </motion.h2>
+  );
+}
+
+function SectionSub({ children }: { children: ReactNode }) {
+  return (
+    <motion.p variants={fadeUp} custom={2} className="mt-4 text-[16px] leading-relaxed text-[#969696] max-w-[520px]">
+      {children}
+    </motion.p>
+  );
+}
+
+function PillButton({ children, href, variant = 'white' }: { children: ReactNode; href: string; variant?: 'white' | 'dark' | 'outline' }) {
+  const base = 'inline-flex items-center gap-2 rounded-full px-6 py-3 text-[14px] font-medium transition-all duration-300';
+  const styles = {
+    white: `${base} bg-white text-[#121212] hover:bg-[#22d3ee] hover:text-[#121212]`,
+    dark: `${base} bg-[#121212] text-white border border-white/[0.2] hover:bg-white/[0.08]`,
+    outline: `${base} border border-white/[0.2] text-white hover:bg-white/[0.06]`,
+  };
+  return <Link href={href} className={styles[variant]}>{children}</Link>;
+}
+
+function Marquee({ children }: { children: ReactNode }) {
+  return (
+    <div className="overflow-hidden py-5">
+      <div className="flex animate-[marquee_25s_linear_infinite] gap-10 whitespace-nowrap">
+        {children}
+        {children}
+      </div>
     </div>
   );
-};
+}
 
-// Componente de Grid Interativo - Estilo cursor.sh
-const InteractiveGrid = () => {
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
-      <div className="absolute inset-0" 
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgb(99 102 241 / 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgb(99 102 241 / 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px',
-          maskImage: 'radial-gradient(ellipse at center, black 10%, transparent 70%)'
-        }}
-      />
+    <div className="border-b border-white/[0.08]">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-5 text-left group">
+        <span className="text-[16px] font-medium text-white group-hover:text-[#22d3ee] transition-colors">{q}</span>
+        {open ? <Minus className="w-5 h-5 text-[#969696] flex-shrink-0" /> : <Plus className="w-5 h-5 text-[#969696] flex-shrink-0" />}
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="pb-5 text-[14px] leading-relaxed text-[#969696]">{a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
-};
+}
 
-// Componente de Glow Effect
-const GlowEffect = () => {
-  return (
-    <>
-      <div className="absolute top-1/4 -left-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl filter opacity-30 animate-pulse-slow" />
-      <div className="absolute top-2/3 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl filter opacity-30 animate-pulse-medium" />
-      <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-pink-500/8 rounded-full blur-3xl filter opacity-25 animate-pulse-slow" />
-    </>
-  );
-};
+function AnimStat({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-50px' });
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    let s = 0;
+    const dur = 1600, step = 16, inc = value / (dur / step);
+    const t = setInterval(() => { s += inc; if (s >= value) { setCount(value); clearInterval(t); } else setCount(Math.floor(s)); }, step);
+    return () => clearInterval(t);
+  }, [inView, value]);
+  return <span ref={ref}>{count.toLocaleString('pt-BR')}{suffix}</span>;
+}
+
+/* ================================================================
+   PAGINA PRINCIPAL
+   ================================================================ */
 
 export default function HomePage() {
-  const { user, loading } = useAuth();
-  const { resolvedTheme, toggleTheme } = useTheme();
   const router = useRouter();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const [showChatTooltip, setShowChatTooltip] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const redirecting = useRef(false);
 
-  // Redirecionar usuários logados para o dashboard
   useEffect(() => {
-    if (!loading && user) {
+    let mounted = true;
+
+    const goToDashboard = () => {
+      if (!mounted || redirecting.current) return;
+      redirecting.current = true;
       router.replace('/dashboard');
-    }
-  }, [user, loading, router]);
+    };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 50;
-      if (scrolled !== isScrolled) {
-        setIsScrolled(scrolled);
-      }
-
-      // Verificar se está no final da página
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-      const atBottom = scrollTop + windowHeight >= documentHeight - 200;
-      
-      if (atBottom !== isAtBottom) {
-        setIsAtBottom(atBottom);
+    const checkSession = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user) goToDashboard();
+      } catch {
+        // Supabase nao configurado — ignora
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isScrolled, isAtBottom]);
+    void checkSession();
 
-  // Métricas dinâmicas da pecuária
-  const metrics = [
-    { value: 2.5, suffix: 'K+', label: 'Pecuaristas ativos', icon: <FiUsers className="w-6 h-6" /> },
-    { value: 98, suffix: '%', label: 'Satisfação', icon: <FiStar className="w-6 h-6" /> },
-    { value: 4.9, suffix: '/5', label: 'Avaliação', icon: <FiAward className="w-6 h-6" /> },
-    { value: 24, suffix: '/7', label: 'Suporte Técnico', icon: <FiShield className="w-6 h-6" /> }
-  ];
-
-  // Features da pecuária inteligente - Estilo cursor.sh
-  const features = [
-    {
-      icon: <GiNetworkBars className="w-8 h-8" />,
-      title: "Analytics Pecuário com IA",
-      description: "Relatórios em tempo real com machine learning para prever tendências produtivas e otimizar manejo",
-      gradient: "from-green-500 to-green-600",
-    },
-    {
-      icon: <GiProgression className="w-8 h-8" />,
-      title: "Genética Integrada",
-      description: "Gerencie genealogia, melhoramento genético e seleção de reprodutores com IA",
-      gradient: "from-green-500 to-green-600",
-    },
-    {
-      icon: <GiArtificialIntelligence className="w-8 h-8" />,
-      title: "Automação Rural",
-      description: "Sistema automático que identifica problemas sanitários e otimiza protocolos por você",
-      gradient: "from-green-500 to-green-600",
-    },
-    {
-      icon: <FiHexagon className="w-8 h-8" />,
-      title: "Saúde Animal",
-      description: "Monitoramento contínuo de saúde, alertas preventivos e protocolos sanitários inteligentes",
-      gradient: "from-green-500 to-green-600",
+    let listener: { subscription: { unsubscribe: () => void } } | null = null;
+    try {
+      const result = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) goToDashboard();
+      });
+      listener = result.data;
+    } catch {
+      // Supabase nao configurado — ignora
     }
-  ];
 
-  // Menu items
-  const menuItems = [
-    { name: 'Recursos', path: '/recursos' },
-    { name: 'Soluções', path: '/solucoes' },
-    { name: 'Pecuaristas', path: '/pecuaristas' },
-    { name: 'Preços', path: '/precos' },
-    { name: 'Cases', path: '/cases' },
-    { name: 'Contato', path: '/contato' }
-  ];
-
-  // Fazendas parceiras - Estilo cursor.sh
-  const partnerFarms = [
-    { 
-      name: "SANTA ROSA", 
-      style: "fazenda",
-      color: "text-green-700",
-      font: "font-bold tracking-widest text-2xl"
-    },
-    { 
-      name: "Esperança", 
-      style: "sitio",
-      color: "text-blue-600",
-      font: "font-semibold tracking-normal text-2xl",
-      icon: <GiProgression className="w-6 h-6" />
-    },
-    { 
-      name: "progresso", 
-      style: "fazenda",
-      color: "text-purple-600",
-      font: "font-bold tracking-tight text-2xl italic"
-    },
-    { 
-      name: "verde.agro", 
-      style: "rancho",
-      color: "text-emerald-600",
-      font: "font-bold tracking-normal text-2xl"
-    },
-    { 
-      name: "BELA VISTA", 
-      style: "estancia",
-      color: "text-indigo-700",
-      font: "font-black tracking-widest text-2xl"
-    },
-    { 
-      name: "horizonte", 
-      style: "fazenda",
-      color: "text-orange-600",
-      font: "font-medium tracking-wide text-2xl",
-      icon: <FiTrendingUp className="w-6 h-6" />
-    },
-    { 
-      name: "três irmãos", 
-      style: "sitio",
-      color: "text-teal-600",
-      font: "font-bold tracking-wide text-2xl"
-    },
-    { 
-      name: "pecuária", 
-      style: "fazenda",
-      color: "text-red-600",
-      font: "font-semibold tracking-normal text-2xl",
-      icon: <GiCow className="w-6 h-6" />
-    },
-    { 
-      name: "OuroVerde", 
-      style: "fazenda",
-      color: "text-yellow-600",
-      font: "font-bold tracking-normal text-2xl"
-    },
-    { 
-      name: "agro brasil", 
-      style: "cooperativa",
-      color: "text-green-800",
-      font: "font-bold tracking-normal text-2xl",
-      icon: <GiNetworkBars className="w-6 h-6" />
-    }
-  ];
-
-  // Depoimentos
-  const testimonials = [
-    {
-      name: "Carlos Silva",
-      role: "Pecuarista - Fazenda Santa Rosa",
-      text: "Com o BOVINEXT, aumentei minha produtividade em 45% em apenas 6 meses. O controle do rebanho ficou muito mais eficiente.",
-      rating: 5
-    },
-    {
-      name: "Maria Santos",
-      role: "Produtora Rural - Sítio Esperança",
-      text: "A plataforma revolucionou minha gestão. Agora tenho controle total sobre cada animal e os resultados são impressionantes.",
-      rating: 5
-    },
-    {
-      name: "João Oliveira",
-      role: "Fazendeiro - Fazenda Progresso",
-      text: "Recomendo o BOVINEXT para todos os pecuaristas. É uma ferramenta indispensável para quem quer crescer no agronegócio.",
-      rating: 5
-    }
-  ];
-
-  // Estatísticas avançadas
-  const advancedStats = [
-    { icon: <FiGlobe className="w-6 h-6" />, value: "15+", label: "Estados Atendidos", color: "text-blue-500" },
-    { icon: <FiZap className="w-6 h-6" />, value: "99.9%", label: "Uptime Garantido", color: "text-green-500" },
-    { icon: <FiTarget className="w-6 h-6" />, value: "45%", label: "Aumento Médio Produtividade", color: "text-purple-500" },
-    { icon: <FiClock className="w-6 h-6" />, value: "24h", label: "Suporte Técnico", color: "text-orange-500" }
-  ];
-
-  // Informações de contato empresarial (não usado)
-  // const contactInfo = [
-  //   { icon: <FiPhone className="w-5 h-5" />, label: "Telefone", value: "+55 (11) 3000-0000", color: "text-blue-500" },
-  //   { icon: <FiMail className="w-5 h-5" />, label: "E-mail", value: "contato@bovinext.com.br", color: "text-green-500" },
-  //   { icon: <FiMapPin className="w-5 h-5" />, label: "Endereço", value: "São Paulo, SP - Brasil", color: "text-purple-500" }
-  // ];
-
-  // Tecnologias Avançadas
-  const advancedTechnologies = [
-    { 
-      icon: <GiArtificialIntelligence className="w-8 h-8" />, 
-      title: "Machine Learning", 
-      description: "Algoritmos preditivos para otimização da produção",
-      gradient: "from-green-500 to-green-600",
-    },
-    { 
-      icon: <FiZap className="w-8 h-8" />, 
-      title: "IoT Integrado", 
-      description: "Sensores inteligentes conectados em tempo real",
-      gradient: "from-green-500 to-green-600",
-    },
-    { 
-      icon: <FiShield className="w-8 h-8" />, 
-      title: "Blockchain", 
-      description: "Rastreabilidade completa e segurança de dados",
-      gradient: "from-green-500 to-green-600",
-    },
-    { 
-      icon: <FiGlobe className="w-8 h-8" />, 
-      title: "Cloud Computing", 
-      description: "Infraestrutura escalável e alta disponibilidade",
-      gradient: "from-green-500 to-green-600",
-    }
-  ];
-
-  // Certificações e Segurança
-  const certifications = [
-    { 
-      icon: <FiShield className="w-6 h-6" />, 
-      title: "ISO 27001", 
-      subtitle: "Segurança da Informação",
-      color: "text-blue-500"
-    },
-    { 
-      icon: <FiAward className="w-6 h-6" />, 
-      title: "LGPD", 
-      subtitle: "Proteção de Dados",
-      color: "text-green-500"
-    },
-    { 
-      icon: <FiTarget className="w-6 h-6" />, 
-      title: "AWS Certified", 
-      subtitle: "Cloud Infrastructure",
-      color: "text-purple-500"
-    }
-  ];
-
-  // Dispositivos suportados
-  const supportedDevices = [
-    { icon: <FiSmartphone className="w-8 h-8" />, name: "Mobile", description: "iOS e Android" },
-    { icon: <FiTablet className="w-8 h-8" />, name: "Tablet", description: "Otimizado para campo" },
-    { icon: <FiMonitor className="w-8 h-8" />, name: "Desktop", description: "Gestão completa" }
-  ];
-
-  // Mostrar loading apenas quando está carregando
-  if (loading) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'
-      }`}>
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
+    return () => {
+      mounted = false;
+      listener?.subscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark' : ''}`}>
+    <>
       <Head>
-        <title>BOVINEXT - Revolução na Gestão Pecuária com Inteligência Artificial</title>
-        <meta name="description" content="Transforme sua pecuária com IA avançada. Gestão inteligente de rebanho, controle sanitário, análise genética e otimização produtiva." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>BoviNext | Gestao Pecuaria Inteligente</title>
+        <meta name="description" content="Plataforma SaaS white-label de gestao pecuaria com IA, dashboard executivo, Supabase e estrutura pronta para escalar." />
+        <meta name="theme-color" content="#121212" />
       </Head>
 
-      {/* Header Estilo cursor.sh */}
-      <motion.header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled 
-            ? resolvedTheme === 'dark' 
-              ? 'bg-gray-900/80 backdrop-blur-xl border-b border-gray-800/30' 
-              : 'bg-white/80 backdrop-blur-xl border-b border-gray-200/30'
-            : 'bg-transparent'
-        }`}
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >  
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-3">
-            <BovinextLogo />
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">
-              BOVINEXT
-            </span>
-          </Link>
+      <style jsx global>{`
+        @keyframes marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+      `}</style>
 
-          <div className="hidden md:flex items-center space-x-1">
-            {menuItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link
-                  href={item.path}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    resolvedTheme === 'dark' 
-                      ? 'text-gray-300 hover:text-white hover:bg-gray-800/30' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50'
-                  }`}
-                >
-                  {item.name}
-                </Link>
+      <div className="min-h-screen bg-[#121212] text-white antialiased selection:bg-[#22d3ee]/30 overflow-x-hidden" style={{ fontFamily: '"Inter", sans-serif' }}>
+
+        {/* MEGA MENU */}
+        <MegaMenu />
+
+        {/* HERO */}
+        <div ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.02]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '256px 256px' }} />
+
+          <motion.div style={{ opacity: heroOpacity }} className="relative z-10 mx-auto grid w-full max-w-[1200px] gap-12 px-5 md:px-10 lg:grid-cols-[0.94fr_1.06fr] lg:items-center">
+            <div className="max-w-[640px]">
+              <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible" className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-1.5 mb-8">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]" />
+                <span className="text-[13px] font-medium text-[#969696]">Gestao Pecuaria Inteligente</span>
               </motion.div>
-            ))}
-          </div>
 
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-lg transition-colors ${
-                resolvedTheme === 'dark' 
-                  ? 'text-gray-300 hover:text-white hover:bg-gray-800/30' 
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50'
-              }`}
-            >
-              {resolvedTheme === 'dark' ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
-            </button>
+              <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate="visible" className="text-[clamp(3rem,7vw,5.8rem)] font-semibold leading-[1.02] tracking-[-0.04em]">
+                Seu rebanho<br />merece<span className="text-[#22d3ee]"> dados reais.</span>
+              </motion.h1>
 
-            <div className="hidden md:flex items-center space-x-4">
-              <Link 
-                href="/auth/login"  
-                className={`px-5 py-2.5 text-sm font-medium transition-colors ${
-                  resolvedTheme === 'dark' 
-                    ? 'text-gray-300 hover:text-white' 
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Entrar
-              </Link>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link 
-                  href="/auth/register" 
-                  className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300"
-                >
-                  Comece Agora
-                </Link>
+              <motion.p custom={2} variants={fadeUp} initial="hidden" animate="visible" className="mt-6 max-w-[560px] text-[16px] md:text-[18px] leading-relaxed text-[#969696]">
+                O BoviNext une gestao pecuaria, inteligencia artificial e infraestrutura moderna para transformar a operacao do campo em decisoes baseadas em dados — do manejo a venda.
+              </motion.p>
+
+              <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                <PillButton href="/demo" variant="white">Ver demonstracao <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+                <PillButton href="#precos" variant="outline">Ver planos</PillButton>
+              </motion.div>
+
+              <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-10 grid gap-3 sm:grid-cols-2">
+                {['Dashboard executivo com KPIs em tempo real', 'Supabase como infraestrutura oficial', 'IA aplicada ao manejo e producao', 'White-label pronto para revenda'].map((item) => (
+                  <div key={item} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-4 text-sm text-white/75">{item}</div>
+                ))}
               </motion.div>
             </div>
-          </div>
 
-          <button 
-            className={`text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r ${
-              resolvedTheme === 'dark' 
-                ? 'from-green-400 to-green-500' 
-                : 'from-green-500 to-green-600'
-            }`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <FiMenu className="w-6 h-6" />
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className={`md:hidden absolute top-full left-0 right-0 ${
-                resolvedTheme === 'dark' 
-                  ? 'bg-gray-900/95 backdrop-blur-md border-t border-gray-800/30' 
-                  : 'bg-white/95 backdrop-blur-md border-t border-gray-200/30'
-              } overflow-hidden`}
-            >
-              <div className="px-4 py-6 space-y-4">
-                {menuItems.map((item) => (
-                  <Link 
-                    key={item.path}
-                    href={item.path}
-                    className={`block py-2 font-medium ${
-                      resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <div className="pt-4 border-t border-gray-800/30 space-y-3">
-                  <Link 
-                    href="/auth/login" 
-                    className={`block text-center py-2 font-medium ${
-                      resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Entrar
-                  </Link>
-                  <Link 
-                    href="/auth/register" 
-                    className="block text-center py-2 px-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Comece Agora
-                  </Link>
+            <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className="relative">
+              <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.18),transparent_58%)] blur-3xl" />
+              <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-4 shadow-[0_40px_110px_rgba(2,8,20,0.42)] backdrop-blur-xl">
+                <div className="relative overflow-hidden rounded-[1.6rem] border border-white/[0.08]">
+                  <Image src="/features/dashboard.jpg" alt="Dashboard BoviNext" width={1280} height={900} priority className="h-[420px] w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/72 via-transparent to-transparent" />
+                  <div className="absolute left-5 right-5 top-5 flex items-center justify-between gap-3">
+                    <div className="rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70 backdrop-blur">Dashboard executivo</div>
+                    <div className="hidden rounded-full border border-white/[0.1] bg-[#121212]/75 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[#22d3ee] backdrop-blur sm:block">BoviNext</div>
+                  </div>
+                  <div className="absolute bottom-5 left-5 right-5 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+                    <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 p-4 backdrop-blur-xl">
+                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#22d3ee]">Visao completa do rebanho</p>
+                      <p className="mt-2 text-sm leading-6 text-white/80">KPIs de producao, manejo, saude e vendas em uma unica tela.</p>
+                    </div>
+                    <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 px-4 py-3 backdrop-blur-xl">
+                      <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">Modelo</p>
+                      <p className="mt-1 text-sm font-semibold text-white">SaaS + White-label</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
-
-      {/* Hero Section - Estilo cursor.sh */}
-      <section className={`relative min-h-screen flex items-center justify-center overflow-hidden pt-20 ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'
-      }`}>
-        <InteractiveGrid />
-        <FloatingParticles />
-        <GlowEffect />
-        
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-8"
-            >
-              <span className="text-sm font-medium text-indigo-500">NOVA VERSÃO 3.0 LANÇADA</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className={`text-5xl md:text-7xl font-bold mb-6 leading-tight ${
-                resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
-            >
-              Revolução na{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">
-                Pecuária 4.0
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className={`text-xl md:text-2xl max-w-3xl mx-auto mb-10 ${
-                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              A primeira plataforma que combina gestão pecuária com inteligência artificial preditiva para maximizar sua produtividade e lucratividade.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row justify-center gap-4 mb-16"
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/auth/register"
-                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
-                >
-                  Começar Agora
-                  <FiArrowRight className="ml-2" />
-                </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <button
-                  className={`inline-flex items-center px-8 py-4 font-medium rounded-lg border transition-all duration-300 ${
-                    resolvedTheme === 'dark'
-                      ? 'border-gray-800 text-gray-300 hover:border-green-500 hover:text-white'
-                      : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-gray-900'
-                  }`}
-                >
-                  <FiPlay className="mr-2" />
-                  Ver Demonstração
-                </button>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
-            >
-              {metrics.map((metric, index) => (
-                <div key={index} className="text-center">
-                  <div className={`flex justify-center mb-3 ${
-                    resolvedTheme === 'dark' ? 'text-green-400' : 'text-green-600'
-                  }`}>
-                    {metric.icon}
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">
-                    <CountUp 
-                      end={metric.value} 
-                      suffix={metric.suffix}
-                      duration={3}
-                      decimals={metric.value % 1 ? 1 : 0}
-                    />
-                  </div>
-                  <div className={`text-sm font-medium ${
-                    resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
-                    {metric.label}
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section - Estilo cursor.sh */}
-      <section className={`py-24 relative overflow-hidden ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-white'
-      }`}>
-        <InteractiveGrid />
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <motion.h2 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`text-4xl md:text-5xl font-bold mb-6 ${
-                resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
-            >
-              Tecnologia <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">Revolucionária</span>
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className={`text-xl max-w-3xl mx-auto ${
-                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              Recursos avançados com IA que você não encontra em nenhum outro lugar. 
-              Seja o primeiro a experimentar o futuro da pecuária!
-            </motion.p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                onMouseEnter={() => setHoveredFeature(index)}
-                onMouseLeave={() => setHoveredFeature(null)}
-                className={`relative p-8 rounded-2xl transition-all duration-500 ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900/50 hover:bg-gray-900/70 border border-gray-800/30' 
-                    : 'bg-gray-50/50 hover:bg-gray-50/70 border border-gray-200/30'
-                } ${hoveredFeature === index ? 'scale-105' : ''}`}
-              >
-                <motion.div 
-                  className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.gradient} text-white mb-6`}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {feature.icon}
-                </motion.div>
-                <h3 className={`text-2xl font-bold mb-4 ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {feature.title}
-                </h3>
-                <p className={`text-lg ${
-                  resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  {feature.description}
-                </p>
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${feature.gradient} opacity-0 hover:opacity-5 transition-opacity duration-300 -z-10`} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Partner Farms Carousel */}
-      <section className={`py-16 relative overflow-hidden ${
-        resolvedTheme === 'dark' ? 'bg-gray-900/50' : 'bg-gray-100/50'
-      }`}>
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
-              Fazendas <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">Parceiras</span>
-            </h2>
-            <p className={`text-lg ${
-              resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            }`}>
-              Produtores que confiam no BOVINEXT para transformar sua pecuária
-            </p>
-          </div>
-          
-          <div className="relative">
-            <motion.div 
-              className="flex space-x-12"
-              animate={{ x: [0, -1920] }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 30,
-                  ease: "linear",
-                },
-              }}
-            >
-              {[...partnerFarms, ...partnerFarms].map((farm, index) => (
-                <motion.div
-                  key={`${farm.name}-${index}`}
-                  className="flex items-center space-x-3 whitespace-nowrap"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {farm.icon && (
-                    <div className={farm.color}>
-                      {farm.icon}
-                    </div>
-                  )}
-                  <span className={`${farm.font} ${farm.color}`}>
-                    {farm.name}
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Advanced Stats */}
-      <section className={`py-24 ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-white'
-      }`}>
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
-              Números que <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">Impressionam</span>
-            </h2>
-            <p className={`text-xl max-w-3xl mx-auto ${
-              resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            }`}>
-              Resultados reais de uma plataforma que realmente funciona
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {advancedStats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className={`text-center p-8 rounded-2xl transition-all duration-300 ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900/50 hover:bg-gray-900/70 border border-gray-800/30' 
-                    : 'bg-gray-50/50 hover:bg-gray-50/70 border border-gray-200/30 shadow-lg'
-                }`}
-              >
-                <div className={`flex justify-center mb-4 ${stat.color}`}>
-                  {stat.icon}
-                </div>
-                <div className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">
-                  {stat.value}
-                </div>
-                <div className={`text-sm font-medium ${
-                  resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Supported Devices */}
-      <section className={`py-24 ${
-        resolvedTheme === 'dark' ? 'bg-gray-900/50' : 'bg-gray-100/50'
-      }`}>
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`text-4xl md:text-5xl font-bold mb-6 ${
-                resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
-            >
-              Disponível em <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">Todos os Dispositivos</span>
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className={`text-xl max-w-3xl mx-auto ${
-                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              Plataforma otimizada para todos os dispositivos. Gerencie seu rebanho no campo, escritório ou em casa.
-            </motion.p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {supportedDevices.map((device, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
-                whileHover={{ y: -10 }}
-                className={`text-center p-8 rounded-2xl transition-all duration-300 ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900/80 hover:bg-gray-900/90 border border-gray-800/30' 
-                    : 'bg-white hover:bg-gray-50 border border-gray-200/30 shadow-lg'
-                }`}
-              >
-                <motion.div 
-                  className={`inline-flex p-4 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white mb-6`}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {device.icon}
-                </motion.div>
-                <h3 className={`text-2xl font-bold mb-4 ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {device.name}
-                </h3>
-                <p className={`text-lg ${
-                  resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  {device.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Advanced Technologies */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {advancedTechnologies.map((tech, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
-                whileHover={{ y: -10, scale: 1.05 }}
-                className={`relative p-6 rounded-2xl transition-all duration-500 overflow-hidden ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900/80 hover:bg-gray-900/90 border border-gray-800/30' 
-                    : 'bg-white hover:bg-gray-50 border border-gray-200/30 shadow-lg hover:shadow-2xl'
-                }`}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${tech.gradient} opacity-0 hover:opacity-10 transition-opacity duration-500`} />
-                
-                <motion.div 
-                  className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${tech.gradient} text-white mb-4 relative z-10`}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  {tech.icon}
-                </motion.div>
-                
-                <h3 className={`text-xl font-bold mb-2 relative z-10 ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {tech.title}
-                </h3>
-                
-                <p className={`text-sm relative z-10 ${
-                  resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  {tech.description}
-                </p>
-
-                <motion.div
-                  className="absolute top-4 right-4 w-2 h-2 bg-gradient-to-r from-green-500 to-green-600 rounded-full opacity-0 group-hover:opacity-100"
-                  animate={{ scale: [1, 1.5, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Certificações e Segurança */}
-          <div className="text-center mb-12">
-            <h3 className={`text-2xl md:text-3xl font-bold mb-8 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
-              Certificações <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">& Segurança</span>
-            </h3>
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {certifications.map((cert, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.2 }}
-                  whileHover={{ scale: 1.1 }}
-                  className={`flex flex-col items-center p-6 rounded-xl transition-all duration-300 ${
-                    resolvedTheme === 'dark' 
-                      ? 'bg-gray-900/80 hover:bg-gray-900/90 border border-gray-800/30' 
-                      : 'bg-gray-100/50 hover:bg-white border border-gray-200/30 shadow-sm hover:shadow-lg'
-                  }`}
-                >
-                  <div className={`mb-4 p-3 rounded-full ${cert.color} bg-opacity-20`}>
-                    <div className={cert.color}>
-                      {cert.icon}
-                    </div>
-                  </div>
-                  <h4 className={`text-lg font-bold mb-1 ${
-                    resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {cert.title}
-                  </h4>
-                  <p className={`text-sm ${
-                    resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
-                    {cert.subtitle}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className={`py-24 ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'
-      }`}>
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
-              O que dizem nossos <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">clientes</span>
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className={`p-8 rounded-2xl ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900/80 border border-gray-800/30' 
-                    : 'bg-white border border-gray-200/30 shadow-lg'
-                }`}
-              >
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <FiStar 
-                      key={i} 
-                      className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-400'}`} 
-                    />
-                  ))}
-                </div>
-                <p className={`mb-8 text-lg italic ${
-                  resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  &quot;{testimonial.text}&quot;
-                </p>
-                <div>
-                  <h3 className={`font-bold ${
-                    resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>{testimonial.name}</h3>
-                  <p className={`text-sm ${
-                    resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}>{testimonial.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className={`py-32 relative overflow-hidden ${
-        resolvedTheme === 'dark' 
-          ? 'bg-gradient-to-br from-gray-900 to-indigo-900/30' 
-          : 'bg-gradient-to-br from-gray-50 to-indigo-50/50'
-      }`}>
-        <GlowEffect />
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className={`text-4xl md:text-5xl font-bold mb-8 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}
-          >
-            Pronto para a <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-green-600">revolução</span> pecuária?
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className={`text-xl mb-12 ${
-              resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            }`}
-          >
-            Junte-se a milhares de pecuaristas que já transformaram sua gestão com o BOVINEXT.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row justify-center gap-6"
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/auth/register"
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-lg hover:shadow-xl transition-all duration-300"
-              >
-                Começar Gratuitamente
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/contato"
-                className={`inline-flex items-center px-8 py-4 font-medium rounded-lg border transition-all duration-300 ${
-                  resolvedTheme === 'dark'
-                    ? 'border-gray-700 text-gray-300 hover:border-green-500 hover:text-white'
-                    : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-gray-900'
-                }`}
-              >
-                <FiPlay className="mr-2" />
-                Falar com Especialista
-              </Link>
             </motion.div>
           </motion.div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className={`py-16 ${
-        resolvedTheme === 'dark' ? 'bg-gray-950' : 'bg-gray-100'
-      }`}>
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            <div>
-              <Link href="/" className="flex items-center space-x-3 mb-6">
-                <BovinextLogo />
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-600">
-                  BOVINEXT
+          <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="absolute bottom-0 inset-x-0 border-t border-white/[0.06]">
+            <Marquee>
+              {['Gestao pecuaria', 'Inteligencia artificial', 'Supabase', 'White-label', 'Dashboard executivo', 'Manejo inteligente'].map((t) => (
+                <span key={t} className="flex items-center gap-3 text-[14px] font-medium text-white/20 uppercase tracking-[0.15em]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]/50" />{t}
                 </span>
-              </Link>
-              <p className={`mb-6 ${
-                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                A plataforma de gestão pecuária mais avançada do mercado, com tecnologia de ponta para transformar sua produção.
-              </p>
-              <div className="flex space-x-4">
-                {[
-                  { icon: <FiX className="w-5 h-5" />, name: 'Twitter' },
-                  { icon: <FiLinkedin className="w-5 h-5" />, name: 'LinkedIn' },
-                  { icon: <FiInstagram className="w-5 h-5" />, name: 'Instagram' },
-                ].map((social, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${
-                      resolvedTheme === 'dark' 
-                        ? 'bg-gray-900 text-gray-400 hover:bg-indigo-500/20 hover:text-indigo-400' 
-                        : 'bg-white text-gray-600 hover:bg-indigo-500/10 hover:text-indigo-600'
-                    }`}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
+              ))}
+            </Marquee>
+          </motion.div>
+        </div>
 
+        {/* SOBRE */}
+        <Section className="py-24" id="about">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div>
+              <SectionLabel>Sobre o BoviNext</SectionLabel>
+              <SectionHeading>Tecnologia que entende o campo.</SectionHeading>
+              <SectionSub>Nascemos para resolver a distancia entre a gestao pecuaria real e as ferramentas digitais disponiveis. Combinamos IA, dados e experiencia de usuario para quem opera no campo e decide no escritorio.</SectionSub>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              {[
+                { value: 50, suffix: 'K+', label: 'Cabecas gerenciadas' },
+                { value: 120, suffix: '+', label: 'Fazendas conectadas' },
+                { value: 98, suffix: '%', label: 'Uptime da plataforma' },
+                { value: 3, suffix: 'x', label: 'Mais rapido que planilhas' },
+              ].map((s, i) => (
+                <motion.div key={s.label} variants={fadeUp} custom={i} className="text-left">
+                  <p className="text-[clamp(2.5rem,5vw,3.5rem)] font-semibold tracking-[-0.03em] text-white"><AnimStat value={s.value} suffix={s.suffix} /></p>
+                  <p className="mt-1 text-[14px] text-[#969696]">{s.label}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        {/* SOLUCOES */}
+        <Section className="py-24" id="solucoes">
+          <SectionLabel>Solucoes</SectionLabel>
+          <SectionHeading>Tudo que sua operacao precisa.</SectionHeading>
+          <SectionSub>Modulos integrados para cobrir cada etapa da gestao pecuaria.</SectionSub>
+          <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              {
-                title: 'Produto',
-                links: ['Recursos', 'Soluções', 'Preços', 'Cases']
-              },
-              {
-                title: 'Empresa',
-                links: ['Sobre', 'Carreiras', 'Blog', 'Contato']
-              },
-              {
-                title: 'Legal',
-                links: ['Privacidade', 'Termos', 'Segurança', 'Cookies']
-              }
-            ].map((section, index) => (
-              <div key={index}>
-                <h3 className={`font-bold text-lg mb-6 ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>{section.title}</h3>
-                <ul className="space-y-3">
-                  {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex}>
-                      <a href="#" className={`transition ${
-                        resolvedTheme === 'dark' 
-                          ? 'text-gray-400 hover:text-white' 
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}>
-                        {link}
-                      </a>
-                    </li>
+              { icon: BarChart2, title: 'Dashboard Executivo', desc: 'Visao consolidada de KPIs, alertas e metricas de producao em tempo real.', features: ['KPIs de rebanho', 'Alertas inteligentes', 'Graficos interativos', 'Exportacao PDF'] },
+              { icon: Target, title: 'Gestao de Rebanho', desc: 'Controle completo do ciclo de vida dos animais com historico rastreavel.', features: ['Cadastro individual', 'Historico de manejo', 'Genealogia', 'Rastreabilidade'] },
+              { icon: Brain, title: 'Inteligencia Artificial', desc: 'IA aplicada ao fluxo real: previsoes, alertas de saude e sugestoes.', features: ['Previsao de producao', 'Deteccao de anomalias', 'Chatbot especializado', 'Insights automaticos'] },
+              { icon: Database, title: 'Infraestrutura Supabase', desc: 'Banco, auth e storage configurados para performance e escala.', features: ['Auth multi-provider', 'PostgreSQL', 'Storage de arquivos', 'APIs real-time'] },
+              { icon: Paintbrush, title: 'White-label', desc: 'Estrutura para troca de marca, cores e posicionamento.', features: ['Marca customizavel', 'Temas e cores', 'Dominio proprio', 'Copy editavel'] },
+              { icon: TrendingUp, title: 'Vendas e Producao', desc: 'Controle financeiro com vendas, producao leiteira e margem.', features: ['Registro de vendas', 'Producao de leite', 'Analise de custos', 'Margem por animal'] },
+            ].map((svc, i) => (
+              <motion.div key={svc.title} variants={fadeUp} custom={i} className="group rounded-2xl border border-white/[0.08] bg-[#121212] p-7 hover:border-white/[0.15] transition-all duration-300">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="rounded-xl bg-white/[0.05] p-3 text-[#22d3ee]"><svc.icon className="w-5 h-5" /></div>
+                  <ArrowUpRight className="w-5 h-5 text-white/20 group-hover:text-[#22d3ee] transition-colors" />
+                </div>
+                <h3 className="text-[18px] font-semibold tracking-tight mb-2">{svc.title}</h3>
+                <p className="text-[14px] text-[#969696] leading-relaxed mb-5">{svc.desc}</p>
+                <div className="space-y-2.5">
+                  {svc.features.map((f) => (
+                    <div key={f} className="flex items-center gap-2.5 text-[13px] text-white/50"><div className="w-1 h-1 rounded-full bg-[#22d3ee]" />{f}</div>
                   ))}
-                </ul>
-              </div>
+                </div>
+              </motion.div>
             ))}
           </div>
+        </Section>
 
-          <div className={`border-t mt-16 pt-8 text-center ${
-            resolvedTheme === 'dark' ? 'border-gray-800 text-gray-400' : 'border-gray-200 text-gray-600'
-          }`}>
-            <p>&copy; {new Date().getFullYear()} BOVINEXT. Todos os direitos reservados.</p>
+        {/* PROCESSO */}
+        <Section className="py-24" id="processo">
+          <SectionLabel>Processo</SectionLabel>
+          <SectionHeading>Da contratacao a operacao em dias.</SectionHeading>
+          <SectionSub>Um processo direto para colocar sua gestao no ar com seguranca.</SectionSub>
+          <div className="mt-14 grid md:grid-cols-4 gap-4">
+            {[
+              { step: '1', title: 'Descoberta', desc: 'Entendemos sua operacao, tamanho do rebanho e necessidades.' },
+              { step: '2', title: 'Setup', desc: 'Configuramos Supabase, importamos dados e ajustamos a plataforma.' },
+              { step: '3', title: 'Treinamento', desc: 'Capacitamos sua equipe para operar dashboard, manejos e IA.' },
+              { step: '4', title: 'Operacao', desc: 'Acompanhamos os primeiros ciclos e otimizamos com dados reais.' },
+            ].map((p, i) => (
+              <motion.div key={p.step} variants={fadeUp} custom={i} className="rounded-2xl border border-white/[0.08] bg-[#121212] p-7">
+                <div className="w-10 h-10 rounded-full bg-[#22d3ee] flex items-center justify-center text-[#121212] text-[14px] font-bold mb-5">{p.step}</div>
+                <h3 className="text-[17px] font-semibold tracking-tight mb-2">{p.title}</h3>
+                <p className="text-[14px] text-[#969696] leading-relaxed">{p.desc}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      </footer>
+        </Section>
 
-      {/* Chat Support Float Button */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
-        className="fixed bottom-6 right-6 z-50"
-        onMouseEnter={() => setShowChatTooltip(true)}
-        onMouseLeave={() => setShowChatTooltip(false)}
-      >
-        <motion.button
-          onClick={() => {
-            setChatOpen(!chatOpen);
-            console.log('Abrir chat de suporte');
-          }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          animate={{ 
-            scale: [1, 1.05, 1],
-            boxShadow: [
-              "0 10px 15px -3px rgba(99, 102, 241, 0.3)",
-              "0 20px 25px -5px rgba(99, 102, 241, 0.4)",
-              "0 10px 15px -3px rgba(99, 102, 241, 0.3)"
-            ]
-          }}
-          transition={{ 
-            duration: 2, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <FiMessageCircle className="w-6 h-6" />
-        </motion.button>
-        
-        <AnimatePresence>
-          {showChatTooltip && (
-            <motion.div
-              initial={{ opacity: 0, x: 20, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 20, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className={`absolute right-16 top-1/2 transform -translate-y-1/2 px-4 py-2 rounded-lg shadow-lg whitespace-nowrap ${
-                resolvedTheme === 'dark' 
-                  ? 'bg-gray-900 text-white border border-gray-800' 
-                  : 'bg-white text-gray-900 border border-gray-200'
-              }`}
-            >
-              <div className="text-sm font-medium">Suporte Especializado</div>
-              <div className="text-xs opacity-75">Consultoria técnica em pecuária</div>
-              <div className={`absolute top-1/2 -right-1 transform -translate-y-1/2 w-2 h-2 rotate-45 ${
-                resolvedTheme === 'dark' ? 'bg-gray-900 border-r border-b border-gray-800' : 'bg-white border-r border-b border-gray-200'
-              }`} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Chat Panel */}
-        <AnimatePresence>
-          {chatOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              transition={{ duration: 0.3 }}
-              className={`absolute bottom-16 right-0 w-80 h-96 rounded-lg shadow-2xl ${
-                resolvedTheme === 'dark' 
-                  ? 'bg-gray-900 border border-gray-800' 
-                  : 'bg-white border border-gray-200'
-              }`}
-            >
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <h3 className={`font-semibold ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>Suporte BOVINEXT</h3>
-                <button
-                  onClick={() => setChatOpen(false)}
-                  className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
-                    resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}
-                >
-                  <FiX className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="p-4 flex-1">
-                <div className={`text-sm mb-4 ${
-                  resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Olá! Como podemos ajudar você hoje?
+        {/* RESULTADOS */}
+        <Section className="py-24" id="resultados">
+          <SectionLabel>Resultados</SectionLabel>
+          <SectionHeading>Impacto real no campo.</SectionHeading>
+          <SectionSub>Veja como o BoviNext transforma operacoes pecuarias.</SectionSub>
+          <div className="mt-14 space-y-4">
+            {[
+              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/features/dashboard.jpg' },
+              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/features/investments.jpg' },
+              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/features/security.jpg' },
+            ].map((cs, i) => (
+              <motion.div key={cs.name} variants={fadeUp} custom={i} className="group rounded-2xl border border-white/[0.08] bg-[#121212] overflow-hidden">
+                <div className="grid lg:grid-cols-2">
+                  <div className="relative h-64 lg:h-auto overflow-hidden">
+                    <Image src={cs.img} alt={cs.name} fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#121212]/50 to-transparent lg:from-transparent lg:to-[#121212]/80" />
+                  </div>
+                  <div className="p-8 lg:p-10 flex flex-col justify-center">
+                    <h3 className="text-[28px] font-semibold tracking-tight">{cs.name}</h3>
+                    <p className="text-[15px] text-[#22d3ee] font-medium mt-1">{cs.tag}</p>
+                    <p className="text-[14px] text-[#969696] leading-relaxed mt-3">{cs.desc}</p>
+                    <div className="mt-6 grid grid-cols-2 gap-6">
+                      {cs.stats.map((st) => (
+                        <div key={st.label}>
+                          <p className="text-[32px] font-semibold tracking-tight text-white"><AnimStat value={st.value} suffix={st.suffix} /></p>
+                          <p className="text-[12px] text-[#969696] mt-0.5">{st.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <motion.a
-                    href="https://wa.me/5511999999999?text=Olá! Preciso de suporte técnico do BOVINEXT"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex items-center p-3 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
-                  >
-                    <FiMessageCircle className="w-4 h-4 mr-2" />
-                    WhatsApp Suporte
-                  </motion.a>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center p-3 rounded-lg transition-colors ${
-                      resolvedTheme === 'dark'
-                        ? 'bg-gray-800 hover:bg-gray-700 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    <FiPhone className="w-4 h-4 mr-2" />
-                    Ligar Agora
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center p-3 rounded-lg transition-colors ${
-                      resolvedTheme === 'dark'
-                        ? 'bg-gray-800 hover:bg-gray-700 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    <FiMail className="w-4 h-4 mr-2" />
-                    Enviar E-mail
-                  </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        </Section>
+
+        {/* COMPARACAO */}
+        <Section className="py-24">
+          <SectionLabel>Diferencial</SectionLabel>
+          <SectionHeading>Por que escolher o BoviNext.</SectionHeading>
+          <div className="mt-14 rounded-2xl border border-white/[0.08] overflow-hidden">
+            <table className="w-full text-left">
+              <thead><tr className="border-b border-white/[0.08]"><th className="px-6 py-4 text-[13px] font-medium text-[#969696]" /><th className="px-6 py-4 text-[14px] font-semibold text-[#22d3ee]">BoviNext</th><th className="px-6 py-4 text-[14px] font-semibold text-[#969696]">Tradicionais</th></tr></thead>
+              <tbody>
+                {[
+                  { label: 'Abordagem', bovi: 'Digital-first com IA integrada', other: 'Planilhas e controle manual' },
+                  { label: 'Infraestrutura', bovi: 'Supabase + cloud escalavel', other: 'Servidor local ou sem infra' },
+                  { label: 'Implantacao', bovi: 'Dias, nao meses', other: 'Semanas a meses de setup' },
+                  { label: 'White-label', bovi: 'Rebrandeavel e revendavel', other: 'Marca fixa' },
+                  { label: 'Inteligencia', bovi: 'IA aplicada ao fluxo real', other: 'Sem camada inteligente' },
+                  { label: 'Evolucao', bovi: 'Updates continuos', other: 'Produto estatico' },
+                ].map((row, i) => (
+                  <tr key={row.label} className={i < 5 ? 'border-b border-white/[0.06]' : ''}>
+                    <td className="px-6 py-4 text-[13px] font-medium text-[#969696]">{row.label}</td>
+                    <td className="px-6 py-4 text-[14px] text-white">{row.bovi}</td>
+                    <td className="px-6 py-4 text-[14px] text-white/40">{row.other}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+
+        {/* DEPOIMENTO */}
+        <Section className="py-24">
+          <SectionLabel>Depoimentos</SectionLabel>
+          <SectionHeading>O que nossos clientes dizem.</SectionHeading>
+          <motion.div variants={fadeUp} custom={3} className="mt-14 rounded-2xl border border-white/[0.08] bg-[#121212] p-8 md:p-10">
+            <div className="grid md:grid-cols-[1fr_auto] gap-10 items-start">
+              <div>
+                <p className="text-[18px] md:text-[20px] leading-relaxed text-white/80">&quot;Antes do BoviNext, a gestao era feita em cadernos e planilhas. Hoje temos visao completa em tempo real, e a IA nos alerta sobre problemas antes que virem prejuizo.&quot;</p>
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#22d3ee] to-[#06b6d4] flex items-center justify-center text-[12px] font-bold text-[#121212]">RS</div>
+                  <div><p className="text-[14px] font-semibold">Ricardo Silva</p><p className="text-[13px] text-[#969696]">Gestor, Fazenda Santa Clara</p></div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+              <div className="flex flex-row md:flex-col gap-6">
+                <div><p className="text-[32px] font-semibold tracking-tight text-[#22d3ee]">34%</p><p className="text-[12px] text-[#969696]">menos tempo no manejo</p></div>
+                <div><p className="text-[32px] font-semibold tracking-tight text-white">2.800</p><p className="text-[12px] text-[#969696]">cabecas gerenciadas</p></div>
+              </div>
+            </div>
+          </motion.div>
+        </Section>
 
-      {/* Cookie Preferences Float Button */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2.5, duration: 0.5 }}
-        className="fixed bottom-6 left-6 z-50"
-      >
-        <motion.button
-          onClick={() => {
-            console.log('Abrir configurações de cookies');
-          }}
-          whileHover={{ scale: 1.1, rotate: 15 }}
-          whileTap={{ scale: 0.9 }}
-          animate={{
-            rotate: [0, 5, -5, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <GiCookie className="w-6 h-6" />
-        </motion.button>
-        
-        <AnimatePresence>
-          {isAtBottom && (
-            <motion.div
-              initial={{ opacity: 0, x: -20, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -20, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-              className={`absolute left-16 top-1/2 transform -translate-y-1/2 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap ${
-                resolvedTheme === 'dark' 
-                  ? 'bg-gray-900 text-white border border-gray-800' 
-                  : 'bg-white text-gray-900 border border-gray-200'
-              }`}
-            >
-              <div className="text-xs font-medium">Preferências de Privacidade</div>
-              <div className="text-xs opacity-75">Gerenciar cookies e dados</div>
-              <div className={`absolute top-1/2 -left-1 transform -translate-y-1/2 w-2 h-2 rotate-45 ${
-                resolvedTheme === 'dark' ? 'bg-gray-900 border-l border-t border-gray-800' : 'bg-white border-l border-t border-gray-200'
-              }`} />
+        {/* PRECOS */}
+        <Section className="py-24" id="precos">
+          <SectionLabel>Planos</SectionLabel>
+          <SectionHeading>Simples e flexivel.</SectionHeading>
+          <SectionSub>Escolha o plano que se encaixa na sua operacao.</SectionSub>
+          <div className="mt-14 grid md:grid-cols-3 gap-4 max-w-[1000px]">
+            <motion.div variants={fadeUp} custom={0} className="rounded-2xl border border-white/[0.08] bg-[#121212] p-7">
+              <p className="text-[13px] font-medium text-[#969696] uppercase tracking-wider mb-4">Starter</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight">R$297</span><span className="text-[14px] text-[#969696]">/mes</span></div>
+              <p className="text-[14px] text-[#969696] leading-relaxed mb-6">Ideal para pequenas fazendas.</p>
+              <PillButton href="/contato" variant="outline">Comecar agora <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <div className="mt-7 pt-6 border-t border-white/[0.06] space-y-3">
+                {['Ate 500 cabecas', 'Dashboard executivo', 'Gestao de rebanho', 'Registro de manejos', 'Suporte por email'].map((f) => (
+                  <div key={f} className="flex items-center gap-2.5 text-[13px] text-white/60"><Check className="w-4 h-4 text-[#22d3ee] flex-shrink-0" />{f}</div>
+                ))}
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+
+            <motion.div variants={fadeUp} custom={1} className="rounded-2xl border border-[#22d3ee]/30 bg-[#121212] p-7 relative">
+              <div className="absolute -top-3 left-7 rounded-full bg-[#22d3ee] px-3 py-1 text-[11px] font-bold text-[#121212] uppercase tracking-wider">Popular</div>
+              <p className="text-[13px] font-medium text-[#969696] uppercase tracking-wider mb-4">Profissional</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight">R$597</span><span className="text-[14px] text-[#969696]">/mes</span></div>
+              <p className="text-[14px] text-[#969696] leading-relaxed mb-6">IA e controle completo.</p>
+              <PillButton href="/contato" variant="white">Comecar agora <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <div className="mt-7 pt-6 border-t border-white/[0.06] space-y-3">
+                {['Ate 3.000 cabecas', 'Inteligencia artificial', 'Producao e vendas', 'Relatorios avancados', 'Suporte prioritario', 'Integracao com APIs'].map((f) => (
+                  <div key={f} className="flex items-center gap-2.5 text-[13px] text-white/60"><Check className="w-4 h-4 text-[#22d3ee] flex-shrink-0" />{f}</div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeUp} custom={2} className="rounded-2xl border border-white/[0.08] bg-[#121212] p-7">
+              <p className="text-[13px] font-medium text-[#969696] uppercase tracking-wider mb-4">Enterprise</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight">Custom</span></div>
+              <p className="text-[14px] text-[#969696] leading-relaxed mb-6">White-label completo.</p>
+              <PillButton href="/contato" variant="dark">Falar com vendas <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <div className="mt-7 pt-6 border-t border-white/[0.06] space-y-3">
+                {['Cabecas ilimitadas', 'White-label completo', 'Dominio e marca propria', 'SLA dedicado', 'Onboarding personalizado', 'API e webhooks'].map((f) => (
+                  <div key={f} className="flex items-center gap-2.5 text-[13px] text-white/60"><Check className="w-4 h-4 text-[#22d3ee] flex-shrink-0" />{f}</div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </Section>
+
+        {/* FAQ */}
+        <Section className="py-24" id="faq">
+          <SectionLabel>FAQ</SectionLabel>
+          <SectionHeading>Perguntas frequentes</SectionHeading>
+          <SectionSub>Tudo que voce precisa saber antes de comecar.</SectionSub>
+          <div className="mt-14 max-w-[700px]">
+            {[
+              { q: 'O que e o BoviNext?', a: 'Plataforma SaaS de gestao pecuaria inteligente com dashboard, controle de rebanho, manejos, producao, vendas e IA, tudo em infraestrutura Supabase.' },
+              { q: 'Funciona para gado de corte e leite?', a: 'Sim. O BoviNext atende operacoes de corte, leite e mistas com modulos e KPIs especificos para cada modelo.' },
+              { q: 'Preciso de internet na fazenda?', a: 'Para acesso completo sim. Estamos desenvolvendo funcionalidades offline com sincronizacao automatica.' },
+              { q: 'Como funciona o white-label?', a: 'No plano Enterprise voce recebe a plataforma completa com sua marca, cores, dominio e copy para revender.' },
+              { q: 'Quanto tempo leva a implantacao?', a: 'De 3 a 7 dias para operacoes basicas. Ate 15 dias para operacoes maiores com importacao de dados.' },
+              { q: 'A IA substitui o veterinario?', a: 'Nao. A IA e ferramenta de apoio a decisao — analisa padroes, gera alertas e sugere acoes. A decisao final e do profissional.' },
+            ].map((faq) => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
+          </div>
+        </Section>
+
+        {/* CTA FINAL */}
+        <Section className="py-32">
+          <motion.div variants={fadeUp} custom={0} className="text-center">
+            <p className="text-[13px] text-[#22d3ee] font-medium mb-4">Vagas limitadas para onboarding</p>
+            <h2 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">Pare de adivinhar.<br />Comece a <span className="text-[#22d3ee]">gerenciar.</span></h2>
+            <p className="mt-5 text-[16px] text-[#969696] max-w-[480px] mx-auto">Leve sua operacao pecuaria para o proximo nivel com dados, IA e uma plataforma que cresce junto com voce.</p>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <PillButton href="/demo" variant="white">Ver demonstracao <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <PillButton href="/contato" variant="outline">Falar com vendas <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+            </div>
+          </motion.div>
+        </Section>
+
+        {/* FOOTER */}
+        <footer className="border-t border-white/[0.06]">
+          <div className="mx-auto max-w-[1200px] px-5 md:px-10 py-14">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-10">
+              <div className="max-w-[280px]">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <Image src="/logo.svg" alt="BoviNext" width={24} height={24} />
+                  <p className="text-[15px] font-semibold">BoviNext</p>
+                </div>
+                <p className="text-[13px] text-[#969696] leading-relaxed">Plataforma de gestao pecuaria inteligente com IA, dashboard executivo e infraestrutura pronta para escalar.</p>
+              </div>
+              <div className="flex gap-12 sm:gap-16">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#969696] mb-4">Plataforma</p>
+                  <div className="space-y-2.5">
+                    {[{ l: 'Solucoes', h: '/solucoes' }, { l: 'Recursos', h: '/recursos' }, { l: 'Precos', h: '/precos' }, { l: 'Demo', h: '/demo' }, { l: 'Dashboard', h: '/dashboard' }].map((x) => (
+                      <Link key={x.h} href={x.h} className="block text-[13px] text-white/40 hover:text-white transition-colors">{x.l}</Link>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#969696] mb-4">Empresa</p>
+                  <div className="space-y-2.5">
+                    {[{ l: 'Sobre', h: '/sobre' }, { l: 'Blog', h: '/blog' }, { l: 'Contato', h: '/contato' }, { l: 'Parceiros', h: '/parceiros' }, { l: 'Carreiras', h: '/carreiras' }].map((x) => (
+                      <Link key={x.h} href={x.h} className="block text-[13px] text-white/40 hover:text-white transition-colors">{x.l}</Link>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#969696] mb-4">Legal</p>
+                  <div className="space-y-2.5">
+                    {[{ l: 'Termos', h: '/termos' }, { l: 'Privacidade', h: '/privacidade' }, { l: 'Cookies', h: '/cookies' }, { l: 'Seguranca', h: '/seguranca' }, { l: 'Licencas', h: '/licencas' }].map((x) => (
+                      <Link key={x.h} href={x.h} className="block text-[13px] text-white/40 hover:text-white transition-colors">{x.l}</Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-14 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3">
+              <p className="text-[12px] text-white/20">&copy; 2026 BoviNext. Todos os direitos reservados.</p>
+              <p className="text-[12px] text-white/20">Gestao pecuaria inteligente com <span className="text-white/40">IA</span></p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }

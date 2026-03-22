@@ -73,6 +73,24 @@ export const supabaseWrapper = {
 		return data || [];
 	},
 
+	async selectManejoById(manejoId: string): Promise<any | null> {
+		const { data, error } = await supabase.from('manejos').select('*').eq('id', manejoId).maybeSingle();
+		if (error) throw error;
+		return data;
+	},
+
+	async updateManejo(manejoId: string, manejoData: any): Promise<any> {
+		const { data, error } = await (supabase as any).from('manejos').update(manejoData as any).eq('id', manejoId).select().single();
+		if (error) throw error;
+		return data;
+	},
+
+	async deleteManejo(manejoId: string): Promise<boolean> {
+		const { error } = await supabase.from('manejos').delete().eq('id', manejoId);
+		if (error) throw error;
+		return true;
+	},
+
   // Vendas
 	async insertVenda(vendaData: any): Promise<any> {
 		const { data, error } = await supabase.from('vendas').insert(vendaData).select().single();
@@ -96,6 +114,18 @@ export const supabaseWrapper = {
 		return data;
 	},
 
+	async updateVenda(vendaId: string, vendaData: any): Promise<any> {
+		const { data, error } = await (supabase as any).from('vendas').update(vendaData as any).eq('id', vendaId).select().single();
+		if (error) throw error;
+		return data;
+	},
+
+	async deleteVenda(vendaId: string): Promise<boolean> {
+		const { error } = await supabase.from('vendas').delete().eq('id', vendaId);
+		if (error) throw error;
+		return true;
+	},
+
   // Produção
 	async insertProducao(producaoData: any): Promise<any> {
 		const { data, error } = await supabase.from('producao').insert(producaoData).select().single();
@@ -111,6 +141,24 @@ export const supabaseWrapper = {
 			.order('data_producao', { ascending: false });
 		if (error) throw error;
 		return data || [];
+	},
+
+	async selectProducaoById(producaoId: string): Promise<any | null> {
+		const { data, error } = await supabase.from('producao').select('*').eq('id', producaoId).maybeSingle();
+		if (error) throw error;
+		return data;
+	},
+
+	async updateProducao(producaoId: string, producaoData: any): Promise<any> {
+		const { data, error } = await (supabase as any).from('producao').update(producaoData as any).eq('id', producaoId).select().single();
+		if (error) throw error;
+		return data;
+	},
+
+	async deleteProducao(producaoId: string): Promise<boolean> {
+		const { error } = await supabase.from('producao').delete().eq('id', producaoId);
+		if (error) throw error;
+		return true;
 	},
 
   // Metas
@@ -143,15 +191,47 @@ export const supabaseWrapper = {
 		return data || [];
 	},
 
-	// Alertas (placeholders por ora)
-  async insertAlerta(alertaData: any): Promise<any> { throw new Error('insertAlerta not implemented'); },
-  async selectAlertasByUser(userId: string): Promise<any[]> { return []; },
-  async updateAlerta(alertaId: string, alertaData: any): Promise<any> { throw new Error('updateAlerta not implemented'); },
+	// Alertas
+	async insertAlerta(alertaData: any): Promise<any> {
+		const { data, error } = await supabase.from('alertas').insert(alertaData).select().single();
+		if (error) throw error;
+		return data;
+	},
 
-  // Mercado
-  async selectPrecosMercado(): Promise<any[]> { return []; },
+	async selectAlertasByUser(userId: string): Promise<any[]> {
+		const { data, error } = await supabase
+			.from('alertas')
+			.select('*')
+			.eq('user_id', userId)
+			.order('created_at', { ascending: false });
+		if (error) throw error;
+		return data || [];
+	},
 
-  // Dashboard
+	async selectAlertaById(alertaId: string): Promise<any | null> {
+		const { data, error } = await supabase.from('alertas').select('*').eq('id', alertaId).maybeSingle();
+		if (error) throw error;
+		return data;
+	},
+
+	async updateAlerta(alertaId: string, alertaData: any): Promise<any> {
+		const { data, error } = await (supabase as any).from('alertas').update(alertaData as any).eq('id', alertaId).select().single();
+		if (error) throw error;
+		return data;
+	},
+
+	// Mercado
+	async selectPrecosMercado(): Promise<any[]> {
+		const { data, error } = await supabase
+			.from('precos_mercado')
+			.select('*')
+			.order('data_preco', { ascending: false })
+			.limit(30);
+		if (error) throw error;
+		return data || [];
+	},
+
+	// Dashboard
 	async getEstatisticasDashboard(userId: string): Promise<any> {
 		const [animaisRes, vendasRes] = await Promise.all([
 			supabase.from('animais').select('id').eq('user_id', userId),
@@ -159,6 +239,16 @@ export const supabaseWrapper = {
 		]);
 		const total_animais = animaisRes.error ? 0 : (animaisRes.data?.length || 0);
 		const receita_mensal = vendasRes.error ? 0 : (vendasRes.data || []).reduce((sum: number, v: any) => sum + (v.valor_total || 0), 0);
-		return { total_animais, receita_mensal };
+		const [alertasRes, metasRes] = await Promise.all([
+			supabase.from('alertas').select('id, lido').eq('user_id', userId),
+			supabase.from('metas').select('id, concluida').eq('user_id', userId)
+		]);
+
+		return {
+			total_animais,
+			receita_mensal,
+			alertas_pendentes: alertasRes.error ? 0 : (alertasRes.data || []).filter((a: any) => !a.lido).length,
+			metas_concluidas: metasRes.error ? 0 : (metasRes.data || []).filter((m: any) => m.concluida).length
+		};
 	}
 };

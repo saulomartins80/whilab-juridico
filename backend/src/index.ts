@@ -11,6 +11,8 @@ import { httpsRedirect, httpsSecurityHeaders } from './middlewares/httpsRedirect
 import router from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { Server } from 'http';
+import { runtimeConfig } from './config/runtime';
+import { getBackendScopeSummary } from './core/backendScope';
 
 interface HealthCheckResponse {
   status: 'OK' | 'PARTIAL' | 'FAIL';
@@ -18,9 +20,15 @@ interface HealthCheckResponse {
   uptime: number;
   environment: string;
   version: string;
+  project: string;
   resources: {
     memory: MemoryUsage;
     cpu?: CpuUsage;
+  };
+  scope?: {
+    platformCore: number;
+    pecuariaDomain: number;
+    legacyPagesApi: number;
   };
 }
 
@@ -65,13 +73,7 @@ app.use(cookieParser());
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:3001',
-      process.env.FRONTEND_ALT_URL,
-      'http://localhost:3001',
-      'http://127.0.0.1:3001'
-    ].filter(Boolean) as string[];
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (runtimeConfig.allowedOrigins.includes(origin)) return callback(null, true);
     if (process.env.NODE_ENV === 'development') return callback(null, true);
     callback(new Error('Not allowed by CORS'));
   },
@@ -128,10 +130,12 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    status: "BACKEND OPERACIONAL",
+    status: `${runtimeConfig.brandName} backend operacional`,
     ambiente: process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString(),
-    versao: process.env.npm_package_version || "1.0.0"
+    versao: process.env.npm_package_version || "1.0.0",
+    projeto: runtimeConfig.projectKey,
+    marca: runtimeConfig.brandName
   });
 });
 
@@ -142,6 +146,7 @@ app.get('/health', (async (req: express.Request, res: express.Response): Promise
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
     version: process.env.npm_package_version || '1.0.0',
+    project: runtimeConfig.projectKey,
     resources: {
       memory: {
         rss: '0 MB',
@@ -160,6 +165,7 @@ app.get('/health', (async (req: express.Request, res: express.Response): Promise
       heapUsed: `${(memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
       external: `${(memory.external / 1024 / 1024).toFixed(2)} MB`
     };
+    healthCheck.scope = getBackendScopeSummary();
 
     if (process.platform !== 'win32') {
       const os = require('os');
@@ -179,10 +185,7 @@ app.get('/health', (async (req: express.Request, res: express.Response): Promise
   }
 }) as express.RequestHandler);
 
-// Configuração do body-parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-// Apenas rotas BOVINEXT
+// Apenas rotas da aplicacao atual
 app.use('/', router);
 
 app.use(errorHandler as express.ErrorRequestHandler);

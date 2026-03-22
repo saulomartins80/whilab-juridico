@@ -1,7 +1,6 @@
 // components/ConfigurableTableSection.tsx
 import React, { useState } from "react";
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, X } from 'lucide-react';
 
 import { useDashboard } from '../context/DashboardContext';
 import { useTheme } from "../context/ThemeContext";
@@ -244,7 +243,7 @@ const ConfigurableTableSection: React.FC<ConfigurableTableSectionProps> = ({
                       className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition"
                       title="Remover"
                     >
-                      <XMarkIcon className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </td>
                 </tr>

@@ -1,6 +1,6 @@
 // components/ui/Select.tsx
 import React, { forwardRef } from 'react';
-import { FiChevronDown, FiAlertCircle, FiCheck } from 'react-icons/fi';
+import { ChevronDown, AlertCircle, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SelectOption {
@@ -105,15 +105,15 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
           {loading ? (
             <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
           ) : (
-            <FiChevronDown className="text-gray-400 dark:text-gray-500" size={18} />
+            <ChevronDown className="text-gray-400 dark:text-gray-500" size={18} />
           )}
         </div>
 
         {/* Status Icons */}
         {!loading && (error || success) && (
           <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
-            {error && <FiAlertCircle className="text-red-500" size={16} />}
-            {success && <FiCheck className="text-green-500" size={16} />}
+            {error && <AlertCircle className="text-red-500" size={16} />}
+            {success && <Check className="text-green-500" size={16} />}
           </div>
         )}
       </div>
@@ -130,13 +130,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
           >
             {error && (
               <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                <FiAlertCircle size={14} />
+                <AlertCircle size={14} />
                 {error}
               </p>
             )}
             {success && (
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
-                <FiCheck size={14} />
+                <Check size={14} />
                 {success}
               </p>
             )}

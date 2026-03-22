@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // components/FinanceMarket.tsx
 import React, { useState } from 'react';
-import { ExclamationTriangleIcon, ArrowUpIcon, ArrowDownIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { AlertTriangle, ArrowDown, ArrowUp, Plus } from 'lucide-react';
 
 import { useTheme } from '../context/ThemeContext';
 import { useDashboard } from '../context/DashboardContext';
@@ -123,7 +123,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
     return (
       <div className="p-4 mb-6 rounded-lg bg-red-100/90 dark:bg-red-900/90 border border-red-200 dark:border-red-800">
         <div className="flex items-center gap-2 text-red-700 dark:text-red-200">
-          <ExclamationTriangleIcon className="h-5 w-5 flex-shrink-0" />
+          <AlertTriangle className="h-5 w-5 flex-shrink-0" />
           <span>Erro ao carregar dados do mercado: {marketError}</span>
         </div>
         <button
@@ -140,7 +140,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
     return (
       <div className="p-4 mb-6 rounded-lg bg-yellow-100/90 dark:bg-yellow-900/90 border border-yellow-200 dark:border-yellow-800">
         <div className="flex items-center gap-2 text-yellow-700 dark:text-yellow-200">
-          <ExclamationTriangleIcon className="h-5 w-5 flex-shrink-0" />
+          <AlertTriangle className="h-5 w-5 flex-shrink-0" />
           <span>Nenhum dado do mercado encontrado. Por favor, selecione os ativos.</span>
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
@@ -267,7 +267,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       : "bg-blue-100 hover:bg-blue-200 text-blue-700"
                   } transition`}
                 >
-                  <PlusIcon className="h-3 w-3" />
+                  <Plus className="h-3 w-3" />
                   Adicionar
                 </button>
               </div>
@@ -326,9 +326,9 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                               : "bg-red-100 text-red-800"
                         }`}>
                           {indexData.changePercent >= 0 ? (
-                            <ArrowUpIcon className="h-3 w-3 mr-0.5" />
+                            <ArrowUp className="h-3 w-3 mr-0.5" />
                           ) : (
-                            <ArrowDownIcon className="h-3 w-3 mr-0.5" />
+                            <ArrowDown className="h-3 w-3 mr-0.5" />
                           )}
                           {Math.abs(indexData.changePercent).toFixed(2)}%
                         </span>
@@ -371,7 +371,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       : "bg-blue-100 hover:bg-blue-200 text-blue-700"
                   } transition`}
                 >
-                  <PlusIcon className="h-3 w-3" />
+                  <Plus className="h-3 w-3" />
                   Adicionar
                 </button>
               </div>
@@ -417,9 +417,9 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       }`}>
                         <span className="inline-flex items-center">
                           {(stock.changePercent ?? 0) >= 0 ? (
-                            <ArrowUpIcon className="h-3 w-3 mr-1" />
+                            <ArrowUp className="h-3 w-3 mr-1" />
                           ) : (
-                            <ArrowDownIcon className="h-3 w-3 mr-1" />
+                            <ArrowDown className="h-3 w-3 mr-1" />
                           )}
                           {(stock.changePercent ?? 0) >= 0 ? '+' : ''}{(stock.changePercent ?? 0).toFixed(2)}%
                         </span>
@@ -461,7 +461,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       : "bg-blue-100 hover:bg-blue-200 text-blue-700"
                   } transition`}
                 >
-                  <PlusIcon className="h-3 w-3" />
+                  <Plus className="h-3 w-3" />
                   Adicionar
                 </button>
               </div>
@@ -507,9 +507,9 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       }`}>
                         <span className="inline-flex items-center">
                           {(crypto.changePercent ?? 0) >= 0 ? (
-                            <ArrowUpIcon className="h-3 w-3 mr-1" />
+                            <ArrowUp className="h-3 w-3 mr-1" />
                           ) : (
-                            <ArrowDownIcon className="h-3 w-3 mr-1" />
+                            <ArrowDown className="h-3 w-3 mr-1" />
                           )}
                           {(crypto.changePercent ?? 0) >= 0 ? '+' : ''}{(crypto.changePercent ?? 0).toFixed(2)}%
                         </span>
@@ -551,7 +551,7 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       : "bg-blue-100 hover:bg-blue-200 text-blue-700"
                   } transition`}
                 >
-                  <PlusIcon className="h-3 w-3" />
+                  <Plus className="h-3 w-3" />
                   Adicionar
                 </button>
               </div>
@@ -593,9 +593,9 @@ const FinanceMarket: React.FC<FinanceMarketProps> = ({
                       }`}>
                         <span className="inline-flex items-center">
                           {(commodity.changePercent ?? 0) >= 0 ? (
-                            <ArrowUpIcon className="h-3 w-3 mr-1" />
+                            <ArrowUp className="h-3 w-3 mr-1" />
                           ) : (
-                            <ArrowDownIcon className="h-3 w-3 mr-1" />
+                            <ArrowDown className="h-3 w-3 mr-1" />
                           )}
                           {(commodity.changePercent ?? 0) >= 0 ? '+' : ''}{(commodity.changePercent ?? 0).toFixed(2)}%
                         </span>

@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SupabaseService } from '../../../src/services/SupabaseService';
+import { supabaseService } from '../../../src/services/SupabaseService';
 import { Producao } from '../../../src/types/bovinext.types';
-
-const supabaseService = new SupabaseService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -30,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getProducao(id: string, res: NextApiResponse) {
-  const producao = await supabaseService.getProducaoByUser(id);
+  const producao = await supabaseService.getProducaoById(id);
   
   if (!producao) {
     return res.status(404).json({ error: 'Produção não encontrada' });
@@ -43,13 +41,21 @@ async function getProducao(id: string, res: NextApiResponse) {
 }
 
 async function updateProducao(id: string, req: NextApiRequest, res: NextApiResponse) {
-  return res.status(501).json({
-    error: 'Update producao not implemented yet'
+  const updateData: Partial<Producao> = req.body;
+  const producaoAtualizada = await supabaseService.updateProducao(id, updateData);
+
+  return res.status(200).json({
+    success: true,
+    data: producaoAtualizada,
+    message: 'Produção atualizada com sucesso'
   });
 }
 
 async function deleteProducao(id: string, res: NextApiResponse) {
-  return res.status(501).json({
-    error: 'Delete producao not implemented yet'
+  await supabaseService.deleteProducao(id);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Produção removida com sucesso'
   });
 }

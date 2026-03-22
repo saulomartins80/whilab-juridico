@@ -174,6 +174,35 @@ export class BovinextSupabaseService {
     }
   }
 
+  async getManejoById(manejoId: string): Promise<IManejo | null> {
+    try {
+      const data = await supabaseWrapper.selectManejoById(manejoId);
+      return data as IManejo | null;
+    } catch (error) {
+      logger.error('Erro ao buscar manejo:', error);
+      throw error;
+    }
+  }
+
+  async updateManejo(manejoId: string, manejoData: Partial<IManejo>): Promise<IManejo> {
+    try {
+      const data = await supabaseWrapper.updateManejo(manejoId, manejoData);
+      return data as IManejo;
+    } catch (error) {
+      logger.error('Erro ao atualizar manejo:', error);
+      throw error;
+    }
+  }
+
+  async deleteManejo(manejoId: string): Promise<boolean> {
+    try {
+      return await supabaseWrapper.deleteManejo(manejoId);
+    } catch (error) {
+      logger.error('Erro ao deletar manejo:', error);
+      throw error;
+    }
+  }
+
   // =====================================================
   // VENDAS
   // =====================================================
@@ -231,14 +260,49 @@ export class BovinextSupabaseService {
     }
   }
 
+  async updateVenda(vendaId: string, vendaData: Partial<IVenda>): Promise<IVenda> {
+    try {
+      const data = await supabaseWrapper.updateVenda(vendaId, vendaData);
+      return data as IVenda;
+    } catch (error) {
+      logger.error('Erro ao atualizar venda:', error);
+      throw error;
+    }
+  }
+
+  async deleteVenda(vendaId: string): Promise<boolean> {
+    try {
+      return await supabaseWrapper.deleteVenda(vendaId);
+    } catch (error) {
+      logger.error('Erro ao deletar venda:', error);
+      throw error;
+    }
+  }
+
   // =====================================================
   // PRODUÇÃO
   // =====================================================
   
   async createProducao(userId: string, producaoCreate: IProducaoCreate): Promise<IProducao> {
     try {
-      const data = await supabaseWrapper.insertProducao({ ...producaoCreate, user_id: userId });
-      return data as IProducao;
+      const data = await supabaseWrapper.insertProducao({
+        user_id: userId,
+        animal_id: producaoCreate.animal_id,
+        tipo_producao: producaoCreate.tipo,
+        data_producao: producaoCreate.data_producao,
+        peso: producaoCreate.peso ?? (producaoCreate as any).valor,
+        ganho_medio_diario: producaoCreate.ganho_medio_diario,
+        custo_producao: producaoCreate.custo_producao,
+        receita: producaoCreate.receita,
+        margem_lucro: producaoCreate.margem_lucro,
+        observacoes: producaoCreate.observacoes
+      });
+      return {
+        ...data,
+        tipo: data.tipo || data.tipo_producao,
+        valor: data.valor ?? data.peso,
+        ganho_medio_diario: data.ganho_medio_diario ?? data.ganhoMedio,
+      } as IProducao;
     } catch (error) {
       logger.error('Erro ao criar produção:', error);
       throw error;
@@ -262,12 +326,57 @@ export class BovinextSupabaseService {
       }
       
       if (filters?.tipoProducao) {
-        filteredData = filteredData.filter(producao => producao.tipo === filters.tipoProducao);
+        filteredData = filteredData.filter(producao => producao.tipo === filters.tipoProducao || (producao as any).tipo_producao === filters.tipoProducao);
       }
       
-      return filteredData as IProducao[];
+      return filteredData.map((producao: any) => ({
+        ...producao,
+        tipo: producao.tipo || producao.tipo_producao,
+        valor: producao.valor ?? producao.peso,
+        ganho_medio_diario: producao.ganho_medio_diario ?? producao.ganhoMedio
+      })) as IProducao[];
     } catch (error) {
       logger.error('Erro ao buscar produção:', error);
+      throw error;
+    }
+  }
+
+  async getProducaoById(producaoId: string): Promise<IProducao | null> {
+    try {
+      const data = await supabaseWrapper.selectProducaoById(producaoId);
+      if (!data) return null;
+      return {
+        ...data,
+        tipo: (data as any).tipo || (data as any).tipo_producao,
+        valor: (data as any).valor ?? (data as any).peso,
+        ganho_medio_diario: (data as any).ganho_medio_diario ?? (data as any).ganhoMedio
+      } as IProducao;
+    } catch (error) {
+      logger.error('Erro ao buscar produção:', error);
+      throw error;
+    }
+  }
+
+  async updateProducao(producaoId: string, producaoData: Partial<IProducao>): Promise<IProducao> {
+    try {
+      const data = await supabaseWrapper.updateProducao(producaoId, producaoData);
+      return {
+        ...data,
+        tipo: data.tipo || data.tipo_producao,
+        valor: data.valor ?? data.peso,
+        ganho_medio_diario: data.ganho_medio_diario ?? data.ganhoMedio
+      } as IProducao;
+    } catch (error) {
+      logger.error('Erro ao atualizar produção:', error);
+      throw error;
+    }
+  }
+
+  async deleteProducao(producaoId: string): Promise<boolean> {
+    try {
+      return await supabaseWrapper.deleteProducao(producaoId);
+    } catch (error) {
+      logger.error('Erro ao deletar produção:', error);
       throw error;
     }
   }
@@ -358,6 +467,16 @@ export class BovinextSupabaseService {
     } catch (error) {
       logger.error('Erro ao criar alerta:', error);
       throw error;
+    }
+  }
+
+  async getAlertaById(alertaId: string): Promise<IAlerta | null> {
+    try {
+      const data = await supabaseWrapper.selectAlertaById(alertaId);
+      return data as IAlerta | null;
+    } catch (error) {
+      logger.error('Erro ao buscar alerta por ID:', error);
+      return null;
     }
   }
 

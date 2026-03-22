@@ -3,6 +3,7 @@ import logger from '../utils/logger';
 
 // import { createClient } from '@supabase/supabase-js'; // Removido temporariamente
 import { supabase } from '../lib/supabaseClient';
+import { dashboardBranding } from '../config/branding';
 import {
   // Transacao,
   // NovaTransacaoPayload,
@@ -14,7 +15,7 @@ import { MarketData } from '../types/market';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-// Supabase client for BOVINEXT
+// Supabase client for dashboard brand
 // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 // const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 // const supabase = createClient(supabaseUrl, supabaseAnonKey); // Removido temporariamente
@@ -87,9 +88,9 @@ const api = axios.create({
   },
 });
 
-// Interceptor para autenticação BOVINEXT com Supabase
+// Interceptor para autenticação com Supabase
 api.interceptors.request.use(async (config) => {
-  if (!isProd) logger.log(`[api.ts] 🚀 Iniciando requisição BOVINEXT: ${config.method?.toUpperCase()} ${config.url}`);
+  if (!isProd) logger.log(`[api.ts] 🚀 Iniciando requisição ${dashboardBranding.brandName}: ${config.method?.toUpperCase()} ${config.url}`);
   
   // Detectar mobile
   const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -100,11 +101,11 @@ api.interceptors.request.use(async (config) => {
     const { data } = await supabase.auth.getSession();
     session = data.session;
   } catch (e) {
-    logger.warn('[api.ts] Não foi possível obter sessão do Supabase:', e);
+    logger.warn('[api.ts] Nao foi possivel obter sessao do Supabase:', e);
   }
 
   if (!isProd) {
-    logger.log(`[api.ts] 👤 Estado do usuário Supabase:`, {
+    logger.log(`[api.ts] 👤 Estado do usuario Supabase (${dashboardBranding.brandName}):`, {
       sessionExists: !!session,
       userId: session?.user?.id,
       email: session?.user?.email,
@@ -114,7 +115,7 @@ api.interceptors.request.use(async (config) => {
   }
 
   if (session?.user) {
-    logger.log(`[api.ts] 🔑 Usuário Supabase encontrado (ID: ${session.user.id}). Obtendo token para: ${config.url}`);
+    logger.log(`[api.ts] 🔑 Usuario Supabase encontrado (ID: ${session.user.id}). Obtendo token para: ${config.url}`);
     try {
       // Obter token de acesso do Supabase
       const accessToken = session.access_token;
@@ -136,7 +137,7 @@ api.interceptors.request.use(async (config) => {
       // Tratamento específico para mobile
       if (isMobile && error instanceof Error) {
         if (error.message.includes('network-request-failed')) {
-          logger.error(`[api.ts] 📱 Erro de rede específico do mobile detectado`);
+          logger.error(`[api.ts] 📱 Erro de rede especifico do mobile detectado`);
           throw new Error(`Mobile network error: ${error.message}`);
         }
       }
@@ -144,13 +145,13 @@ api.interceptors.request.use(async (config) => {
       throw new Error(`Failed to get authentication token: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   } else {
-    logger.warn(`[api.ts] ⚠️ Nenhum usuário autenticado encontrado. Requisição para ${config.url} será não autenticada (mobile: ${isMobile}).`);
-    logger.warn(`[api.ts] 📋 Headers da requisição:`, config.headers);
+    logger.warn(`[api.ts] ⚠️ Nenhum usuario autenticado encontrado. Requisicao para ${config.url} sera nao autenticada (mobile: ${isMobile}).`);
+    logger.warn(`[api.ts] 📋 Headers da requisicao:`, config.headers);
   }
 
   return config;
 }, (error) => {
-  logger.error('[api.ts] ❌ Erro no interceptor de requisição:', error);
+  logger.error('[api.ts] ❌ Erro no interceptor de requisicao:', error);
   return Promise.reject(error);
 });
 
@@ -240,15 +241,15 @@ export const marketDataAPI = {
   }
 };
 
-// --- BOVI CHATBOT API ---
+// --- Chatbot API ---
 export const chatbotAPI = {
   healthCheck: async () => {
     try {
       const response = await api.get('/api/chatbot/health', { timeout: 10000 });
-      logger.log('[chatbotAPI] ✅ BOVI health check:', response.data);
+      logger.log(`[chatbotAPI] ✅ Health check ${dashboardBranding.assistantName}:`, response.data);
       return response.data;
     } catch (error) {
-      logger.error('[chatbotAPI] ❌ Erro no BOVI health check:', error);
+      logger.error(`[chatbotAPI] ❌ Erro no health check ${dashboardBranding.assistantName}:`, error);
       throw error;
     }
   },
@@ -299,7 +300,7 @@ export const chatbotAPI = {
       
       const url = `${base}/api/chatbot/stream?${params.toString()}`;
 
-      logger.log('[chatbotAPI] 🔌 Abrindo BOVI stream via EventSource:', { 
+      logger.log(`[chatbotAPI] 🔌 Abrindo stream ${dashboardBranding.assistantName} via EventSource:`, { 
         url: `${base}/api/chatbot/stream?...`, 
         hasToken: !!token, 
         withCredentials: false,
@@ -321,13 +322,13 @@ export const chatbotAPI = {
     }
   },
   executeAction: async (actionData: AutomatedAction) => {
-    logger.log('[chatbotAPI] BOVI executando ação:', actionData);
+    logger.log(`[chatbotAPI] ${dashboardBranding.assistantName} executando acao:`, actionData);
     try {
       const response = await api.post('/api/automated-actions/execute', actionData);
-      logger.log('[chatbotAPI] BOVI ação executada com sucesso:', response.data);
+      logger.log(`[chatbotAPI] ${dashboardBranding.assistantName} acao executada com sucesso:`, response.data);
       return response.data;
     } catch (error) {
-      logger.error('[chatbotAPI] BOVI erro ao executar ação:', error);
+      logger.error(`[chatbotAPI] ${dashboardBranding.assistantName} erro ao executar acao:`, error);
       throw error;
     }
   },
@@ -609,7 +610,7 @@ export const dashboardAPI = {
     }
   },
   
-  // 🔧 NOVO: API para dados reais do dashboard BOVINEXT
+  // 🔧 NOVO: API para dados reais do dashboard
   getKPIs: async () => {
     logger.log('[dashboardAPI] Buscando KPIs do dashboard');
     try {
@@ -701,7 +702,7 @@ export const producaoAPI = {
       throw error;
     }
   },
-  
+
   create: async (producaoData: Record<string, unknown>) => {
     logger.log('[producaoAPI] Criando registro de produção:', producaoData);
     try {
@@ -710,6 +711,30 @@ export const producaoAPI = {
       return response.data;
     } catch (error) {
       logger.error('[producaoAPI] Erro ao criar registro de produção:', error);
+      throw error;
+    }
+  },
+
+  update: async (id: string, producaoData: Record<string, unknown>) => {
+    logger.log('[producaoAPI] Atualizando produção:', { id, producaoData });
+    try {
+      const response = await api.put(`/api/producao/${id}`, producaoData);
+      logger.log('[producaoAPI] Produção atualizada com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[producaoAPI] Erro ao atualizar produção:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id: string) => {
+    logger.log('[producaoAPI] Deletando produção:', id);
+    try {
+      const response = await api.delete(`/api/producao/${id}`);
+      logger.log('[producaoAPI] Produção deletada com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[producaoAPI] Erro ao deletar produção:', error);
       throw error;
     }
   }
@@ -728,7 +753,7 @@ export const manejoAPI = {
       throw error;
     }
   },
-  
+
   create: async (manejoData: Record<string, unknown>) => {
     logger.log('[manejoAPI] Criando registro de manejo:', manejoData);
     try {
@@ -737,6 +762,30 @@ export const manejoAPI = {
       return response.data;
     } catch (error) {
       logger.error('[manejoAPI] Erro ao criar registro de manejo:', error);
+      throw error;
+    }
+  },
+
+  update: async (id: string, manejoData: Record<string, unknown>) => {
+    logger.log('[manejoAPI] Atualizando manejo:', { id, manejoData });
+    try {
+      const response = await api.put(`/api/manejo/${id}`, manejoData);
+      logger.log('[manejoAPI] Manejo atualizado com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[manejoAPI] Erro ao atualizar manejo:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id: string) => {
+    logger.log('[manejoAPI] Deletando manejo:', id);
+    try {
+      const response = await api.delete(`/api/manejo/${id}`);
+      logger.log('[manejoAPI] Manejo deletado com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[manejoAPI] Erro ao deletar manejo:', error);
       throw error;
     }
   }
@@ -755,7 +804,7 @@ export const vendasAPI = {
       throw error;
     }
   },
-  
+
   create: async (vendaData: Record<string, unknown>) => {
     logger.log('[vendasAPI] Criando venda:', vendaData);
     try {
@@ -764,6 +813,30 @@ export const vendasAPI = {
       return response.data;
     } catch (error) {
       logger.error('[vendasAPI] Erro ao criar venda:', error);
+      throw error;
+    }
+  },
+
+  update: async (id: string, vendaData: Record<string, unknown>) => {
+    logger.log('[vendasAPI] Atualizando venda:', { id, vendaData });
+    try {
+      const response = await api.put(`/api/vendas/${id}`, vendaData);
+      logger.log('[vendasAPI] Venda atualizada com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[vendasAPI] Erro ao atualizar venda:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id: string) => {
+    logger.log('[vendasAPI] Deletando venda:', id);
+    try {
+      const response = await api.delete(`/api/vendas/${id}`);
+      logger.log('[vendasAPI] Venda deletada com sucesso:', response.data);
+      return response.data;
+    } catch (error) {
+      logger.error('[vendasAPI] Erro ao deletar venda:', error);
       throw error;
     }
   }

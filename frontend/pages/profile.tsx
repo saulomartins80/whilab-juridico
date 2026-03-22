@@ -1,24 +1,21 @@
-'use client';
-
 import { useAuth } from '../context/AuthContext';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { User } from '@supabase/supabase-js';
-import { 
-  FiEdit, 
-  FiCamera, 
-  FiCheck, 
-  FiX, 
-  FiEye, 
-  FiEyeOff, 
-  FiAlertCircle,
-  FiSettings,
-  FiCreditCard
-} from 'react-icons/fi';
+import {
+  Edit3,
+  Camera,
+  Check,
+  X,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Settings,
+  CreditCard
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
 
 import { supabase } from '../lib/supabaseClient';
@@ -367,7 +364,7 @@ export default function Profile() {
                   }}
                   className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <FiX className="inline mr-2" /> Cancelar
+                  <X className="inline mr-2" /> Cancelar
                 </button>
                 <button
                   type="button"
@@ -385,7 +382,7 @@ export default function Profile() {
                     </>
                   ) : (
                     <>
-                      <FiCheck className="inline mr-2" /> Salvar
+                      <Check className="inline mr-2" /> Salvar
                     </>
                   )}
                 </button>
@@ -396,7 +393,7 @@ export default function Profile() {
                 onClick={() => setIsEditing(true)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
               >
-                <FiEdit className="inline mr-2" /> Editar Perfil
+                <Edit3 className="inline mr-2" /> Editar Perfil
               </button>
             )}
           </div>
@@ -427,7 +424,7 @@ export default function Profile() {
                       htmlFor="avatar-upload"
                       className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                     >
-                      <FiCamera className="text-white text-2xl" />
+                      <Camera className="text-white text-2xl" />
                       <span className="sr-only">Alterar foto</span>
                     </label>
                     <input
@@ -541,7 +538,7 @@ export default function Profile() {
                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                           >
-                            {showCurrentPassword ? <FiEyeOff /> : <FiEye />}
+                            {showCurrentPassword ? <EyeOff /> : <Eye />}
                           </button>
                         </div>
                       </div>
@@ -566,7 +563,7 @@ export default function Profile() {
                               onClick={() => setShowNewPassword(!showNewPassword)}
                               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                             >
-                              {showNewPassword ? <FiEyeOff /> : <FiEye />}
+                              {showNewPassword ? <EyeOff /> : <Eye />}
                             </button>
                           </div>
                         </div>
@@ -590,7 +587,7 @@ export default function Profile() {
                               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                             >
-                              {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                              {showConfirmPassword ? <EyeOff /> : <Eye />}
                             </button>
                           </div>
                         </div>
@@ -661,7 +658,7 @@ export default function Profile() {
               onClick={() => router.push('/assinaturas')}
               className="w-full flex items-center p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              <FiCreditCard className="w-5 h-5 text-purple-500 mr-3" />
+              <CreditCard className="w-5 h-5 text-purple-500 mr-3" />
               <span className="text-gray-700 dark:text-gray-300">Gerenciar Assinatura</span>
             </button>
 
@@ -669,7 +666,7 @@ export default function Profile() {
               onClick={() => router.push('/configuracoes')}
               className="w-full flex items-center p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              <FiSettings className="w-5 h-5 text-purple-500 mr-3" />
+              <Settings className="w-5 h-5 text-purple-500 mr-3" />
               <span className="text-gray-700 dark:text-gray-300">Configurações</span>
             </button>
 
@@ -677,7 +674,7 @@ export default function Profile() {
               onClick={handleLogout}
               className="w-full flex items-center p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-red-500"
             >
-              <FiAlertCircle className="w-5 h-5 mr-3" />
+              <AlertCircle className="w-5 h-5 mr-3" />
               <span>Sair</span>
             </button>
           </div>

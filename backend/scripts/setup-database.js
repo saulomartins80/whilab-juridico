@@ -1,7 +1,11 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = 'https://jygspicbqnbriafmcufc.supabase.co';
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5Z3NwaWNicW5icmlhZm1jdWZjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzA1ODU3OSwiZXhwIjoyMDgyNjM0NTc5fQ.4aDBFQh84qIzo9uvSH8TMwdCwqt6I8Ji06MLvAcfH8o';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Configure SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY antes de executar este script.');
+}
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -86,7 +90,7 @@ async function setupDatabase() {
 
   console.log('\n📋 Status das tabelas:');
   console.log('   Para criar as tabelas, execute o SQL em:');
-  console.log('   https://supabase.com/dashboard/project/jygspicbqnbriafmcufc/sql\n');
+    console.log(`   ${process.env.SUPABASE_SQL_EDITOR_URL || 'https://supabase.com/dashboard/project/<seu-projeto>/sql'}\n`);
   
   // Testar se podemos inserir um usuário de teste
   console.log('🧪 Tentando verificar estrutura da tabela users...');

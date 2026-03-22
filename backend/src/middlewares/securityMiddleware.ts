@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { AppError } from '../core/errors/AppError';
+import { runtimeConfig } from '../config/runtime';
 
 // Rate Limiting para diferentes endpoints
 interface RateLimiters {
@@ -149,13 +150,8 @@ export const validateMessageSize = (req: Request, res: Response, next: NextFunct
 // Verificação de origem segura
 export const validateOrigin = (req: Request, res: Response, next: NextFunction): void => {
   const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    process.env.FRONTEND_ALT_URL,
-    'http://localhost:3000', // Frontend BOVINEXT (desenvolvimento)
-    'http://127.0.0.1:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:3001'
-  ].filter(Boolean);
+    ...runtimeConfig.allowedOrigins
+  ];
 
   const origin = req.headers.origin;
   

@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SupabaseService } from '../../../src/services/SupabaseService';
+import { supabaseService } from '../../../src/services/SupabaseService';
+import { resolveRequestUserId } from '../../../src/utils/requestContext';
 import { Manejo } from '../../../src/types/bovinext.types';
-
-const supabaseService = new SupabaseService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -22,6 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getManejos(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const { 
     tipo, 
     status, 
@@ -41,6 +45,7 @@ async function getManejos(req: NextApiRequest, res: NextApiResponse) {
   if (dataFim) filters.dataFim = new Date(dataFim as string);
 
   const manejos = await supabaseService.getManejos({
+    userId,
     filters,
     search: search as string,
     limit: parseInt(limit as string),
@@ -55,16 +60,28 @@ async function getManejos(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function createManejo(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const manejoData: Omit<Manejo, 'id'> = req.body;
+  const tipo = (manejoData as any).tipo || (manejoData as any).tipo_manejo;
+  const animais = (manejoData as any).animais || (manejoData as any).animal_id;
+  const data = (manejoData as any).data || (manejoData as any).data_manejo;
+  const responsavel = (manejoData as any).responsavel || (manejoData as any).veterinario;
 
   // Validação básica
-  if (!manejoData.tipo || !manejoData.animais || !manejoData.data || !manejoData.responsavel) {
+  if (!tipo || !animais || !data || !responsavel) {
     return res.status(400).json({
-      error: 'Campos obrigatórios: tipo, animais, data, responsavel'
+      error: 'Campos obrigatórios: tipo, animais, data, responsavel (ou tipo_manejo, animal_id, data_manejo, veterinario)'
     });
   }
 
-  const novoManejo = await supabaseService.createManejo(manejoData);
+  const novoManejo = await supabaseService.createManejo({
+    ...manejoData,
+    user_id: userId
+  });
 
   return res.status(201).json({
     success: true,

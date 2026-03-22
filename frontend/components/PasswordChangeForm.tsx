@@ -1,17 +1,17 @@
 /* eslint-disable no-unused-vars */
 // components/PasswordChangeForm.tsx
 import { useState, useCallback, useMemo } from 'react';
-import { 
-  FiLock, 
-  FiEye, 
-  FiEyeOff, 
-  FiCheck, 
-  FiX, 
-  FiAlertTriangle,
-  FiShield,
-  FiKey,
-  FiZap
-} from 'react-icons/fi';
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  Check,
+  X,
+  AlertTriangle,
+  Shield,
+  KeyRound,
+  Zap
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -313,7 +313,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
         transition={{ duration: 0.5 }}
       >
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 mb-4">
-          <FiLock className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          <Lock className="h-8 w-8 text-blue-600 dark:text-blue-400" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Alterar Senha</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -332,7 +332,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
               className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
             >
               <div className="flex">
-                <FiAlertTriangle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
+                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
                 <div>
                   <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
                     Erro na alteração da senha
@@ -357,21 +357,21 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
               }}
               placeholder="Digite sua senha atual"
               required
-              icon={<FiKey className="w-5 h-5" />}
+              icon={<KeyRound className="w-5 h-5" />}
               disabled={isLoading || isReauthenticating}
               className={currentPasswordVerified ? 'border-green-300 dark:border-green-700' : ''}
             />
             
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-2">
               {currentPasswordVerified && (
-                <FiCheck className="w-5 h-5 text-green-500" />
+                <Check className="w-5 h-5 text-green-500" />
               )}
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
-                {showCurrentPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -402,7 +402,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <FiZap className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
+                    <Zap className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
                     <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
                       Gerar senha segura
                     </span>
@@ -430,7 +430,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Digite sua nova senha"
                     required
-                    icon={<FiLock className="w-5 h-5" />}
+                    icon={<Lock className="w-5 h-5" />}
                     disabled={isLoading}
                   />
                   
@@ -441,14 +441,14 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                       className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                       title="Dicas de senha"
                     >
-                      <FiShield className="w-5 h-5" />
+                      <Shield className="w-5 h-5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
                       className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
-                      {showNewPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                      {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
                 </div>
@@ -489,9 +489,9 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                             transition={{ delay: 0.1 }}
                           >
                             {passed ? (
-                              <FiCheck className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
+                              <Check className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
                             ) : (
-                              <FiX className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" />
+                              <X className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" />
                             )}
                             <span className={passed ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}>
                               {requirement.text}
@@ -519,7 +519,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                               return (
                                 <div key={requirement.id} className="flex items-center text-xs">
                                   {passed ? (
-                                    <FiCheck className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
+                                    <Check className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
                                   ) : (
                                     <div className="h-3 w-3 rounded-full border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0" />
                                   )}
@@ -561,7 +561,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirme sua nova senha"
                   required
-                  icon={<FiLock className="w-5 h-5" />}
+                  icon={<Lock className="w-5 h-5" />}
                   disabled={isLoading}
                   success={passwordsMatch ? 'Senhas coincidem' : undefined}
                   error={confirmPassword && !passwordsMatch ? 'As senhas não coincidem' : undefined}
@@ -569,14 +569,14 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
                 
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-2">
                   {passwordsMatch && (
-                    <FiCheck className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-500" />
                   )}
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   >
-                    {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -615,7 +615,7 @@ export default function PasswordChangeForm({ onSuccess, onCancel }: PasswordChan
         className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg"
       >
         <div className="flex items-start">
-          <FiShield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+          <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
           <div>
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
               Dicas de Segurança

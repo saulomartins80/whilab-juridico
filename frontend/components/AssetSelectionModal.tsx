@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // frontend/components/AssetSelectionModal.tsx
 import React, { useState } from "react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { AlertTriangle } from "lucide-react";
 
 import { useTheme } from "../context/ThemeContext";
 
@@ -260,7 +260,7 @@ const AssetSelectionModal: React.FC<AssetSelectionModalProps> = ({
               </ul>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
-                <ExclamationTriangleIcon className="h-8 w-8 mb-2" />
+                <AlertTriangle className="h-8 w-8 mb-2" />
                 <p>Nenhum ativo encontrado</p>
               </div>
             )}

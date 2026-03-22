@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
+import { dashboardBranding } from '../config/branding'
 
 interface OptimizedLogoProps {
   size?: number
@@ -21,7 +22,7 @@ export default function OptimizedLogo({
     <div className={`flex items-center space-x-3 ${className}`}>
       <Image 
         src="/logo.svg" 
-        alt="Logo Bovinext" 
+        alt={dashboardBranding.logoAlt} 
         width={size} 
         height={size}
         priority={size >= 40} // Priority for larger logos
@@ -37,7 +38,7 @@ export default function OptimizedLogo({
         <span className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 ${
           resolvedTheme === 'dark' ? '' : 'text-gray-900'
         }`}>
-          BOVINEXT
+          {dashboardBranding.brandNameUpper}
         </span>
       )}
     </div>

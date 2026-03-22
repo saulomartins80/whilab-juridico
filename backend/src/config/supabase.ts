@@ -4,21 +4,24 @@ import { Database } from '../types/database.types';
 let supabaseInstance: SupabaseClient<any> | null = null;
 let supabaseClientInstance: SupabaseClient<any> | null = null;
 
+const createSupabaseClient = (supabaseUrl: string, supabaseKey: string): SupabaseClient<any> =>
+  createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
+
 const getSupabaseInstance = (): SupabaseClient<any> => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error('SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY não configuradas');
+    throw new Error('SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY nao configuradas');
   }
 
   if (!supabaseInstance) {
-    supabaseInstance = createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    });
+    supabaseInstance = createSupabaseClient(supabaseUrl, supabaseKey);
   }
 
   return supabaseInstance;
@@ -29,19 +32,22 @@ const getSupabaseClientInstance = (): SupabaseClient<any> => {
   const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('SUPABASE_URL e SUPABASE_ANON_KEY não configuradas');
+    throw new Error('SUPABASE_URL e SUPABASE_ANON_KEY nao configuradas');
   }
 
   if (!supabaseClientInstance) {
-    supabaseClientInstance = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    });
+    supabaseClientInstance = createSupabaseClient(supabaseUrl, supabaseAnonKey);
   }
 
   return supabaseClientInstance;
+};
+
+export const getSupabaseAdminClient = (): SupabaseClient<any> => getSupabaseInstance();
+
+export const getSupabaseAnonClient = (): SupabaseClient<any> => getSupabaseClientInstance();
+
+export const isSupabaseConfigured = (): boolean => {
+  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 };
 
 // Criar cliente tipado
@@ -58,7 +64,7 @@ export const supabase: SupabaseClient<any> = new Proxy({} as SupabaseClient<any>
   }
 }) as SupabaseClient<any>;
 
-// Cliente para operações do usuário (anon key) - opcional para BOVINEXT
+// Cliente para operações do usuário (anon key) - opcional quando configurado
 export const supabaseClient: SupabaseClient<any> | null = (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
   ? (new Proxy({} as SupabaseClient<any>, {
     get(_target, prop) {
@@ -73,5 +79,7 @@ export const supabaseClient: SupabaseClient<any> | null = (process.env.SUPABASE_
     }
   }) as SupabaseClient<any>)
   : null;
+
+export const supabaseAnonClient: SupabaseClient<any> | null = supabaseClient;
 
 export default supabase;

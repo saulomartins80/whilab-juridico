@@ -1,45 +1,37 @@
-import { FiBriefcase } from 'react-icons/fi';
+import {
+  MarketingCardGrid,
+  MarketingChecklist,
+  MarketingPageFrame,
+  MarketingSection,
+} from '../components/marketing/MarketingPage';
+import { companyPage } from '../content/extendedPublicPages';
 
-import { useTheme } from '../context/ThemeContext';
-import SEOHead from '../components/SEOHead';
-import { InstitutionalHeader } from '../components/layout/InstitutionalHeader';
-import { Footer } from '../components/layout/Footer';
-export default function Empresa() {
-  const { resolvedTheme } = useTheme();
+export default function EmpresaPage() {
   return (
-    <div className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark' : ''}`}>
-      <SEOHead
-        title="Empresa - Soluções Corporativas"
-        description="Soluções financeiras corporativas da FinNEXTHO. Gestão empresarial, controle de fluxo de caixa, relatórios avançados e integração com sistemas ERP para empresas de todos os portes."
-        keywords="soluções corporativas, gestão empresarial, fluxo de caixa, ERP, relatórios financeiros, finnextho empresas"
-        canonical="/empresa"
-      />
-      <InstitutionalHeader 
-        title="Empresa" 
-        icon={<FiBriefcase className="w-6 h-6 text-blue-500" />}
-        breadcrumb="Empresa"
-      />
-      
-      <div className={`min-h-screen ${resolvedTheme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
-        <main className="max-w-4xl mx-auto px-6 py-12">
-          <div className={`${resolvedTheme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-8`}>
-            <div className="flex items-center mb-8">
-              <FiBriefcase className={`w-8 h-8 mr-3 ${resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
-              <h1 className="text-3xl font-bold">Empresa</h1>
-            </div>
-            <div className="prose prose-lg max-w-none">
-              <p className={`mb-6 ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>A Finnextho nasceu para revolucionar a gestão financeira no Brasil. Nossa missão é democratizar o acesso à inteligência financeira de ponta, promovendo autonomia, segurança e crescimento para pessoas e empresas.</p>
-              <ul className={`space-y-2 ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                <li>• <strong>Missão:</strong> Empoderar pessoas e empresas com tecnologia financeira inovadora.</li>
-                <li>• <strong>Visão:</strong> Ser referência em soluções financeiras inteligentes na América Latina.</li>
-                <li>• <strong>Valores:</strong> Ética, inovação, transparência, segurança e foco no cliente.</li>
-              </ul>
-            </div>
-          </div>
-        </main>
-      </div>
-      
-      <Footer />
-    </div>
+    <MarketingPageFrame
+      metaTitle="Empresa | BoviNext White-label"
+      metaDescription="Conheca a operacao por tras do BoviNext e como ela organiza licenca, setup e adaptacao."
+      eyebrow={companyPage.eyebrow}
+      title={companyPage.title}
+      description={companyPage.description}
+      stats={companyPage.stats}
+      primaryCta={{ label: 'Falar com a equipe', href: '/contato' }}
+      secondaryCta={{ label: 'Ver licencas', href: '/licencas' }}
+    >
+      <MarketingSection
+        eyebrow="Base da operacao"
+        title="Como a empresa sustenta a proposta do produto."
+        description="O produto vende melhor quando a camada institucional mostra metodo, limites e direcao."
+      >
+        <MarketingCardGrid items={companyPage.cards} />
+      </MarketingSection>
+
+      <MarketingSection
+        eyebrow="Compromissos"
+        title="O que precisa ficar claro para o mercado."
+      >
+        <MarketingChecklist items={companyPage.checklist} />
+      </MarketingSection>
+    </MarketingPageFrame>
   );
-} 
+}

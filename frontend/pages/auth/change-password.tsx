@@ -1,7 +1,7 @@
 // pages/auth/change-password.tsx
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { FiLock, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
+import { Lock, AlertCircle, CheckCircle } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
 import Layout from '../../components/Layout';
@@ -78,13 +78,13 @@ export default function ChangePasswordPage() {
 
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 flex items-center">
-              <FiAlertCircle className="mr-2" />
+              <AlertCircle className="mr-2" />
               <span>{error}</span>
             </div>
           )}
           {success && (
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 flex items-center">
-              <FiCheckCircle className="mr-2" />
+              <CheckCircle className="mr-2" />
               <span>{success}</span>
             </div>
           )}
@@ -99,7 +99,7 @@ export default function ChangePasswordPage() {
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="text-gray-400" />
+                  <Lock className="text-gray-400" />
                 </div>
                 <input
                   id="newPassword"
@@ -124,7 +124,7 @@ export default function ChangePasswordPage() {
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="text-gray-400" />
+                  <Lock className="text-gray-400" />
                 </div>
                 <input
                   id="confirmPassword"

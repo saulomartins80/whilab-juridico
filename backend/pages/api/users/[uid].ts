@@ -1,56 +1,44 @@
-// src/user/[uid].ts
-import { adminDb } from '@/lib/firebase/admin';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getToken } from 'next-auth/jwt';
+import { bovinextSupabaseService } from '../../../src/services/BovinextSupabaseService';
+import { resolveRequestAuthContext } from '../../../src/utils/authContext';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  // Verificação de token JWT
-  const token = await getToken({ req });
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Não autorizado' });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const authContext = await resolveRequestAuthContext(req);
+
+  if (!authContext) {
+    return res.status(401).json({ error: 'Não autenticado' });
   }
 
   const { uid } = req.query;
+  if (typeof uid !== 'string' || !uid.trim()) {
+    return res.status(400).json({ error: 'UID inválido' });
+  }
+
+  if (uid !== authContext.userId) {
+    return res.status(403).json({ error: 'Acesso não autorizado' });
+  }
 
   try {
-    // Verificação do UID
-    if (typeof uid !== 'string') {
-      return res.status(400).json({ error: 'UID inválido' });
+    switch (req.method) {
+      case 'GET': {
+        const profile = await bovinextSupabaseService.getUserProfile(authContext.userId);
+        return res.status(200).json(profile);
+      }
+      case 'PUT': {
+        const updatedProfile = await bovinextSupabaseService.updateUserProfile(authContext.userId, req.body || {});
+        return res.status(200).json(updatedProfile);
+      }
+      default:
+        res.setHeader('Allow', ['GET', 'PUT']);
+        return res.status(405).end(`Método ${req.method} não permitido`);
+    }
+  } catch (error: any) {
+    console.error('Erro na rota /api/users/[uid]:', error);
+
+    if (error?.message === 'Usuário não encontrado' || String(error?.message || '').includes('Validação')) {
+      return res.status(400).json({ error: error.message });
     }
 
-    // Autorização: só o próprio usuário pode ver seus dados
-    if (uid !== token.sub) {
-      return res.status(403).json({ error: 'Acesso não autorizado' });
-    }
-
-    // Obter dados do Firestore
-    const userDoc = await adminDb.collection('users').doc(uid).get();
-
-    if (!userDoc.exists) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
-    }
-
-    const userData = userDoc.data();
-
-    // Formatar resposta
-    const responseData = {
-      name: userData?.name || '',
-      email: userData?.email || '',
-      role: userData?.role || 'user',
-      createdAt: userData?.createdAt?.toDate().toISOString()
-    };
-
-    return res.status(200).json(responseData);
-
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : undefined
-    });
+    return res.status(500).json({ error: 'Erro interno do servidor ao processar perfil.' });
   }
 }

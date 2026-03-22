@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SupabaseService } from '../../../src/services/SupabaseService';
+import { supabaseService } from '../../../src/services/SupabaseService';
+import { resolveRequestUserId } from '../../../src/utils/requestContext';
 import { Animal } from '../../../src/types/bovinext.types';
-
-const supabaseService = new SupabaseService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -22,6 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getAnimais(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const { 
     categoria, 
     status, 
@@ -39,6 +43,7 @@ async function getAnimais(req: NextApiRequest, res: NextApiResponse) {
   if (raca) filters.raca = raca;
 
   const animais = await supabaseService.getAnimais({
+    userId,
     filters,
     search: search as string,
     limit: parseInt(limit as string),
@@ -53,6 +58,11 @@ async function getAnimais(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function createAnimal(req: NextApiRequest, res: NextApiResponse) {
+  const userId = await resolveRequestUserId(req);
+  if (!userId) {
+    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+  }
+
   const animalData: Omit<Animal, 'id'> = req.body;
 
   // Validação básica
@@ -62,7 +72,12 @@ async function createAnimal(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
-  const novoAnimal = await supabaseService.createAnimal(animalData);
+  const novoAnimal = await supabaseService.createAnimal({
+    ...animalData,
+    user_id: userId,
+    data_nascimento: (animalData as any).data_nascimento || new Date().toISOString().split('T')[0],
+    sexo: (animalData as any).sexo || 'macho'
+  });
 
   return res.status(201).json({
     success: true,

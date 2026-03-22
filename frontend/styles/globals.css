@@ -13,12 +13,63 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --background: #f6f7fb;
+  --background-elevated: rgba(255, 255, 255, 0.82);
+  --background-surface: rgba(255, 255, 255, 0.94);
+  --background-dark: #020617;
+  --background-elevated-dark: rgba(15, 23, 42, 0.84);
+  --background-surface-dark: rgba(15, 23, 42, 0.92);
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --text-primary-dark: #e2e8f0;
+  --text-muted-dark: #94a3b8;
+  --border-subtle: rgba(148, 163, 184, 0.24);
+  --border-subtle-dark: rgba(148, 163, 184, 0.16);
+  --brand-primary: #0f766e;
+  --brand-secondary: #1d4ed8;
+  --brand-strong: #0f172a;
+  --shell-bg:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(29, 78, 216, 0.06), transparent 26%),
+    linear-gradient(180deg, #f7f8fc 0%, #edf2f7 100%);
+  --shell-card: rgba(255, 255, 255, 0.76);
+  --shell-card-strong: rgba(255, 255, 255, 0.92);
+  --shell-card-dark: rgba(15, 23, 42, 0.76);
+  --shell-card-dark-strong: rgba(15, 23, 42, 0.94);
+  --shell-border: rgba(148, 163, 184, 0.18);
+  --shell-border-dark: rgba(148, 163, 184, 0.16);
+  --shell-shadow: 0 24px 90px rgba(15, 23, 42, 0.1);
+}
+
+html.dark {
+  --background: #020617;
+  --background-elevated: rgba(15, 23, 42, 0.84);
+  --background-surface: rgba(15, 23, 42, 0.92);
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border-subtle: rgba(148, 163, 184, 0.16);
+  --shell-bg:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.1), transparent 24%),
+    radial-gradient(circle at top right, rgba(29, 78, 216, 0.08), transparent 22%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  --shell-card: rgba(15, 23, 42, 0.76);
+  --shell-card-strong: rgba(15, 23, 42, 0.94);
+  --shell-shadow: 0 24px 90px rgba(2, 6, 23, 0.42);
 }
 
 /* Permite rolagem global (correção principal) */
 html, body {
   @apply h-full w-full; /* Remove overflow-hidden */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: var(--shell-bg);
+  background-attachment: fixed;
 }
 
 /* Transições de tema */
@@ -28,6 +79,11 @@ html.light {
 
 html.dark {
   @apply bg-gray-900 text-white;
+}
+
+html.dark body {
+  background-color: var(--background-dark);
+  color: var(--text-primary-dark);
 }
 
 /* Estilização da barra de rolagem (funcionará agora) */
@@ -54,8 +110,14 @@ input[type="date"] {
 }
 
 /* Garante transição suave entre temas */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease;
+body,
+button,
+a,
+input,
+textarea,
+select,
+[role='button'] {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Melhora a legibilidade no modo escuro */
@@ -445,5 +507,181 @@ html.dark .Toastify__toast--info {
     max-height: 740px !important;
     margin: 0 auto !important;
     overflow-x: hidden !important;
+  }
+}
+
+@layer base {
+  body {
+    min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    color: #0f172a;
+  }
+
+  html.dark body {
+    background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  }
+
+  ::selection {
+    background: rgba(16, 185, 129, 0.22);
+    color: inherit;
+  }
+
+  * {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+}
+
+@layer components {
+  .app-shell-page {
+    min-height: 100vh;
+    background: var(--shell-bg);
+  }
+
+  .app-shell-surface {
+    @apply rounded-3xl border backdrop-blur-xl;
+    background: var(--shell-card);
+    border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
+  }
+
+  .app-shell-surface-strong {
+    @apply rounded-3xl border backdrop-blur-xl;
+    background: var(--shell-card-strong);
+    border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
+  }
+
+  .app-shell-panel {
+    @apply rounded-2xl border backdrop-blur-md;
+    background: var(--shell-card);
+    border-color: var(--shell-border);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  }
+
+  .app-shell-header {
+    @apply border-b backdrop-blur-xl;
+    background: var(--background-elevated);
+    border-color: var(--shell-border);
+  }
+
+  .app-shell-sidebar {
+    @apply border-r backdrop-blur-xl;
+    background: var(--background-elevated);
+    border-color: var(--shell-border);
+  }
+
+  .app-shell-chip {
+    @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em];
+    border-color: var(--shell-border);
+    background: rgba(255, 255, 255, 0.62);
+    color: var(--text-muted);
+  }
+
+  html.dark .app-shell-chip {
+    background: rgba(15, 23, 42, 0.68);
+    color: var(--text-muted-dark);
+  }
+
+  .app-shell-badge {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-2xl border text-sm font-semibold uppercase tracking-[0.22em];
+    border-color: var(--shell-border);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(15, 118, 110, 0.92));
+    color: #fff;
+  }
+
+  .app-shell-nav-link {
+    @apply rounded-xl px-3 py-2 text-sm font-medium transition;
+    color: var(--text-muted);
+  }
+
+  .app-shell-nav-link:hover {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-primary);
+  }
+
+  .app-shell-nav-link-active {
+    background: rgba(15, 118, 110, 0.12);
+    color: var(--brand-primary);
+  }
+
+  .app-shell-muted {
+    color: var(--text-muted);
+  }
+
+  .app-shell-hero {
+    @apply overflow-hidden rounded-[2rem] border;
+    background:
+      radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(29, 78, 216, 0.06), transparent 24%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.58));
+    border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
+  }
+
+  .app-shell-hero-dark {
+    background:
+      radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 30%),
+      radial-gradient(circle at bottom left, rgba(29, 78, 216, 0.1), transparent 24%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.72));
+  }
+
+  .app-shell-grid {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .app-shell-button-primary {
+    @apply inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold text-white transition;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    box-shadow: 0 18px 40px rgba(15, 118, 110, 0.24);
+  }
+
+  .app-shell-button-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .bovinext-shell {
+    @apply rounded-3xl border backdrop-blur-xl;
+    background: var(--shell-card);
+    border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
+  }
+
+  .bovinext-shell-soft {
+    @apply rounded-2xl border backdrop-blur-md;
+    background: var(--shell-card);
+    border-color: var(--shell-border);
+  }
+
+  .bovinext-pill {
+    @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em];
+    border-color: var(--shell-border);
+    background: rgba(255, 255, 255, 0.62);
+    color: var(--text-muted);
+  }
+
+  html.dark .bovinext-pill {
+    background: rgba(15, 23, 42, 0.68);
+    color: var(--text-muted-dark);
+  }
+
+  .app-shell-section-title {
+    @apply text-xs font-semibold uppercase tracking-[0.24em];
+    color: var(--text-muted);
+  }
+
+  .app-shell-stat {
+    @apply rounded-2xl border px-4 py-3 backdrop-blur-md;
+    background: rgba(255, 255, 255, 0.5);
+    border-color: var(--shell-border);
+  }
+
+  html.dark .app-shell-stat {
+    background: rgba(15, 23, 42, 0.72);
   }
 }

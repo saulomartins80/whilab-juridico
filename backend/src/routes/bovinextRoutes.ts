@@ -1,7 +1,9 @@
 // routes/bovinextRoutes.ts - Rotas específicas do BOVINEXT
 import express from 'express';
 import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
+import { supabaseService } from '../services/SupabaseService';
 import { BovinextOptimizedAIService } from '../services/BovinextOptimizedAIService';
+import { ChatHistoryService } from '../services/chatHistoryService';
 import { authenticateToken } from '../middlewares/auth';
 
 const router = express.Router();
@@ -11,7 +13,7 @@ router.use(authenticateToken);
 // ==================== PERFIL DO USUÁRIO ====================
 router.get('/profile', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     if (!userId) return res.status(401).json({ success: false, message: 'Não autenticado' });
 
     const profile = await bovinextSupabaseService.getUserProfile(userId);
@@ -24,7 +26,7 @@ router.get('/profile', async (req, res) => {
 
 router.put('/profile', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     if (!userId) return res.status(401).json({ success: false, message: 'Não autenticado' });
 
     const allowed = ['name', 'email', 'telefone', 'fazenda_nome', 'avatar_url'];
@@ -42,8 +44,11 @@ router.put('/profile', async (req, res) => {
 // ==================== ANIMAIS (REBANHO) ====================
 router.get('/animals', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || req.query.user_id || '';
-    const animals = await bovinextSupabaseService.getAnimaisByUser(String(userId));
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autenticado' });
+    }
+    const animals = await supabaseService.getAnimais({ userId: String(userId) });
     res.json({ success: true, data: animals });
   } catch (error) {
     console.error('Erro ao buscar animais:', error);
@@ -53,7 +58,7 @@ router.get('/animals', async (req, res) => {
 
 router.post('/animals', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || req.body.user_id;
+    const userId = req.user?.uid;
     if (!userId) return res.status(400).json({ success: false, message: 'user_id é obrigatório' });
 
     const animalData = req.body;
@@ -61,7 +66,10 @@ router.post('/animals', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Campos obrigatórios: brinco, raca, sexo, data_nascimento' });
     }
 
-    const created = await bovinextSupabaseService.createAnimal(String(userId), animalData);
+    const created = await supabaseService.createAnimal({
+      ...animalData,
+      user_id: String(userId)
+    });
     res.status(201).json({ success: true, data: created });
   } catch (error) {
     console.error('Erro ao criar animal:', error);
@@ -73,7 +81,7 @@ router.put('/animals/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    const updated = await bovinextSupabaseService.updateAnimal(String(id), updateData);
+    const updated = await supabaseService.updateAnimal(String(id), updateData);
     res.json({ success: true, data: updated });
   } catch (error) {
     console.error('Erro ao atualizar animal:', error);
@@ -84,7 +92,7 @@ router.put('/animals/:id', async (req, res) => {
 router.delete('/animals/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    await bovinextSupabaseService.deleteAnimal(String(id));
+    await supabaseService.deleteAnimal(String(id));
     res.json({ success: true, message: 'Animal removido com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar animal:', error);
@@ -95,8 +103,11 @@ router.delete('/animals/:id', async (req, res) => {
 // ==================== MANEJO ====================
 router.get('/manejo', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || String(req.query.user_id || '');
-    const manejos = await bovinextSupabaseService.getManejosByUser(userId);
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autenticado' });
+    }
+    const manejos = await supabaseService.getManejos({ userId });
     res.json({ success: true, data: manejos });
   } catch (error) {
     console.error('Erro ao buscar manejos:', error);
@@ -106,9 +117,12 @@ router.get('/manejo', async (req, res) => {
 
 router.post('/manejo', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || req.body.user_id;
+    const userId = req.user?.uid;
     if (!userId) return res.status(400).json({ success: false, message: 'user_id é obrigatório' });
-    const manejo = await bovinextSupabaseService.createManejo(String(userId), req.body);
+    const manejo = await supabaseService.createManejo({
+      ...req.body,
+      user_id: String(userId)
+    });
     res.status(201).json({ success: true, data: manejo });
   } catch (error) {
     console.error('Erro ao criar manejo:', error);
@@ -116,11 +130,49 @@ router.post('/manejo', async (req, res) => {
   }
 });
 
+router.put('/manejo/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await supabaseService.updateManejo(String(id), req.body);
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Erro ao atualizar manejo:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+router.delete('/manejo/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await supabaseService.deleteManejo(String(id));
+    res.json({ success: true, message: 'Manejo removido com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar manejo:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// ==================== PRODUÇÃO ====================
+router.get('/producao', async (req, res) => {
+  try {
+    const userId = req.user?.uid;
+    if (!userId) return res.status(401).json({ success: false, message: 'Não autenticado' });
+    const producao = await supabaseService.getProducoes({ userId });
+    res.json({ success: true, data: producao });
+  } catch (error) {
+    console.error('Erro ao buscar produção:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
 router.post('/producao', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || req.body.user_id;
+    const userId = req.user?.uid;
     if (!userId) return res.status(400).json({ success: false, message: 'user_id é obrigatório' });
-    const producao = await bovinextSupabaseService.createProducao(String(userId), req.body);
+    const producao = await supabaseService.createProducao({
+      ...req.body,
+      user_id: String(userId)
+    });
     res.status(201).json({ success: true, data: producao });
   } catch (error) {
     console.error('Erro ao criar produção:', error);
@@ -128,11 +180,36 @@ router.post('/producao', async (req, res) => {
   }
 });
 
+router.put('/producao/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await supabaseService.updateProducao(String(id), req.body);
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Erro ao atualizar produção:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+router.delete('/producao/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await supabaseService.deleteProducao(String(id));
+    res.json({ success: true, message: 'Registro de produção removido com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar produção:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
 // ==================== VENDAS ====================
 router.get('/vendas', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || String(req.query.user_id || '');
-    const vendas = await bovinextSupabaseService.getVendasByUser(userId);
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autenticado' });
+    }
+    const vendas = await supabaseService.getVendas({ userId });
     res.json({ success: true, data: vendas });
   } catch (error) {
     console.error('Erro ao buscar vendas:', error);
@@ -142,9 +219,12 @@ router.get('/vendas', async (req, res) => {
 
 router.post('/vendas', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid || req.body.user_id;
+    const userId = req.user?.uid;
     if (!userId) return res.status(400).json({ success: false, message: 'user_id é obrigatório' });
-    const venda = await bovinextSupabaseService.createVenda(String(userId), req.body, req.body.animais_ids || []);
+    const venda = await supabaseService.createVenda({
+      ...req.body,
+      user_id: String(userId)
+    });
     res.status(201).json({ success: true, data: venda });
   } catch (error) {
     console.error('Erro ao criar venda:', error);
@@ -152,21 +232,38 @@ router.post('/vendas', async (req, res) => {
   }
 });
 
+router.put('/vendas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await supabaseService.updateVenda(String(id), req.body);
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Erro ao atualizar venda:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+router.delete('/vendas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await supabaseService.deleteVenda(String(id));
+    res.json({ success: true, message: 'Venda removida com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar venda:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
 // ==================== DASHBOARD & KPIs ====================
 router.get('/dashboard/kpis', async (req, res) => {
   try {
-    const kpis = {
-      totalAnimais: 1247,
-      receitaMensal: 1200000,
-      gmdMedio: 1.12,
-      precoArroba: 315.80,
-      alertasAtivos: 3,
-      custoPorCabeca: 850,
-      margemLucro: 65.2,
-      taxaNatalidade: 85.5,
-      taxaMortalidade: 2.1
-    };
-    
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autenticado' });
+    }
+
+    const kpis = await supabaseService.getDashboardKPIs(userId);
+
     res.json({ success: true, data: kpis });
   } catch (error) {
     console.error('Erro ao buscar KPIs:', error);
@@ -177,27 +274,27 @@ router.get('/dashboard/kpis', async (req, res) => {
 router.get('/dashboard/charts/:type', async (req, res) => {
   try {
     const { type } = req.params;
-    const { period } = req.query;
-    
-    // Mock chart data baseado no tipo
-    let chartData = [];
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autenticado' });
+    }
+
+    let chartData: Array<{ data: string; valor: number }> = [];
+    const vendas = await supabaseService.getVendas({ userId }).catch(() => []);
+    const producoes = await supabaseService.getProducoes({ userId }).catch(() => []);
     
     switch (type) {
       case 'peso':
-        chartData = [
-          { data: '2024-01', valor: 450 },
-          { data: '2024-02', valor: 465 },
-          { data: '2024-03', valor: 480 },
-          { data: '2024-04', valor: 485 }
-        ];
+        chartData = producoes.slice(0, 12).map((item: any) => ({
+          data: String(item.data_producao || item.data || '').slice(0, 7),
+          valor: Number(item.peso || item.valor || 0)
+        }));
         break;
       case 'receita':
-        chartData = [
-          { data: '2024-01', valor: 980000 },
-          { data: '2024-02', valor: 1050000 },
-          { data: '2024-03', valor: 1150000 },
-          { data: '2024-04', valor: 1200000 }
-        ];
+        chartData = vendas.slice(0, 12).map((item: any) => ({
+          data: String(item.data_venda || '').slice(0, 7),
+          valor: Number(item.valor_total || 0)
+        }));
         break;
       default:
         chartData = [];
@@ -214,10 +311,10 @@ router.get('/dashboard/charts/:type', async (req, res) => {
 router.post('/ia/chat', async (req, res) => {
   try {
     const { message, context } = req.body;
-    
-    // Mock response da IA - substituir por integração real
+    const userId = req.user?.uid || 'anonymous';
+    const ai = new BovinextOptimizedAIService();
     const response = {
-      response: `Olá! Sou o FINN Bovino. Você perguntou: "${message}". Como posso ajudar com seu rebanho?`,
+      response: await ai.processMessage(userId, String(message || '')),
       suggestions: [
         'Quantos animais tenho no rebanho?',
         'Qual o preço da arroba hoje?',
@@ -226,7 +323,7 @@ router.post('/ia/chat', async (req, res) => {
       ],
       context: context || {}
     };
-    
+
     res.json({ success: true, data: response });
   } catch (error) {
     console.error('Erro no chat com IA:', error);
@@ -238,7 +335,7 @@ router.post('/ia/chat', async (req, res) => {
 router.post('/chatbot/query', async (req, res) => {
   try {
     const { message, chatId } = req.body;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
 
     console.log('[CHATBOT] 📨 Nova mensagem recebida:', { message, chatId, userId });
 
@@ -290,26 +387,11 @@ router.post('/chatbot/query', async (req, res) => {
 // ==================== CHATBOT SESSIONS ====================
 router.get('/chatbot/sessions', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     console.log('[CHATBOT] 📋 Buscando sessões do usuário:', userId);
 
-    // Mock sessions - implementar com banco de dados real
-    const sessions = [
-      {
-        id: `chat_${Date.now() - 86400000}`,
-        title: 'Conversa sobre rebanho',
-        lastMessage: 'Como está meu rebanho?',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        messageCount: 5
-      },
-      {
-        id: `chat_${Date.now() - 172800000}`,
-        title: 'Preço da arroba',
-        lastMessage: 'Qual o preço da arroba hoje?',
-        timestamp: new Date(Date.now() - 172800000).toISOString(),
-        messageCount: 3
-      }
-    ];
+    const chatHistoryService = new ChatHistoryService();
+    const sessions = await chatHistoryService.getSessions(userId || 'anonymous');
 
     res.json({ 
       success: true, 
@@ -327,20 +409,15 @@ router.get('/chatbot/sessions', async (req, res) => {
 
 router.post('/chatbot/sessions', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     console.log('[CHATBOT] 🆕 Criando nova sessão para usuário:', userId);
 
-    const newSession = {
-      chatId: `chat_${Date.now()}`,
-      userId: userId || 'anonymous',
-      title: 'Nova conversa',
-      createdAt: new Date().toISOString(),
-      messages: []
-    };
+    const chatHistoryService = new ChatHistoryService();
+    const conversation = await chatHistoryService.startNewConversation(userId || 'anonymous');
 
     res.json({ 
       success: true, 
-      chatId: newSession.chatId,
+      chatId: conversation.chatId,
       message: 'Sessão criada com sucesso'
     });
 
@@ -356,30 +433,11 @@ router.post('/chatbot/sessions', async (req, res) => {
 router.get('/chatbot/sessions/:chatId', async (req, res) => {
   try {
     const { chatId } = req.params;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     console.log('[CHATBOT] 🔍 Buscando sessão:', { chatId, userId });
 
-    // Mock session data - implementar com banco de dados real
-    const session = {
-      id: chatId,
-      userId: userId || 'anonymous',
-      title: 'Conversa sobre rebanho',
-      createdAt: new Date().toISOString(),
-      messages: [
-        {
-          id: 'msg_1',
-          sender: 'user',
-          content: 'Como está meu rebanho?',
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: 'msg_2',
-          sender: 'assistant',
-          content: 'Seu rebanho está bem! Você tem 150 animais com peso médio de 485kg.',
-          timestamp: new Date().toISOString()
-        }
-      ]
-    };
+    const chatHistoryService = new ChatHistoryService();
+    const session = await chatHistoryService.getConversation(chatId, userId || undefined);
 
     res.json({ 
       success: true, 
@@ -398,8 +456,11 @@ router.get('/chatbot/sessions/:chatId', async (req, res) => {
 router.delete('/chatbot/sessions/:chatId', async (req, res) => {
   try {
     const { chatId } = req.params;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     console.log('[CHATBOT] 🗑️ Deletando sessão:', { chatId, userId });
+
+    const chatHistoryService = new ChatHistoryService();
+    await chatHistoryService.deleteConversation(chatId, userId || undefined);
 
     res.json({ 
       success: true, 
@@ -417,8 +478,11 @@ router.delete('/chatbot/sessions/:chatId', async (req, res) => {
 
 router.delete('/chatbot/sessions', async (req, res) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     console.log('[CHATBOT] 🗑️ Deletando todas as sessões do usuário:', userId);
+
+    const chatHistoryService = new ChatHistoryService();
+    await chatHistoryService.deleteAllUserConversations(userId || 'anonymous');
 
     res.json({ 
       success: true, 
@@ -438,7 +502,7 @@ router.delete('/chatbot/sessions', async (req, res) => {
 router.post('/chatbot/feedback', async (req, res) => {
   try {
     const { messageId, rating, helpful, comment, category, context } = req.body;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     
     console.log('[CHATBOT] 👍 Recebendo feedback:', { 
       messageId, rating, helpful, category, userId 
@@ -476,7 +540,7 @@ router.post('/chatbot/feedback', async (req, res) => {
 router.post('/automated-actions/execute', async (req, res) => {
   try {
     const { action, payload, chatId, message } = req.body;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     
     console.log('[AUTOMATED_ACTIONS] ⚡ Executando ação:', { 
       action, payload, chatId, userId 
@@ -524,7 +588,7 @@ router.post('/automated-actions/execute', async (req, res) => {
 router.post('/chatbot/confirm-action', async (req, res) => {
   try {
     const { actionData, action } = req.body;
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     
     console.log('[CHATBOT] ✅ Confirmação de ação:', { actionData, action, userId });
 
@@ -554,23 +618,19 @@ router.post('/chatbot/confirm-action', async (req, res) => {
 router.post('/ia/analyze', async (req, res) => {
   try {
     const analysisData = req.body;
-    
-    // Mock analysis response
+    const userId = req.user?.uid || 'anonymous';
+    const ai = new BovinextOptimizedAIService();
+    const herd = await ai.analyzeHerdPerformance(userId);
+    const alerts = await ai.generateSmartAlerts(userId);
     const analysis = {
       tipo: 'analise_rebanho',
-      resultados: {
-        gmd_medio: 1.15,
-        peso_medio: 485,
-        recomendacoes: [
-          'Considere suplementação mineral',
-          'Monitore peso dos animais semanalmente',
-          'Verifique qualidade do pasto'
-        ]
-      },
-      confianca: 0.95,
+      resultados: herd,
+      alertas_sugeridos: alerts,
+      entrada: analysisData,
+      confianca: 0.85,
       timestamp: new Date()
     };
-    
+
     res.json({ success: true, data: analysis });
   } catch (error) {
     console.error('Erro na análise da IA:', error);
@@ -582,14 +642,25 @@ router.post('/ia/analyze', async (req, res) => {
 router.post('/reports/generate', async (req, res) => {
   try {
     const { type, filters } = req.body;
-    
+    const userId = req.user?.uid;
+    const [animais, vendas, producao] = await Promise.all([
+      supabaseService.getAnimais({ userId }).catch(() => []),
+      supabaseService.getVendas({ userId }).catch(() => []),
+      supabaseService.getProducoes({ userId }).catch(() => [])
+    ]);
+
     const report = {
       id: Date.now().toString(),
       tipo: type,
       filtros: filters,
-      status: 'PROCESSANDO',
+      status: 'CONCLUIDO',
       dataGeracao: new Date(),
-      url: null
+      url: null,
+      resumo: {
+        totalAnimais: animais.length,
+        totalVendas: vendas.length,
+        totalProducao: producao.length
+      }
     };
     
     res.json({ success: true, data: report });

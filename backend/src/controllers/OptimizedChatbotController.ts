@@ -9,6 +9,7 @@ import { Investimento } from '../models/Investimento';
 import { User } from '../models/User';
 import { contextManager } from '../services/ContextManager';
 import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
+import { AI_BRAND, BRAND_TEXT } from '../config/aiPrompts';
 
 // ===== SISTEMA DE STREAMING PARA SSE =====
 class StreamingController extends EventEmitter {
@@ -216,7 +217,7 @@ class AutomationEngine {
       const goalData = {
         user_id: user.id!, // Usar ID do Supabase
         nome_da_meta: entities.nome_da_meta || entities.nome || entities.meta || 'Meta da fazenda',
-        descricao: entities.descricao || entities.nome_da_meta || entities.nome || 'Meta criada via BOVI',
+        descricao: entities.descricao || entities.nome_da_meta || entities.nome || BRAND_TEXT.newGoalLabel,
         valor_total: valor,
         valor_atual: 0,
         categoria: entities.categoria || 'Fazenda',
@@ -496,7 +497,7 @@ export class OptimizedChatbotController {
       const { message, chatId } = req.body;
       const userId = (req as any).user?.uid || 'anonymous';
       
-      console.log(`[OptimizedChatbot] BOVI processing: "${message}" from user: ${userId}`);
+      console.log(`[OptimizedChatbot] ${AI_BRAND.logTag} processing: "${message}" from user: ${userId}`);
       
       // Validação rápida
       if (!message?.trim()) {
@@ -642,7 +643,7 @@ export class OptimizedChatbotController {
       
       res.status(500).json({
         success: false,
-        message: 'Ops! Tive um problema técnico. Pode tentar novamente?',
+        message: 'Não consegui processar isso agora. Tente novamente em instantes ou reformule a pergunta.',
         metadata: {
           responseTime: Date.now() - startTime,
           error: true
@@ -900,7 +901,7 @@ export class OptimizedChatbotController {
   }
 
   async streamResponse(req: Request, res: Response): Promise<void> {
-    console.log(`[StreamResponse] 🚀 INICIANDO BOVI STREAM RESPONSE`);
+    console.log(`[StreamResponse] 🚀 INICIANDO ${AI_BRAND.logTag} STREAM RESPONSE`);
     
     try {
       const { message, chatId } = req.method === 'GET' ? req.query : req.body;
@@ -945,7 +946,7 @@ export class OptimizedChatbotController {
       };
 
       // Enviar evento de conexão inicial
-      sendSSE('connected', { message: 'BOVI Stream iniciado' });
+      sendSSE('connected', { message: BRAND_TEXT.streamStartedMessage });
 
       const abortController = new AbortController();
       const heartbeat = setInterval(() => {
@@ -1118,7 +1119,7 @@ export class OptimizedChatbotController {
     const goalData = {
       user_id: user.id!,
       nome_da_meta: entities.nome_da_meta || entities.descricao || 'Meta da fazenda',
-      descricao: entities.descricao || 'Meta criada via BOVI',
+      descricao: entities.descricao || BRAND_TEXT.newGoalLabel,
       valor_total: entities.valor_total || entities.valor || 0,
       valor_atual: entities.valor_atual || 0,
       data_conclusao: entities.data_conclusao || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],

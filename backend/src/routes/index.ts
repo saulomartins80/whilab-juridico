@@ -6,6 +6,7 @@ import automatedActionsRoutes from './automatedActions';
 import { authenticateToken } from '../middlewares/auth';
 import { createRateLimiters, sanitizeInput, validateMessageSize, validateOrigin, auditMiddleware, attackProtection } from '../middlewares/securityMiddleware';
 import marketRoutes from './marketRoutes';
+import { BRAND_TEXT } from '../config/aiPrompts';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.use('/api/auth', authRoutes);
 router.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'BOVINEXT Backend API is running',
+    message: BRAND_TEXT.healthMessage,
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     version: '1.0.0'
@@ -35,7 +36,7 @@ router.use(
   auditMiddleware
 );
 
-// ==================== ROTAS DO BOVI CHATBOT ====================
+// ==================== ROTAS DO CHATBOT ====================
 router.use('/api/chatbot', chatbotRoutes);
 router.use('/api/automated-actions', automatedActionsRoutes);
 router.use('/api', marketRoutes);

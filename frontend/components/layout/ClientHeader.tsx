@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 
 import { useTheme } from '../../context/ThemeContext';
 
@@ -61,7 +61,7 @@ export function ClientHeader() {
               }`}
               aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
             >
-              {resolvedTheme === 'dark' ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
+              {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
             <Link 
@@ -83,7 +83,7 @@ export function ClientHeader() {
             className="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
@@ -116,12 +116,12 @@ export function ClientHeader() {
               >
                 {resolvedTheme === 'dark' ? (
                   <>
-                    <FiSun className="w-5 h-5 mr-2" />
+                    <Sun className="w-5 h-5 mr-2" />
                     Modo Claro
                   </>
                 ) : (
                   <>
-                    <FiMoon className="w-5 h-5 mr-2" />
+                    <Moon className="w-5 h-5 mr-2" />
                     Modo Escuro
                   </>
                 )}

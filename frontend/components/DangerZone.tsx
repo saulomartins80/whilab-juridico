@@ -1,16 +1,16 @@
 // components/DangerZone.tsx
 import { useState, useCallback } from 'react';
-import { 
-  FiDownload, 
-  FiAlertTriangle, 
-  FiTrash2, 
-  FiShield, 
-  FiCheck, 
-  FiX,
-  FiClock,
-  FiDatabase,
-  FiUser
-} from 'react-icons/fi';
+import {
+  Download,
+  AlertTriangle,
+  Trash2,
+  Shield,
+  Check,
+  X,
+  Clock,
+  Database,
+  User
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -43,25 +43,25 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
       type: 'all' as DataType, 
       label: 'Todos os dados', 
       description: 'Transações, configurações, perfil e todos os dados associados',
-      icon: <FiDatabase className="w-5 h-5" />
+      icon: <Database className="w-5 h-5" />
     },
     { 
       type: 'transactions' as DataType, 
       label: 'Transações', 
       description: 'Histórico completo de transações financeiras',
-      icon: <FiClock className="w-5 h-5" />
+      icon: <Clock className="w-5 h-5" />
     },
     { 
       type: 'settings' as DataType, 
       label: 'Configurações', 
       description: 'Preferências e configurações da conta',
-      icon: <FiShield className="w-5 h-5" />
+      icon: <Shield className="w-5 h-5" />
     },
     { 
       type: 'profile' as DataType, 
       label: 'Perfil', 
       description: 'Informações pessoais e dados do perfil',
-      icon: <FiUser className="w-5 h-5" />
+      icon: <User className="w-5 h-5" />
     }
   ];
 
@@ -223,7 +223,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
       >
         <div className="flex items-start mb-6">
           <div className="p-3 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 mr-4">
-            <FiDownload className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            <Download className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
@@ -268,7 +268,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
                       {option.label}
                     </span>
                     {selectedDataTypes.includes(option.type) && (
-                      <FiCheck className="w-4 h-4 text-yellow-600 dark:text-yellow-400 ml-2" />
+                      <Check className="w-4 h-4 text-yellow-600 dark:text-yellow-400 ml-2" />
                     )}
                   </div>
                   <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
@@ -317,8 +317,8 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
           {(exportStatus === 'preparing' || exportStatus === 'generating') && (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
           )}
-          {exportStatus === 'completed' && <FiCheck className="w-4 h-4 mr-2" />}
-          {exportStatus === 'failed' && <FiX className="w-4 h-4 mr-2" />}
+          {exportStatus === 'completed' && <Check className="w-4 h-4 mr-2" />}
+          {exportStatus === 'failed' && <X className="w-4 h-4 mr-2" />}
           {getExportButtonText()}
         </button>
       </motion.div>
@@ -332,7 +332,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
       >
         <div className="flex items-start mb-6">
           <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 mr-4">
-            <FiTrash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+            <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
@@ -348,7 +348,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
         {/* Warning List */}
         <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/20 rounded-lg">
           <div className="flex items-start mb-3">
-            <FiAlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
                 O que será excluído permanentemente:
@@ -376,7 +376,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
                 onClick={() => setDeleteStep('confirm')}
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm font-medium text-red-700 dark:text-red-300 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
               >
-                <FiTrash2 className="w-4 h-4 mr-2" />
+                <Trash2 className="w-4 h-4 mr-2" />
                 Iniciar Processo de Exclusão
               </button>
             </motion.div>
@@ -434,7 +434,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
             >
               <div className="p-4 bg-red-100 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg">
                 <div className="flex items-center justify-center mb-3">
-                  <FiAlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+                  <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
                 </div>
                 <p className="text-center text-sm text-red-800 dark:text-red-200 font-medium">
                   ÚLTIMA CHANCE DE CANCELAR
@@ -453,7 +453,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
                   }}
                   className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <FiX className="w-4 h-4 mr-2 inline" />
+                  <X className="w-4 h-4 mr-2 inline" />
                   Cancelar
                 </button>
                 <button
@@ -461,7 +461,7 @@ export default function DangerZone({ userId, onAccountDeleted }: DangerZoneProps
                   disabled={deleteCountdown > 0}
                   className="flex-1 px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {deleteCountdown > 0 && <FiClock className="w-4 h-4 mr-2 inline" />}
+                  {deleteCountdown > 0 && <Clock className="w-4 h-4 mr-2 inline" />}
                   {getDeleteButtonText()}
                 </button>
               </div>

@@ -5,8 +5,8 @@ import { Send, Bot, CheckCircle, X, Lightbulb, TrendingUp, Trash2, Brain, Rocket
 import { useOptimizedChat } from '../src/hooks/useOptimizedChat';
 import { useAuth } from '../context/AuthContext';
 import { useBusiness } from '../context/BusinessContext';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { dashboardBranding } from '../config/branding';
 import { chatbotAPI } from '../services/api'; // Importar API do chatbot
 import ClaudeStyleMediaUpload from './ClaudeStyleMediaUpload';
 import api from '../services/api';
@@ -566,7 +566,7 @@ const EnterpriseMessageBubble: React.FC<{
         {/* Avatar */}
         {!isUser && (
           <div className="w-8 h-8 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center mb-2 border-2 border-green-200 dark:border-green-600 overflow-hidden">
-            <Image src="/Bovinext.png" alt="BOVI" width={28} height={28} className="object-contain" />
+            <Image src={dashboardBranding.assistantAvatarSrc} alt={dashboardBranding.assistantAvatarAlt} width={28} height={28} className="object-contain" />
           </div>
         )}
 
@@ -1475,10 +1475,10 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center border-2 border-green-200 dark:border-green-600 overflow-hidden">
-                <Image src="/Bovinext.png" alt="BOVI" width={36} height={36} className="object-contain" />
+                <Image src={dashboardBranding.assistantAvatarSrc} alt={dashboardBranding.assistantAvatarAlt} width={36} height={36} className="object-contain" />
               </div>
               <div>
-                <h3 className="font-semibold text-sm text-green-800 dark:text-green-200">BOVI Assistente</h3>
+                <h3 className="font-semibold text-sm text-green-800 dark:text-green-200">{dashboardBranding.assistantLabel}</h3>
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <div className={`w-2 h-2 rounded-full ${
                     connectionStatus === 'connected' ? 'bg-green-500' : 
@@ -1570,9 +1570,9 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
           {enterpriseMessages.length === 0 ? (
             <div className="text-center text-gray-500 mt-8">
               <div className="w-20 h-20 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center mx-auto mb-4 border-2 border-green-200 dark:border-green-600 shadow-lg overflow-hidden">
-                <Image src="/Bovinext.png" alt="BOVI" width={64} height={64} className="object-contain" />
+                <Image src={dashboardBranding.assistantAvatarSrc} alt={dashboardBranding.assistantAvatarAlt} width={64} height={64} className="object-contain" />
               </div>
-              <h4 className="font-bold text-lg mb-2 text-green-800 dark:text-green-200">Olá! Sou o BOVI</h4>
+              <h4 className="font-bold text-lg mb-2 text-green-800 dark:text-green-200">{dashboardBranding.assistantGreeting}</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Seu assistente inteligente para gestão pecuária.
               </p>
@@ -1919,17 +1919,6 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
         }}
       />
 
-      <ToastContainer
-        position="bottom-left"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </>
   );
 }

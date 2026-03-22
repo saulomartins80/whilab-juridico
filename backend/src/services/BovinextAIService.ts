@@ -7,6 +7,7 @@ import OpenAI from 'openai';
 import { bovinextSupabaseService } from './BovinextSupabaseService';
 import { IUser, IContextoIA, BOVINEXT_AI_KNOWLEDGE, WHATSAPP_COMMANDS } from '../types/bovinext-supabase.types';
 import logger from '../utils/logger';
+import { AI_BRAND, SYSTEM_PROMPT, AI_MODEL_CONFIG } from '../config/aiPrompts';
 
 export class BovinextAIService {
   private openai: OpenAI | null = null;
@@ -31,7 +32,7 @@ export class BovinextAIService {
   }
 
   // =====================================================
-  // CONTEXTO ESPECIALIZADO BOVINEXT
+  // CONTEXTO ESPECIALIZADO
   // =====================================================
 
   private async buildBovinextContext(userId: string): Promise<IContextoIA> {
@@ -68,55 +69,23 @@ export class BovinextAIService {
         precos_atuais: precosAtuais.slice(0, 5)
       };
     } catch (error) {
-      logger.error('Erro ao construir contexto BOVINEXT:', error);
+      logger.error(`Erro ao construir contexto ${AI_BRAND.productName}:`, error);
       throw error;
     }
   }
 
   // =====================================================
-  // PROMPT ESPECIALIZADO BOVINO
+  // PROMPT ESPECIALIZADO
   // =====================================================
 
   private getBovinextSystemPrompt(): string {
-    return `
-# VOCÊ É O BOVINO ASSISTANT - IA ESPECIALIZADA EM PECUÁRIA
-
-## IDENTIDADE
-- Nome: Bovino Assistant (ou apenas "Bovino")
-- Especialidade: Gestão pecuária, zootecnia e agronegócio
-- Personalidade: Profissional, prático, conhecedor do campo
-- Linguagem: Técnica mas acessível, usa termos do agronegócio
+    return `${SYSTEM_PROMPT}
 
 ## CONHECIMENTO ESPECIALIZADO
 ${JSON.stringify(BOVINEXT_AI_KNOWLEDGE, null, 2)}
 
 ## COMANDOS DISPONÍVEIS
 ${JSON.stringify(WHATSAPP_COMMANDS, null, 2)}
-
-## DIRETRIZES IMPORTANTES
-1. **SEMPRE** use terminologia zootécnica correta
-2. **SEMPRE** considere aspectos econômicos nas recomendações
-3. **SEMPRE** mencione questões sanitárias quando relevante
-4. **SEMPRE** forneça dados concretos quando disponível
-5. **NUNCA** dê conselhos veterinários específicos - sempre recomende consultar profissional
-6. **SEMPRE** considere a sazonalidade do mercado bovino
-7. **SEMPRE** seja prático e objetivo nas respostas
-
-## FORMATO DE RESPOSTA
-- Use emojis relacionados à pecuária: 🐂 🐄 🌱 📊 💰
-- Estruture respostas em tópicos quando necessário
-- Inclua números e dados sempre que possível
-- Termine com sugestão de próxima ação quando apropriado
-
-## CONTEXTO ATUAL DO USUÁRIO
-Você receberá o contexto completo da fazenda do usuário, incluindo:
-- Dados do rebanho atual
-- Histórico de vendas
-- Alertas pendentes
-- Preços de mercado atuais
-- Informações da fazenda
-
-Use essas informações para dar respostas personalizadas e relevantes.
 `;
   }
 
@@ -181,8 +150,8 @@ ${contexto.precos_atuais.length > 0 ?
           { role: 'system', content: this.getBovinextSystemPrompt() },
           { role: 'user', content: contextPrompt }
         ],
-        max_tokens: 1000,
-        temperature: 0.7
+        max_tokens: AI_MODEL_CONFIG.maxTokens,
+        temperature: AI_MODEL_CONFIG.temperature
       });
 
       const response = completion.choices[0]?.message?.content || 
@@ -199,7 +168,7 @@ ${contexto.precos_atuais.length > 0 ?
       return response;
 
     } catch (error) {
-      logger.error('Erro ao processar mensagem BOVINEXT:', error);
+      logger.error(`Erro ao processar mensagem ${AI_BRAND.productName}:`, error);
       
       // Resposta de fallback
       const fallbackResponse = this.getFallbackResponse(message);
@@ -235,17 +204,17 @@ Para consultar preços atualizados, preciso acessar os dados de mercado.
 Atualmente o sistema está em modo de desenvolvimento.
 
 💡 **Dica:** Use comandos como:
-- "Bovino, preço do boi hoje"
-- "Bovino, cotação da arroba"`;
+- "${AI_BRAND.assistantName}, preco do boi hoje"
+- "${AI_BRAND.assistantName}, cotacao da arroba"`;
     }
     
     if (messageLower.includes('animal') || messageLower.includes('rebanho')) {
       return `🐄 **Gestão do Rebanho**
       
 Para consultar informações do seu rebanho, use comandos como:
-- "Bovino, quantos animais tenho?"
-- "Bovino, meu rebanho"
-- "Bovino, animais por lote"
+- "${AI_BRAND.assistantName}, quantos animais tenho?"
+- "${AI_BRAND.assistantName}, meu rebanho"
+- "${AI_BRAND.assistantName}, animais por lote"
 
 📊 Posso ajudar com cadastro, consultas e relatórios do rebanho.`;
     }
@@ -254,9 +223,9 @@ Para consultar informações do seu rebanho, use comandos como:
       return `💰 **Vendas e Comercialização**
       
 Para registrar ou consultar vendas:
-- "Bovino, registrar venda"
-- "Bovino, vendas do mês"
-- "Bovino, melhor preço para venda"
+- "${AI_BRAND.assistantName}, registrar venda"
+- "${AI_BRAND.assistantName}, vendas do mes"
+- "${AI_BRAND.assistantName}, melhor preco para venda"
 
 📈 Posso ajudar com análise de mercado e timing de vendas.`;
     }
@@ -265,15 +234,15 @@ Para registrar ou consultar vendas:
       return `💉 **Manejo Sanitário**
       
 Para questões de manejo:
-- "Bovino, agenda de vacinação"
-- "Bovino, próximas vacinas"
-- "Bovino, registrar manejo"
+- "${AI_BRAND.assistantName}, agenda de vacinacao"
+- "${AI_BRAND.assistantName}, proximas vacinas"
+- "${AI_BRAND.assistantName}, registrar manejo"
 
 ⚠️ **Importante:** Sempre consulte um veterinário para orientações específicas.`;
     }
     
     // Resposta genérica
-    return `🐂 **Bovino Assistant - IA Pecuária**
+    return `🐂 **${AI_BRAND.assistantName} - ${AI_BRAND.productDescription}**
     
 Olá! Sou especializado em gestão pecuária. Posso ajudar com:
 
@@ -281,13 +250,13 @@ Olá! Sou especializado em gestão pecuária. Posso ajudar com:
 💰 **Vendas:** Registros e análise de mercado  
 💉 **Manejo:** Calendário sanitário e alertas
 📊 **Relatórios:** Performance e indicadores
-💬 **Comandos:** Use "Bovino, [sua pergunta]"
+💬 **Comandos:** Use "${AI_BRAND.assistantName}, [sua pergunta]"
 
 Como posso ajudar sua fazenda hoje?`;
   }
 
   // =====================================================
-  // ANÁLISE DE IMAGENS (BOVINO VISION)
+  // ANALISE DE IMAGENS DO ASSISTENTE
   // =====================================================
   
   async analyzeAnimalImage(
@@ -319,7 +288,7 @@ Como posso ajudar sua fazenda hoje?`;
       // Salvar análise como mensagem
       await bovinextSupabaseService.createChatMessage(userId, {
         message: `Análise de imagem do animal ${animalId || 'não identificado'}`,
-        response: `🔍 **Análise Bovino Vision**
+        response: `🔍 **Analise ${AI_BRAND.assistantName} Vision**
         
 📏 **Peso estimado:** ${mockAnalysis.estimatedWeight}kg
 🎯 **Confiança:** ${mockAnalysis.confidence}%
@@ -431,7 +400,7 @@ ${contexto.ultimas_vendas.length > 0 ? `
 - Mantenha o calendário sanitário em dia
 
 ---
-*Relatório gerado automaticamente pelo Bovino Assistant*
+*Relatorio gerado automaticamente pelo ${AI_BRAND.assistantName}*
 `;
 
       // Salvar relatório como mensagem

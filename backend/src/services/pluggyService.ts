@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { buildFrontendUrl, runtimeConfig } from '../config/runtime';
 
 interface PluggyConfig {
   clientId: string;
@@ -63,7 +64,7 @@ class PluggyService {
     };
 
     if (!this.config.clientId || !this.config.apiKey) {
-      console.warn('[BOVINEXT] Pluggy não configurado - funcionalidade desabilitada para desenvolvimento');
+      console.warn(`[PluggyService] Integração não configurada em ${runtimeConfig.brandName} - funcionalidade desabilitada para desenvolvimento`);
       // Mock config for development
       this.config.clientId = 'mock_client_id';
       this.config.apiKey = 'mock_api_key';
@@ -78,7 +79,7 @@ class PluggyService {
       const response = await axios.post(`${this.config.baseUrl}/connect_token`, {
         clientId: this.config.clientId,
         clientSecret: this.config.apiKey,
-        redirectUrl: redirectUrl || `${process.env.FRONTEND_URL || 'http://localhost:3001'}/connect`
+        redirectUrl: redirectUrl || buildFrontendUrl('/connect')
       }, {
         headers: {
           'X-API-Key': this.config.apiKey,

@@ -269,10 +269,10 @@ export default function TablesAndAlerts() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Rebanho Ativo
+                  Tabela operacional
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {filteredAnimals.length} animais encontrados
+                  {filteredAnimals.length} itens encontrados
                 </p>
               </div>
               <div className="flex items-center space-x-2">
@@ -292,7 +292,7 @@ export default function TablesAndAlerts() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Buscar por nome ou brinco..."
+                  placeholder="Buscar por nome ou código..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-2 w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -303,7 +303,7 @@ export default function TablesAndAlerts() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                <option value="todos">Todas Categorias</option>
+                <option value="todos">Todas categorias</option>
                 <option value="vaca">Vacas</option>
                 <option value="touro">Touros</option>
                 <option value="novilha">Novilhas</option>
@@ -319,13 +319,13 @@ export default function TablesAndAlerts() {
               <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Animal
+                    Item
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Categoria
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Peso/GMD
+                    Métrica
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Status
@@ -397,8 +397,8 @@ export default function TablesAndAlerts() {
           className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Alertas do Sistema
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Alertas da operação
             </h3>
             <span className="px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 rounded-full text-xs font-medium">
               {alertsData.filter(a => !a.read).length} novos

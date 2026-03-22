@@ -1,54 +1,61 @@
-import { supabase } from '../config/supabase';
-import { createClient } from '@supabase/supabase-js';
+import { supabase, getSupabaseAnonClient } from '../config/supabase';
+import { resolveRequestAuthContext } from '../utils/authContext';
+
+const normalizeEmail = (value: unknown): string => {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+};
+
+const normalizePassword = (value: unknown): string => {
+  return typeof value === 'string' ? value.trim() : '';
+};
+
+const normalizeUserData = (userData: Record<string, any>): Record<string, any> => ({
+  ...userData,
+  email: normalizeEmail(userData.email),
+  display_name: typeof userData.display_name === 'string' ? userData.display_name.trim() : userData.display_name,
+  fazenda_nome: typeof userData.fazenda_nome === 'string' ? userData.fazenda_nome.trim() : userData.fazenda_nome
+});
 
 export class AuthService {
   private supabaseAdmin = supabase;
 
-  // Cliente separado para operações do usuário (com RLS)
-  private supabaseUser = null;
-
   private getSupabaseUserClient() {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
+    try {
+      return getSupabaseAnonClient();
+    } catch {
       return null;
     }
-
-    if (!this.supabaseUser) {
-      this.supabaseUser = createClient(supabaseUrl, supabaseAnonKey);
-    }
-
-    return this.supabaseUser;
   }
 
   async login(email: string, password: string) {
     try {
-      // Usar o cliente do usuário para login (respeita RLS)
-      const { data, error } = await this.getSupabaseUserClient()?.auth.signInWithPassword({
-        email,
-        password,
-      }) || { data: null, error: new Error('Cliente não configurado') };
+      const client = this.getSupabaseUserClient();
+      if (!client) {
+        throw new Error('Cliente Supabase anonimo nao configurado');
+      }
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email: normalizeEmail(email),
+        password: normalizePassword(password)
+      });
 
       if (error) throw error;
-      if (!data.user) throw new Error('Usuário não encontrado');
+      if (!data.user) throw new Error('Usuario nao encontrado');
 
-      // Buscar perfil do usuário usando o cliente admin para evitar problemas de RLS
       const { data: profile, error: profileError } = await this.supabaseAdmin
         .from('users')
         .select('*')
         .eq('firebase_uid', data.user.id)
         .maybeSingle();
 
-      // Se não encontrou perfil, não é erro fatal - retornar sem perfil
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.warn('Aviso: Perfil não encontrado para usuário:', data.user.id);
+      if (profileError && (profileError as any).code !== 'PGRST116') {
+        console.warn('Aviso: perfil nao encontrado para usuario:', data.user.id);
       }
 
       return {
         user: data.user,
         session: data.session,
-        profile
+        profile: profile || null
       };
     } catch (error) {
       console.error('Erro no login:', error);
@@ -58,23 +65,24 @@ export class AuthService {
 
   async register(email: string, password: string, userData: any) {
     try {
-      // 1. Criar usuário no Auth usando o cliente admin
+      const normalizedEmail = normalizeEmail(email);
+      const normalizedPassword = normalizePassword(password);
+      const normalizedUserData = normalizeUserData(userData || {});
+
       const { data, error } = await this.supabaseAdmin.auth.signUp({
-        email,
-        password,
+        email: normalizedEmail,
+        password: normalizedPassword,
         options: {
           data: {
-            name: userData.name,
-            fazenda: userData.fazenda_nome
-          },
-          // Não depender de confirmação por e-mail; backend confirmará abaixo
+            name: normalizedUserData.display_name || normalizedUserData.name,
+            fazenda: normalizedUserData.fazenda_nome
+          }
         }
       });
 
       if (error) throw error;
-      if (!data.user) throw new Error('Falha ao criar usuário');
+      if (!data.user) throw new Error('Falha ao criar usuario');
 
-      // 2. Confirmar email automaticamente (sempre pelo backend)
       let confirmedUser = data.user;
       if (!data.user.email_confirmed_at) {
         try {
@@ -85,23 +93,23 @@ export class AuthService {
           if (confirmError) throw confirmError;
           if (confirmedData?.user) {
             confirmedUser = confirmedData.user;
-            console.log(`✅ Email confirmado automaticamente para: ${email}`);
+            console.log(`Email confirmado automaticamente para: ${normalizedEmail}`);
           }
         } catch (confirmError) {
-          console.warn('⚠️ Não foi possível confirmar email automaticamente:', confirmError);
+          console.warn('Nao foi possivel confirmar email automaticamente:', confirmError);
         }
       }
 
-      // 3. Criar perfil na tabela users (usando service role para evitar problemas de RLS)
+      const timestamp = new Date().toISOString();
       const userProfile = {
         id: confirmedUser.id,
         firebase_uid: confirmedUser.id,
-        email,
-        ...userData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        subscription_plan: userData.subscription_plan || 'fazendeiro',
-        subscription_status: userData.subscription_status || 'active'
+        email: normalizedEmail,
+        ...normalizedUserData,
+        created_at: timestamp,
+        updated_at: timestamp,
+        subscription_plan: normalizedUserData.subscription_plan || 'fazendeiro',
+        subscription_status: normalizedUserData.subscription_status || 'active'
       };
 
       const { data: profile, error: profileError } = await (this.supabaseAdmin as any)
@@ -125,36 +133,27 @@ export class AuthService {
   }
 
   async logout() {
-    try {
-      const { error } = await this.supabaseAdmin.auth.signOut();
-      if (error) throw error;
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-      throw error;
-    }
+    return { success: true };
   }
 
-  async getSession() {
-    try {
-      const { data, error } = await this.supabaseAdmin.auth.getSession();
-      if (error) throw error;
-      return data.session;
-    } catch (error) {
-      console.error('Erro ao obter sessão:', error);
-      throw error;
+  async getSession(token?: string) {
+    if (!token) {
+      return null;
     }
+
+    const context = await resolveRequestAuthContext({ headers: { authorization: `Bearer ${token}` } });
+    return context
+      ? {
+          user: context.user,
+          profile: context.profile,
+          access_token: token
+        }
+      : null;
   }
 
-  async getUser() {
-    try {
-      const { data: { user }, error } = await this.supabaseAdmin.auth.getUser();
-      if (error) throw error;
-      return user;
-    } catch (error) {
-      console.error('Erro ao obter usuário:', error);
-      throw error;
-    }
+  async getUser(token?: string) {
+    const session = await this.getSession(token);
+    return session?.user || null;
   }
 }
 

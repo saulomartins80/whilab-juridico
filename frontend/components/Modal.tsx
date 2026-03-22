@@ -1,7 +1,7 @@
 // components/Modal.tsx
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX } from 'react-icons/fi';
+import { X } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -65,7 +65,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
                     className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none"
                     onClick={onClose}
                   >
-                    <FiX className="h-6 w-6" />
+                    <X className="h-6 w-6" />
                   </button>
                 </div>
               </div>

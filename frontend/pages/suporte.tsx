@@ -27,7 +27,8 @@ const SuportePage = () => {
       title: 'Chat ao Vivo',
       description: 'Converse com nossa equipe em tempo real',
       icon: <MessageCircle className="w-6 h-6" />,
-      action: () => window.open('https://tawk.to/chat/seu-codigo-tawkto', '_blank'),
+      // TODO: Replace 'SEU_CODIGO_TAWKTO' with your actual tawk.to widget ID (found in tawk.to dashboard)
+      action: () => window.open('https://tawk.to/chat/SEU_CODIGO_TAWKTO', '_blank'),
       color: 'bg-blue-500'
     },
     {
@@ -41,9 +42,9 @@ const SuportePage = () => {
     {
       id: 'email',
       title: 'E-mail',
-      description: 'suporte@finnextho.com',
+      description: 'suporte@bovinext.com.br',
       icon: <Mail className="w-6 h-6" />,
-      action: () => window.location.href = 'mailto:suporte@finnextho.com',
+      action: () => window.location.href = 'mailto:suporte@bovinext.com.br',
       color: 'bg-red-500'
     },
     {
@@ -99,8 +100,8 @@ const SuportePage = () => {
   return (
     <div className={`min-h-screen ${resolvedTheme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <Head>
-        <title>Suporte | finnextho</title>
-        <meta name="description" content="Central de suporte e ajuda do finnextho - sua plataforma financeira inteligente" />
+        <title>Suporte | Bovinext</title>
+        <meta name="description" content="Central de suporte e ajuda do Bovinext - sua plataforma de gestão pecuária inteligente" />
       </Head>
 
       <main className="container mx-auto px-4 py-8">

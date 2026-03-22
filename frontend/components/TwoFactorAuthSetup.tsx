@@ -1,26 +1,27 @@
 // components/TwoFactorAuthSetup.tsx
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { 
-  FiCheck, 
-  FiCopy, 
-  FiKey, 
-  FiSmartphone, 
-  FiDownload, 
-  FiShield, 
-  FiAlertTriangle, 
-  FiInfo,
-  FiArrowRight,
-  FiArrowLeft,
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiRefreshCw
-} from 'react-icons/fi';
+import {
+  Check,
+  Copy,
+  KeyRound,
+  Smartphone,
+  Download,
+  Shield,
+  AlertTriangle,
+  Info,
+  ArrowRight,
+  ArrowLeft,
+  Lock,
+  Eye,
+  EyeOff,
+  RefreshCw
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
 import Input from './ui/Input';
+import { dashboardBranding } from '../config/branding';
 // import Button from './ui/Button';
 
 interface TwoFactorAuthSetupProps {
@@ -88,6 +89,10 @@ const AUTHENTICATOR_APPS: AuthApp[] = [
 ];
 
 export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFactorAuthSetupProps) {
+  const brandName = dashboardBranding.brandName;
+  const twoFactorIssuer = dashboardBranding.twoFactorIssuer;
+  const backupCodesFilenamePrefix = dashboardBranding.backupCodesFilenamePrefix;
+  const supportEmailExample = dashboardBranding.supportEmailExample;
   const [step, setStep] = useState<SetupStep>(currentStatus ? 'manage' : 'intro');
   const [secret, setSecret] = useState('');
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
@@ -95,7 +100,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   // const [qrCodeUri, setQrCodeUri] = useState(''); // Commented out as it's used but not displayed
-  const [userEmail] = useState('usuario@bovinext.com');
+  const [userEmail] = useState(supportEmailExample);
   const [selectedApp, setSelectedApp] = useState<AuthApp | null>(null);
   const [showSecret, setShowSecret] = useState(false);
   const [backupCodesDownloaded, setBackupCodesDownloaded] = useState(false);
@@ -209,7 +214,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
     }
 
     // Criar URI padrão otpauth para apps autenticadores (não usado no momento)
-    // const issuer = 'Bovinext';
+    // const issuer = twoFactorIssuer;
     // const accountName = userEmail;
     // const uri = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}?secret=${newSecret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
 
@@ -235,24 +240,24 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
   const handleCopyBackupCodes = useCallback(() => {
     try {
-      const codesText = `BOVINEXT - Códigos de Backup 2FA\nGerados em: ${new Date().toLocaleString()}\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro. Cada código pode ser usado apenas uma vez.`;
+      const codesText = `${brandName} - Códigos de Backup 2FA\nGerados em: ${new Date().toLocaleString()}\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro. Cada código pode ser usado apenas uma vez.`;
       navigator.clipboard.writeText(codesText);
       safeToast('success', 'Códigos de backup copiados para a área de transferência!');
     } catch (error) {
       console.error('Error copying backup codes:', error);
       safeToast('error', 'Erro ao copiar códigos de backup');
     }
-  }, [backupCodes, safeToast]);
+  }, [backupCodes, safeToast, brandName]);
 
   const handleDownloadBackupCodes = useCallback(() => {
     try {
-      const codesText = `BOVINEXT - Códigos de Backup 2FA\nGerados em: ${new Date().toLocaleString()}\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro. Cada código pode ser usado apenas uma vez.`;
+      const codesText = `${brandName} - Códigos de Backup 2FA\nGerados em: ${new Date().toLocaleString()}\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro. Cada código pode ser usado apenas uma vez.`;
       
       const blob = new Blob([codesText], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `bovinext-backup-codes-${new Date().toISOString().split('T')[0]}.txt`;
+      link.download = `${backupCodesFilenamePrefix}-backup-codes-${new Date().toISOString().split('T')[0]}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -264,7 +269,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       console.error('Error downloading backup codes:', error);
       safeToast('error', 'Erro ao baixar códigos de backup');
     }
-  }, [backupCodes, safeToast]);
+  }, [backupCodes, safeToast, brandName, backupCodesFilenamePrefix]);
 
   const handleVerifyCode = useCallback(() => {
     setIsLoading(true);
@@ -349,7 +354,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 ? 'bg-blue-500 text-white' 
                 : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
             }`}>
-              {index < currentIndex ? <FiCheck className="w-4 h-4" /> : index + 1}
+              {index < currentIndex ? <Check className="w-4 h-4" /> : index + 1}
             </div>
             {index < steps.length - 1 && (
               <div className={`w-12 h-1 mx-2 transition-all duration-300 ${
@@ -368,7 +373,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 mb-4">
-            <FiShield className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <Shield className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             2FA Ativo
@@ -380,7 +385,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4">
           <div className="flex">
-            <FiCheck className="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
+            <Check className="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h3 className="text-sm font-medium text-green-800 dark:text-green-200">
                 Autenticação de dois fatores ativa
@@ -398,7 +403,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             className="flex items-center justify-between p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <div className="flex items-center">
-              <FiRefreshCw className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" />
+              <RefreshCw className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" />
               <div className="text-left">
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   Gerar novos códigos de backup
@@ -408,7 +413,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 </div>
               </div>
             </div>
-            <FiArrowRight className="w-4 h-4 text-gray-400" />
+            <ArrowRight className="w-4 h-4 text-gray-400" />
           </button>
 
           <button
@@ -416,7 +421,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             className="flex items-center justify-between p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <div className="flex items-center">
-              <FiDownload className="w-5 h-5 text-green-600 dark:text-green-400 mr-3" />
+              <Download className="w-5 h-5 text-green-600 dark:text-green-400 mr-3" />
               <div className="text-left">
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   Ver códigos de backup
@@ -426,7 +431,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 </div>
               </div>
             </div>
-            <FiArrowRight className="w-4 h-4 text-gray-400" />
+            <ArrowRight className="w-4 h-4 text-gray-400" />
           </button>
         </div>
 
@@ -452,7 +457,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
         className="text-center space-y-6"
       >
         <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900/20">
-          <FiCheck className="h-10 w-10 text-green-600 dark:text-green-400" />
+          <Check className="h-10 w-10 text-green-600 dark:text-green-400" />
         </div>
         
         <div>
@@ -477,7 +482,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiInfo className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+            <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
             <div className="text-left">
               <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200">
                 Próximos passos importantes:
@@ -507,7 +512,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 dark:bg-yellow-900/20 mb-4">
-            <FiKey className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+            <KeyRound className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             Códigos de Backup
@@ -521,7 +526,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiAlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 Importante: Códigos de Recuperação
@@ -545,14 +550,14 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 title="Copiar códigos"
               >
-                <FiCopy className="inline mr-1 w-3 h-3" /> Copiar
+                <Copy className="inline mr-1 w-3 h-3" /> Copiar
               </button>
               <button
                 onClick={handleDownloadBackupCodes}
                 className="text-xs px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                 title="Baixar códigos"
               >
-                <FiDownload className="inline mr-1 w-3 h-3" /> Baixar
+                <Download className="inline mr-1 w-3 h-3" /> Baixar
               </button>
             </div>
           </div>
@@ -571,7 +576,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiLock className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
+            <Lock className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-red-800 dark:text-red-200">
                 Dicas de segurança:
@@ -591,7 +596,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             onClick={() => setStep('verify')}
             className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            <FiArrowLeft className="inline mr-2 w-4 h-4" />
+            <ArrowLeft className="inline mr-2 w-4 h-4" />
             Voltar
           </button>
           <button
@@ -600,7 +605,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg text-sm font-medium transition-colors"
           >
             {backupCodesDownloaded ? 'Finalizar Configuração' : 'Baixe os códigos primeiro'}
-            <FiArrowRight className="inline ml-2 w-4 h-4" />
+            <ArrowRight className="inline ml-2 w-4 h-4" />
           </button>
         </div>
       </div>
@@ -613,7 +618,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900/20 mb-4">
-            <FiSmartphone className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            <Smartphone className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             Verificar Configuração
@@ -659,7 +664,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
               maxLength={6}
               className="text-center text-xl font-mono tracking-widest"
               autoComplete="off"
-              icon={<FiKey className="w-5 h-5" />}
+              icon={<KeyRound className="w-5 h-5" />}
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
               Digite o código de 6 dígitos mostrado no seu aplicativo autenticador
@@ -673,7 +678,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
               className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
             >
               <div className="flex">
-                <FiAlertTriangle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
+                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
                 <div>
                   <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
                     Erro na verificação
@@ -690,7 +695,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             onClick={() => setStep('scan')}
             className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            <FiArrowLeft className="inline mr-2 w-4 h-4" />
+            <ArrowLeft className="inline mr-2 w-4 h-4" />
             Voltar
           </button>
           <button
@@ -706,7 +711,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             ) : (
               <>
                 Verificar Código
-                <FiArrowRight className="inline ml-2 w-4 h-4" />
+                <ArrowRight className="inline ml-2 w-4 h-4" />
               </>
             )}
           </button>
@@ -721,7 +726,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 mb-4">
-            <FiKey className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <KeyRound className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             Configurar Aplicativo
@@ -738,7 +743,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             {/* Aqui seria renderizado o QR Code real. Para este exemplo, uso um placeholder */}
             <div className="w-48 h-48 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600">
               <div className="text-center">
-                <FiKey className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                <KeyRound className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">QR Code</p>
                 <p className="text-xs text-gray-400">Escaneie com seu app</p>
               </div>
@@ -760,13 +765,13 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 onClick={() => setShowSecret(!showSecret)}
                 className="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               >
-                {showSecret ? <FiEyeOff className="inline w-3 h-3" /> : <FiEye className="inline w-3 h-3" />}
+                {showSecret ? <EyeOff className="inline w-3 h-3" /> : <Eye className="inline w-3 h-3" />}
               </button>
               <button
                 onClick={handleCopySecret}
                 className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
               >
-                <FiCopy className="inline mr-1 w-3 h-3" /> Copiar
+                <Copy className="inline mr-1 w-3 h-3" /> Copiar
               </button>
             </div>
           </div>
@@ -777,13 +782,13 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
           
           <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p><strong>Nome da conta:</strong> {userEmail}</p>
-            <p><strong>Emissor:</strong> BOVINEXT</p>
+            <p><strong>Emissor:</strong> {twoFactorIssuer}</p>
           </div>
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiInfo className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+            <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200">
                 Como configurar:
@@ -792,7 +797,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
                 <li>Abra seu aplicativo autenticador</li>
                 <li>Toque em &ldquo;Adicionar conta&rdquo; ou &ldquo;+&rdquo;</li>
                 <li>Escaneie este QR code ou digite o código manual</li>
-                <li>Sua conta BOVINEXT aparecerá no app</li>
+                <li>Sua conta {brandName} aparecerá no app</li>
               </ol>
             </div>
           </div>
@@ -803,7 +808,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             onClick={() => setStep('download')}
             className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            <FiArrowLeft className="inline mr-2 w-4 h-4" />
+            <ArrowLeft className="inline mr-2 w-4 h-4" />
             Voltar
           </button>
           <button
@@ -811,7 +816,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
             Próximo: Verificar
-            <FiArrowRight className="inline ml-2 w-4 h-4" />
+            <ArrowRight className="inline ml-2 w-4 h-4" />
           </button>
         </div>
       </div>
@@ -824,7 +829,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-purple-100 dark:bg-purple-900/20 mb-4">
-            <FiDownload className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+            <Download className="h-8 w-8 text-purple-600 dark:text-purple-400" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             Baixar Aplicativo
@@ -838,7 +843,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiInfo className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 mr-3 flex-shrink-0" />
+            <Info className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h3 className="text-sm font-medium text-purple-800 dark:text-purple-200">
                 Aplicativos Recomendados
@@ -921,7 +926,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiAlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 Dica importante
@@ -939,7 +944,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             onClick={() => setStep('intro')}
             className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            <FiArrowLeft className="inline mr-2 w-4 h-4" />
+            <ArrowLeft className="inline mr-2 w-4 h-4" />
             Voltar
           </button>
           <button
@@ -948,7 +953,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
             className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white rounded-lg text-sm font-medium transition-colors"
           >
             Próximo: Configurar
-            <FiArrowRight className="inline ml-2 w-4 h-4" />
+            <ArrowRight className="inline ml-2 w-4 h-4" />
           </button>
         </div>
       </div>
@@ -960,7 +965,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
     <div className="space-y-6">
       <div className="text-center">
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900/20 mb-4">
-          <FiShield className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          <Shield className="h-8 w-8 text-blue-600 dark:text-blue-400" />
         </div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
           Autenticação de Dois Fatores
@@ -972,7 +977,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <div className="flex items-start">
-          <FiInfo className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
+          <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
           <div>
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">
               O que é autenticação de dois fatores?
@@ -988,7 +993,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
       <div className="grid gap-4">
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiCheck className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 mr-3 flex-shrink-0" />
+            <Check className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-green-800 dark:text-green-200">
                 Benefícios da 2FA:
@@ -1005,7 +1010,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
 
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
           <div className="flex items-start">
-            <FiAlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
               <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 Importante saber:
@@ -1033,7 +1038,7 @@ export default function TwoFactorAuthSetup({ onComplete, currentStatus }: TwoFac
           className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
         >
           Começar Configuração
-          <FiArrowRight className="inline ml-2 w-4 h-4" />
+          <ArrowRight className="inline ml-2 w-4 h-4" />
         </button>
       </div>
     </div>

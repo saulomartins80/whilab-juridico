@@ -1,6 +1,6 @@
 // components/ui/Input.tsx
 import React, { forwardRef, useState } from 'react';
-import { FiEye, FiEyeOff, FiAlertCircle, FiCheck } from 'react-icons/fi';
+import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -106,15 +106,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         )}
 
         {/* Status Icons */}
         {!showPasswordToggle && (error || success) && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            {error && <FiAlertCircle className="text-red-500" size={18} />}
-            {success && <FiCheck className="text-green-500" size={18} />}
+            {error && <AlertCircle className="text-red-500" size={18} />}
+            {success && <Check className="text-green-500" size={18} />}
           </div>
         )}
 
@@ -138,13 +138,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
           >
             {error && (
               <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                <FiAlertCircle size={14} />
+                <AlertCircle size={14} />
                 {error}
               </p>
             )}
             {success && (
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
-                <FiCheck size={14} />
+                <Check size={14} />
                 {success}
               </p>
             )}

@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { 
-  FiUser, 
-  FiMail, 
-  FiLock, 
-  FiCheck, 
-  FiAlertCircle, 
-  FiLoader, 
-  FiArrowRight, 
-  FiHome,
-  FiEye,
-  FiEyeOff
-} from 'react-icons/fi';
+import {
+  User,
+  Mail,
+  Lock,
+  Check,
+  AlertCircle,
+  Loader2,
+  ArrowRight,
+  Home,
+  Eye,
+  EyeOff
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useAuth } from '../../context/AuthContext';
+import { dashboardBranding } from '../../config/branding';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -122,9 +123,9 @@ export default function RegisterPage() {
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center border border-green-200 dark:border-green-800"
         >
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 mb-4">
-            <FiCheck className="h-8 w-8 text-white" />
+            <Check className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold mb-2 text-green-600">Bem-vindo ao BOVINEXT! 🐄</h2>
+          <h2 className="text-2xl font-bold mb-2 text-green-600">Bem-vindo ao {dashboardBranding.brandName}! 🐄</h2>
           <p className="mb-4 text-gray-600 dark:text-gray-300 text-sm">
             Conta criada com sucesso! Redirecionando...
           </p>
@@ -158,7 +159,7 @@ export default function RegisterPage() {
               </div>
               <div className="text-left">
                 <h1 className="text-lg font-bold text-white">Criar Conta</h1>
-                <p className="text-green-100 text-xs">BOVINEXT - Gestão Pecuária</p>
+                <p className="text-green-100 text-xs">{dashboardBranding.brandName} - Gestao Pecuaria</p>
               </div>
             </div>
           </div>
@@ -174,7 +175,7 @@ export default function RegisterPage() {
                   className="mb-4"
                 >
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
-                    <FiAlertCircle className="flex-shrink-0 h-4 w-4" />
+                    <AlertCircle className="flex-shrink-0 h-4 w-4" />
                     <span className="text-sm">{error}</span>
                   </div>
                 </motion.div>
@@ -190,7 +191,7 @@ export default function RegisterPage() {
                     Nome Completo
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       id="name"
                       name="name"
@@ -208,7 +209,7 @@ export default function RegisterPage() {
                     Nome da Fazenda
                   </label>
                   <div className="relative">
-                    <FiHome className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Home className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       id="fazenda"
                       name="fazenda"
@@ -229,7 +230,7 @@ export default function RegisterPage() {
                   Email
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input
                     id="email"
                     name="email"
@@ -246,7 +247,7 @@ export default function RegisterPage() {
                 </div>
                 {!emailValid && formData.email.length > 0 && (
                   <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                    <FiAlertCircle className="w-3 h-3" /> Email inválido
+                    <AlertCircle className="w-3 h-3" /> Email inválido
                   </p>
                 )}
               </div>
@@ -258,7 +259,7 @@ export default function RegisterPage() {
                     Senha (mín. 8)
                   </label>
                   <div className="relative">
-                    <FiLock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       id="password"
                       name="password"
@@ -275,7 +276,7 @@ export default function RegisterPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showPassword ? <FiEyeOff className="h-4 w-4" /> : <FiEye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
@@ -284,7 +285,7 @@ export default function RegisterPage() {
                     Confirmar
                   </label>
                   <div className="relative">
-                    <FiLock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       id="confirmPassword"
                       name="confirmPassword"
@@ -303,7 +304,7 @@ export default function RegisterPage() {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showConfirmPassword ? <FiEyeOff className="h-4 w-4" /> : <FiEye className="h-4 w-4" />}
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                   {!passwordMatch && formData.confirmPassword.length > 0 && (
@@ -339,9 +340,9 @@ export default function RegisterPage() {
                 }`}
               >
                 {loading ? (
-                  <><FiLoader className="animate-spin mr-2 h-4 w-4" /> Criando...</>
+                  <><Loader2 className="animate-spin mr-2 h-4 w-4" /> Criando...</>
                 ) : (
-                  <><FiArrowRight className="mr-2 h-4 w-4" /> Criar Conta</>
+                  <><ArrowRight className="mr-2 h-4 w-4" /> Criar Conta</>
                 )}
               </motion.button>
             </form>

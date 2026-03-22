@@ -1,5 +1,6 @@
 import { ChatMessage, IChatMessage } from '../models/ChatMessage';
 import { v4 as uuidv4 } from 'uuid';
+import { AI_BRAND } from '../config/aiPrompts';
 
 // Interfaces para compatibilidade
 export interface ChatSession {
@@ -115,7 +116,7 @@ export class ChatHistoryService {
         chat_id: chatId,
         user_id: userId,
         sender: 'assistant' as const,
-        content: 'Conversa iniciada',
+        content: AI_BRAND.welcomeMessage,
         timestamp: new Date().toISOString(),
         metadata: {
           message_type: 'basic' as const,
@@ -132,7 +133,7 @@ export class ChatHistoryService {
         messages: [{
           chatId,
           sender: 'assistant',
-          content: 'Conversa iniciada',
+          content: AI_BRAND.welcomeMessage,
           timestamp: new Date(),
           metadata: {
             messageType: 'basic',
@@ -162,7 +163,7 @@ export class ChatHistoryService {
         chat_id: chatId,
         user_id: userId,
         sender: 'assistant' as const,
-        content: 'Olá! Sou o BOVI, seu assistente pecuário inteligente. Como posso ajudar com sua fazenda hoje?',
+        content: AI_BRAND.welcomeMessage,
         timestamp: new Date().toISOString(),
         metadata: {
           message_type: 'basic' as const,
@@ -179,7 +180,7 @@ export class ChatHistoryService {
         messages: [{
           chatId,
           sender: 'assistant',
-          content: 'Olá! Sou o BOVI, seu assistente pecuário inteligente. Como posso ajudar com sua fazenda hoje?',
+          content: AI_BRAND.welcomeMessage,
           timestamp: new Date(),
           metadata: {
             messageType: 'basic',

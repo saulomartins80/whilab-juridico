@@ -1,17 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import Header from './Header';
+import ProtectedHeader from './ProtectedHeader';
 import MobileHeader from './MobileHeader';
 import Sidebar from './Sidebar';
-import OptimizedChatbot from './OptimizedChatbot';
 import MobileNavigation from './MobileNavigation';
+import OptimizedChatbot from './OptimizedChatbot';
 import { ProtectedRoute } from './ProtectedRoute';
-// Stripe removido para evitar erros em ambientes sem chave pública
+import { dashboardBranding } from '../config/branding';
 
-const debounce = <T extends (...args: unknown[]) => unknown>(func: T, wait: number): (...args: Parameters<T>) => void => {
+const debounce = <T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number,
+): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
+
   return (..._args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(..._args), wait);
@@ -20,7 +24,6 @@ const debounce = <T extends (...args: unknown[]) => unknown>(func: T, wait: numb
 
 const MD_BREAKPOINT = 768;
 
-// Context para compartilhar funções entre Layout e páginas
 interface LayoutContextType {
   registerAddItemCallback: (_callback: () => void) => void;
   unregisterAddItemCallback: () => void;
@@ -32,19 +35,53 @@ const LayoutContext = createContext<LayoutContextType | null>(null);
 
 export const useLayoutContext = (): LayoutContextType => {
   const context = useContext(LayoutContext);
+
   if (!context) {
     throw new Error('useLayoutContext must be used within Layout');
   }
+
   return context;
 };
+
+function getPageTitle(pathname: string): string {
+  switch (pathname) {
+    case '/dashboard':
+      return 'Painel executivo';
+    case '/rebanho':
+      return 'Rebanho';
+    case '/manejo':
+      return 'Manejo';
+    case '/producao':
+      return 'Produção';
+    case '/leite':
+      return 'Leite';
+    case '/vendas':
+      return 'Vendas';
+    case '/transacoes':
+      return 'Transações';
+    case '/investimentos':
+      return 'Investimentos';
+    case '/metas':
+      return 'Metas';
+    case '/milhas':
+      return 'Milhas';
+    case '/profile':
+      return 'Perfil';
+    case '/configuracoes':
+      return 'Configurações';
+    default:
+      return dashboardBranding.brandName;
+  }
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(() => {
     if (typeof window !== 'undefined' && window.innerWidth >= MD_BREAKPOINT) {
-       return localStorage.getItem('sidebarCollapsed') === 'true';
+      return localStorage.getItem('sidebarCollapsed') === 'true';
     }
+
     return false;
   });
   const [isMobileView, setIsMobileView] = useState(false);
@@ -53,132 +90,92 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [addItemCallback, setAddItemCallback] = useState<(() => void) | null>(null);
   const [exportPDFCallback, setExportPDFCallback] = useState<(() => void) | null>(null);
 
-  // Função para obter o título da página atual
-  const getPageTitle = (): string => {
-    const path = router.pathname;
-    switch (path) {
-      case '/dashboard':
-        return 'Dashboard';
-      case '/rebanho':
-        return 'Rebanho';
-      case '/manejo':
-        return 'Manejo';
-      case '/producao':
-        return 'Produção';
-      case '/leite':
-        return 'Leite';
-      case '/vendas':
-        return 'Vendas';
-      case '/transacoes':
-        return 'Transações';
-      case '/investimentos':
-        return 'Investimentos';
-      case '/metas':
-        return 'Metas';
-      case '/milhas':
-        return 'Milhas';
-      case '/profile':
-        return 'Perfil';
-      case '/configuracoes':
-        return 'Configurações';
-      default:
-        return 'BOVINEXT';
-    }
-  };
-
-  // Função para lidar com o botão central da navegação móvel
   const handleAddItem = (): void => {
     if (addItemCallback) {
       addItemCallback();
-    } else {
-      // Fallback: navegar para a página com parâmetro de ação
-      const currentPath = router.pathname;
-      switch (currentPath) {
-        case '/transacoes':
-          router.push('/transacoes?action=new');
-          break;
-        case '/investimentos':
-          router.push('/investimentos?action=new');
-          break;
-        case '/metas':
-          router.push('/metas?action=new');
-          break;
-        case '/milhas':
-          router.push('/milhas?action=new');
-          break;
-        default:
-          // Para dashboard, abrir sidebar
-          if (isMobileView) {
-            toggleMobileSidebar();
-          }
-          break;
-      }
+      return;
+    }
+
+    const currentPath = router.pathname;
+
+    switch (currentPath) {
+      case '/transacoes':
+        router.push('/transacoes?action=new');
+        break;
+      case '/investimentos':
+        router.push('/investimentos?action=new');
+        break;
+      case '/metas':
+        router.push('/metas?action=new');
+        break;
+      case '/milhas':
+        router.push('/milhas?action=new');
+        break;
+      default:
+        if (isMobileView) {
+          setIsMobileSidebarOpen((current) => !current);
+        }
+        break;
     }
   };
 
-  // Função para lidar com exportar PDF
   const handleExportPDF = (): void => {
-    if (exportPDFCallback) {
-      exportPDFCallback();
-    }
+    exportPDFCallback?.();
   };
 
-  // Função para registrar callback de adição de item
   const registerAddItemCallback = useCallback((callback: () => void): void => {
     setAddItemCallback(() => callback);
   }, []);
 
-  // Função para remover callback de adição de item
   const unregisterAddItemCallback = useCallback(() => {
     setAddItemCallback(null);
   }, []);
 
-  // Função para registrar callback de exportar PDF
   const registerExportPDFCallback = useCallback((callback: () => void): void => {
     setExportPDFCallback(() => callback);
   }, []);
 
-  // Função para remover callback de exportar PDF
   const unregisterExportPDFCallback = useCallback(() => {
     setExportPDFCallback(null);
   }, []);
 
   useEffect(() => {
-  const checkMobile = (): void => {
-    setIsMobileView(window.innerWidth < MD_BREAKPOINT);
-  };
+    const checkMobile = (): void => {
+      setIsMobileView(window.innerWidth < MD_BREAKPOINT);
+    };
+
     checkMobile();
+
     const debouncedCheckMobile = debounce(checkMobile, 100);
     window.addEventListener('resize', debouncedCheckMobile);
+
     return () => {
       window.removeEventListener('resize', debouncedCheckMobile);
     };
   }, []);
 
-  // Scroll listener para mostrar/ocultar header no mobile
   useEffect(() => {
     let lastScrollY = 0;
     let ticking = false;
 
-  const handleScroll = (): void => {
-    if (!ticking && isMobileView) {
-      requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        
-        // Mostrar header se rolou para baixo mais de 100px
-        // Ocultar se rolou para cima ou está no topo
-        if (currentScrollY > 100 && currentScrollY > lastScrollY) {
-          setShowMobileHeader(true);
-        } else if (currentScrollY < lastScrollY - 10 || currentScrollY < 50) {
-          setShowMobileHeader(false);
-        }
-        
-        lastScrollY = currentScrollY;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  };
+    const handleScroll = (): void => {
+      if (!ticking && isMobileView) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          if (currentScrollY > 100 && currentScrollY > lastScrollY) {
+            setShowMobileHeader(true);
+          } else if (currentScrollY < lastScrollY - 10 || currentScrollY < 50) {
+            setShowMobileHeader(false);
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+
+        ticking = true;
+      }
+    };
 
     if (isMobileView) {
       window.addEventListener('scroll', handleScroll, { passive: true });
@@ -197,28 +194,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileView, isMobileSidebarOpen]);
 
-  // Limpar callbacks quando mudar de página
   useEffect(() => {
     setAddItemCallback(null);
     setExportPDFCallback(null);
   }, [router.pathname]);
 
   const toggleMobileSidebar = useCallback((): void => {
-    setIsMobileSidebarOpen(prev => !prev);
+    setIsMobileSidebarOpen((prev) => !prev);
   }, []);
 
   const toggleDesktopSidebarCollapse = useCallback((): void => {
-    setIsDesktopSidebarCollapsed(prev => !prev);
-    if (typeof window !== 'undefined' && window.innerWidth >= MD_BREAKPOINT) {
-      localStorage.setItem('sidebarCollapsed', String(!isDesktopSidebarCollapsed));
-    }
-  }, [isDesktopSidebarCollapsed]);
+    setIsDesktopSidebarCollapsed((prev) => {
+      const next = !prev;
 
-  const toggleChat = useCallback((): void => {
-    setIsChatOpen(prev => !prev);
+      if (typeof window !== 'undefined' && window.innerWidth >= MD_BREAKPOINT) {
+        localStorage.setItem('sidebarCollapsed', String(next));
+      }
+
+      return next;
+    });
   }, []);
 
-  // Context para as páginas
+  const toggleChat = useCallback((): void => {
+    setIsChatOpen((prev) => !prev);
+  }, []);
+
   const layoutContext: LayoutContextType = {
     registerAddItemCallback,
     unregisterAddItemCallback,
@@ -229,76 +229,63 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <LayoutContext.Provider value={layoutContext}>
       <ProtectedRoute>
-          <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-            {/* Sidebar para desktop */}
-            {!isMobileView && (
-              <Sidebar
-                isMobile={false}
-                initialCollapsed={isDesktopSidebarCollapsed}
-                onToggle={toggleDesktopSidebarCollapse}
-                isOpen={true}
-                onClose={(): void => {}}
-              />
-            )}
-            
-            {/* Sidebar para mobile */}
-            {isMobileView && (
-              <Sidebar
-                isOpen={isMobileSidebarOpen}
-                onClose={toggleMobileSidebar}
-                isMobile={true}
-              />
-            )}
-            
-            <div
-              className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
-                !isMobileView && isDesktopSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'
-              }`}
-            >
-              {/* Header para desktop */}
-              {!isMobileView && (
-                <Header
-                  isSidebarOpen={isMobileSidebarOpen}
-                  toggleMobileSidebar={toggleMobileSidebar}
-                />
-              )}
-              
-              {/* Header para mobile (aparece quando rola) */}
-              {isMobileView && showMobileHeader && (
-                <MobileHeader
-                  title={getPageTitle()}
-                  onMenuToggle={toggleMobileSidebar}
-                  showBackButton={false}
-                />
-              )}
-              
-              {/* Conteúdo principal */}
-              <main className={`flex-1 overflow-y-auto ${
-                isMobileView 
-                  ? showMobileHeader 
-                    ? 'pt-20 pb-24' 
-                    : 'pt-4 pb-24'
-                  : 'pt-24 md:pt-20'
-              } px-4 md:px-6`}>
-                {children}
-              </main>
-            </div>
-            
-            {/* Navegação Mobile */}
-            {isMobileView && (
-              <MobileNavigation
-                onSidebarToggle={toggleMobileSidebar}
-                onAddItem={handleAddItem}
-                onExportPDF={handleExportPDF}
-              />
-            )}
-            
-            {/* Chatbot - sempre no canto direito */}
-            <OptimizedChatbot 
-              isOpen={isChatOpen}
-              onToggle={toggleChat}
+        <div className="app-shell-page flex min-h-screen text-slate-900 dark:text-slate-100">
+          {!isMobileView && (
+            <Sidebar
+              isMobile={false}
+              initialCollapsed={isDesktopSidebarCollapsed}
+              onToggle={toggleDesktopSidebarCollapse}
+              isOpen={true}
+              onClose={(): void => {}}
             />
+          )}
+
+          {isMobileView && (
+            <Sidebar
+              isOpen={isMobileSidebarOpen}
+              onClose={toggleMobileSidebar}
+              isMobile={true}
+            />
+          )}
+
+          <div
+            className={`relative flex min-h-screen flex-1 flex-col transition-[margin] duration-300 ease-in-out ${
+              !isMobileView && isDesktopSidebarCollapsed ? 'md:ml-20' : 'md:ml-[17rem]'
+            }`}
+          >
+            {!isMobileView && (
+              <ProtectedHeader title={getPageTitle(router.pathname)} />
+            )}
+
+            {isMobileView && showMobileHeader && (
+              <MobileHeader
+                title={getPageTitle(router.pathname)}
+                onMenuToggle={toggleMobileSidebar}
+                showBackButton={false}
+              />
+            )}
+
+            <main
+              className={`flex-1 overflow-y-auto ${
+                isMobileView ? (showMobileHeader ? 'pt-20 pb-24' : 'pt-4 pb-24') : 'pt-24 md:pt-20'
+              } px-4 md:px-6`}
+            >
+              <div className="mx-auto flex w-full max-w-[1520px] flex-col gap-6">
+                {children}
+              </div>
+            </main>
           </div>
+
+          {isMobileView && (
+            <MobileNavigation
+              onSidebarToggle={toggleMobileSidebar}
+              onAddItem={handleAddItem}
+              onExportPDF={handleExportPDF}
+            />
+          )}
+
+          <OptimizedChatbot isOpen={isChatOpen} onToggle={toggleChat} />
+        </div>
       </ProtectedRoute>
     </LayoutContext.Provider>
   );

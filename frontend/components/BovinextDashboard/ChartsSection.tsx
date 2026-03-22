@@ -162,10 +162,10 @@ export default function ChartsSection() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-            Análises e Gráficos
+            Análises da operação
           </h3>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Visualize o desempenho da sua fazenda em tempo real
+            Visualize a leitura da demo vertical em tempo real
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -182,9 +182,9 @@ export default function ChartsSection() {
 
       {/* Grid de Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Evolução do Rebanho - ocupa 2 colunas */}
+        {/* Evolução do indicador principal - ocupa 2 colunas */}
         <ChartCard 
-          title="Evolução do Peso Médio" 
+          title="Evolução do indicador principal" 
           subtitle="Últimos 6 meses"
           fullWidth={true}
         >
@@ -224,10 +224,10 @@ export default function ChartsSection() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Distribuição do Rebanho */}
+        {/* Distribuição da operação */}
         <ChartCard 
           title="Distribuição por Categoria" 
-          subtitle="Total: 1.247 animais"
+          subtitle="Total: 1.247 ativos"
           fullWidth={false}
         >
           <ResponsiveContainer width="100%" height="100%">
@@ -276,10 +276,10 @@ export default function ChartsSection() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Indicadores de Saúde */}
+        {/* Indicadores operacionais */}
         <ChartCard 
-          title="Indicadores de Saúde" 
-          subtitle="Score de bem-estar animal"
+          title="Indicadores operacionais" 
+          subtitle="Score de estabilidade"
           fullWidth={false}
         >
           <ResponsiveContainer width="100%" height="100%">
@@ -335,8 +335,8 @@ export default function ChartsSection() {
 
       {/* Gráfico de Produção de Leite (Full Width) */}
       <ChartCard 
-        title="Produção de Leite" 
-        subtitle="Evolução mensal da produção"
+        title="Produção operacional" 
+        subtitle="Evolução mensal do volume"
         fullWidth
       >
         <ResponsiveContainer width="100%" height="100%">

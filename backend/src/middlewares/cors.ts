@@ -1,15 +1,9 @@
 // src/middlewares/cors.ts 
 import { Request, Response, NextFunction } from 'express';
+import { runtimeConfig } from '../config/runtime';
 
 export const corsMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   // Lista de origens permitidas
-  const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    process.env.FRONTEND_ALT_URL,
-    'http://localhost:3001',
-    'http://127.0.0.1:3001'
-  ].filter(Boolean);
-
   const origin = req.headers.origin;
   const userAgent = req.headers['user-agent'] || '';
   
@@ -18,7 +12,7 @@ export const corsMiddleware = (req: Request, res: Response, next: NextFunction):
   console.log(`[CORS] Request from origin: ${origin}, User-Agent: ${userAgent}, Mobile: ${isMobile}`);
   
   // Verificar se a origem está na lista de permitidas
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin && runtimeConfig.allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
     console.log(`[CORS] Origin allowed: ${origin}`);
   } else if (!origin) {

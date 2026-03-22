@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { FiUser, FiPhone, FiCalendar, FiCreditCard, FiLoader, FiArrowRight } from 'react-icons/fi';
+import { User, Phone, Calendar, CreditCard, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { useAuthWithRegistration } from '../../src/hooks/useAuthWithRegistration';
@@ -114,7 +114,7 @@ const CompleteRegistration: React.FC = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiUser className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     id="displayName"
@@ -136,7 +136,7 @@ const CompleteRegistration: React.FC = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiPhone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Phone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     id="phoneNumber"
@@ -157,7 +157,7 @@ const CompleteRegistration: React.FC = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiCalendar className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Calendar className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     id="dateOfBirth"
@@ -177,7 +177,7 @@ const CompleteRegistration: React.FC = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiCreditCard className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <CreditCard className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     id="cpf"
@@ -202,13 +202,13 @@ const CompleteRegistration: React.FC = () => {
             >
               {submitting ? (
                 <>
-                  <FiLoader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                   Completando cadastro...
                 </>
               ) : (
                 <>
                   Completar cadastro
-                  <FiArrowRight />
+                  <ArrowRight />
                 </>
               )}
             </motion.button>

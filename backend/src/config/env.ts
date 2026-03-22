@@ -1,59 +1,27 @@
-import dotenv from 'dotenv';
-import path from 'path';
+import { runtimeConfig, validateRuntimeConfig } from './runtime';
 
-// Carrega variáveis de ambiente do arquivo .env
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+validateRuntimeConfig();
 
-// Log para confirmar que as variáveis de ambiente foram carregadas
-console.log('[config/env.ts] Variáveis de ambiente carregadas.');
-console.log(`[config/env.ts] NODE_ENV: ${process.env.NODE_ENV}`);
-
-// Fail-fast em produção para variáveis críticas
-const requiredInProd = [
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'NEXT_PUBLIC_API_URL',
-  'FRONTEND_URL'
-].filter(Boolean) as string[];
-
-if (process.env.NODE_ENV === 'production') {
-  const missing = requiredInProd.filter((k) => !process.env[k])
-  if (missing.length) {
-    console.error('[env] Variáveis de ambiente ausentes (produção):', missing)
-    // Encerrar processo para evitar execução insegura
-    process.exit(1)
-  }
-}
-
-// Exporta variáveis de ambiente relevantes para o backend
 export const env = {
+  projectKey: runtimeConfig.projectKey,
+  brandName: runtimeConfig.brandName,
+  backendUrl: runtimeConfig.backendUrl,
+  frontendUrl: runtimeConfig.frontendUrl,
+  allowedOrigins: runtimeConfig.allowedOrigins,
   mongoURI: process.env.MONGO_URI,
-  port: process.env.PORT, // Adicionado
-  nodeEnv: process.env.NODE_ENV,
-  frontendUrl: process.env.FRONTEND_URL, // Adicionado
-  rateLimitWindowMs: process.env.RATE_LIMIT_WINDOW_MS, // Adicionado
-  rateLimitMax: process.env.RATE_LIMIT_MAX, // Adicionado
+  port: process.env.PORT || '4000',
+  nodeEnv: process.env.NODE_ENV || 'development',
+  rateLimitWindowMs: process.env.RATE_LIMIT_WINDOW_MS || '900000',
+  rateLimitMax: process.env.RATE_LIMIT_MAX || '1000',
   appJwtSecret: process.env.APP_JWT_SECRET,
-  jwtSecret: process.env.JWT_SECRET || process.env.APP_JWT_SECRET || 'default-secret-key-change-in-production',
-  // Variáveis do Firebase Admin - Use FIREBASE_ADMIN_CREDENTIALS no Vercel dashboard
+  jwtSecret: process.env.JWT_SECRET || process.env.APP_JWT_SECRET || process.env.NEXTAUTH_SECRET || 'default-secret-key-change-in-production',
   firebaseAdminCredentials: process.env.FIREBASE_ADMIN_CREDENTIALS,
-  // Chaves individuais (usadas talvez localmente ou como fallback)
   firebaseAdminProjectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
   firebaseAdminClientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-  // ATENÇÃO: FIREBASE_ADMIN_PRIVATE_KEY precisa de tratamento especial para quebras de linha se lida diretamente do env
   firebaseAdminPrivateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
-  firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET, // Adicionado
-
-  // Esta variável tem nome de frontend, mas aparece no .env do backend e código firebase.ts
-  // Mantenha se for usada pelo Admin SDK para databaseURL
+  firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   firebaseDatabaseUrl: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-
-  // Variável da API de Clima
   openweatherApiKey: process.env.OPENWEATHER_API_KEY,
-
-  // Variáveis do Pluggy
   pluggyClientId: process.env.PLUGGY_CLIENT_ID,
-  pluggyApiKey: process.env.PLUGGY_API_KEY,
-
-  // Adicione outras variáveis de backend aqui conforme necessário
+  pluggyApiKey: process.env.PLUGGY_API_KEY
 };

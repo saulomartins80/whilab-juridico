@@ -1,57 +1,71 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FiMail, FiLock, FiLoader, FiAlertCircle, FiArrowRight, FiCheck } from 'react-icons/fi';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import {
+  ArrowRight,
+  BarChart2,
+  Brain,
+  Check,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  Shield,
+  AlertCircle,
+} from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
 import { usePreloadCheck } from '../../src/hooks/usePreloadCheck';
+import { dashboardBranding } from '../../config/branding';
+
+const ease = [0.25, 0.46, 0.45, 0.94] as const;
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.5, ease },
+  }),
+};
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isValidEmail, setIsValidEmail] = useState(false);
-  const [showRegistrationSuccess, setShowRegistrationSuccess] = useState(false);
-  const [showResendConfirmation, _setShowResendConfirmation] = useState(false);
-  const [resendStatus, _setResendStatus] = useState<{loading: boolean; success: boolean; error: string | null}>({ loading: false, success: false, error: null });
-
-  const { user, loading, login, supabase } = useAuth();
   const router = useRouter();
   const isPreloading = usePreloadCheck();
+  const { user, loading, login } = useAuth();
 
-  // Efeitos para validação em tempo real
-  useEffect(() => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setIsValidEmail(emailRegex.test(email));
-  }, [email]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showRegistrationSuccess, setShowRegistrationSuccess] = useState(false);
 
-  // Efeito para verificar o parâmetro de sucesso de registro
+  const emailIsValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
+
   useEffect(() => {
-    if (router.isReady) {
-      const registrationParam = router.query.registration;
-      if (registrationParam === 'success') {
-        setShowRegistrationSuccess(true);
-        // Remover o parâmetro da URL para não mostrar novamente ao recarregar
-        router.replace('/auth/login', undefined, { shallow: true });
-      }
+    if (!router.isReady) return;
+    if (router.query.registration === 'success') {
+      setShowRegistrationSuccess(true);
+      router.replace('/auth/login', undefined, { shallow: true });
     }
-  }, [router.isReady, router.query, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query.registration]);
 
-  // Redirecionamento se já estiver logado
   useEffect(() => {
-    if (user && !loading && router.isReady) {
-      const redirectPath = router.query.redirect as string || '/dashboard';
-      // Evitar redirecionamento se já estiver na página de destino
-      if (router.pathname !== redirectPath) {
-        router.replace(redirectPath);
-      }
+    if (!router.isReady || loading || !user) return;
+    const redirectPath = (router.query.redirect as string) || '/dashboard';
+    if (router.pathname !== redirectPath) {
+      router.replace(redirectPath);
     }
-  }, [user, loading, router.isReady, router.query.redirect, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user, router.isReady]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError('');
     setShowRegistrationSuccess(false);
     setIsLoading(true);
@@ -59,226 +73,220 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (err: unknown) {
-      console.error('Login error:', err);
-      
-      // Tratamento de erros do Supabase
-      const supabaseError = err as { message?: string };
-      
-      if (supabaseError.message?.includes('Invalid login credentials')) {
-        setError('Email ou senha incorretos. Verifique seus dados e tente novamente.');
-      } else if (supabaseError.message?.includes('Email not confirmed')) {
-        // Backend já confirma email automaticamente
-        setError('Erro ao fazer login. Tente novamente.');
-      } else if (supabaseError.message?.includes('Too many requests')) {
-        setError('Muitas tentativas de login. Tente novamente em alguns minutos.');
+      const message =
+        typeof err === 'object' && err && 'message' in err
+          ? String((err as { message?: string }).message)
+          : '';
+
+      if (message.includes('Invalid login credentials')) {
+        setError('Email ou senha invalidos. Confira os dados e tente novamente.');
+      } else if (message.includes('Too many requests')) {
+        setError('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
       } else {
-        setError('Erro ao fazer login. Tente novamente ou entre em contato com o suporte.');
+        setError('Nao foi possivel entrar agora. Tente novamente.');
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResendConfirmation = async () => {};
-
-  // Google login removido para BOVINEXT - usando apenas Supabase Auth
-
-  if (isPreloading || loading || (user && !showRegistrationSuccess)) {
+  if (isPreloading || loading || user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="flex min-h-screen items-center justify-center bg-[#121212]">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="h-12 w-12 rounded-full border-t-2 border-b-2 border-blue-500"
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="h-11 w-11 rounded-full border-2 border-white/20 border-t-[#22d3ee]"
         />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
-        {/* Card de Login */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-          {/* Cabeçalho com gradiente BOVINEXT */}
-          <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-6 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/5"></div>
-            <div className="relative z-10">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl mb-3">
-                <span className="text-2xl">🐄</span>
-              </div>
-              <h1 className="text-2xl font-bold text-white">BOVINEXT</h1>
-              <p className="text-green-100 text-sm mt-1">
-                Gestão Inteligente de Pecuária
-              </p>
+    <div className="min-h-screen bg-[#121212] text-white antialiased overflow-hidden" style={{ fontFamily: '"Inter", sans-serif' }}>
+      {/* Background effects */}
+      <div className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-[#22d3ee]/[0.06] blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.04] blur-[120px]" />
+
+      {/* Header */}
+      <header className="relative z-10 mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-5">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={28} height={28} />
+          <span className="text-[16px] font-semibold tracking-tight">{dashboardBranding.brandName}</span>
+        </Link>
+        <Link
+          href="/"
+          className="inline-flex items-center rounded-full border border-white/[0.15] px-5 py-2.5 text-[14px] font-medium text-white/70 hover:text-white hover:bg-white/[0.05] transition-all"
+        >
+          Voltar para home
+        </Link>
+      </header>
+
+      {/* Main content */}
+      <main className="relative z-10 mx-auto max-w-[1200px] px-5 md:px-10 mt-8 lg:mt-16">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-120px)]">
+
+          {/* Left — Branding */}
+          <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-1.5 mb-8">
+              <Shield className="w-3.5 h-3.5 text-[#22d3ee]" />
+              <span className="text-[13px] font-medium text-[#969696]">Acesso seguro</span>
             </div>
-          </div>
 
-          {/* Conteúdo do formulário */}
-          <div className="p-6">
-            {/* Mensagem de sucesso de registro + instrução de confirmação */}
-            {showRegistrationSuccess && (
-              <div className="space-y-3 mb-6">
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                  className="flex items-start gap-3 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
-              >
-                <FiCheck className="flex-shrink-0 mt-0.5" />
-                  <span>
-                    Cadastro realizado! Você já pode fazer login na plataforma.
-                  </span>
-              </motion.div>
-              </div>
-            )}
+            <h1 className="text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.08] tracking-[-0.03em]">
+              Acesse sua<br />
+              <span className="text-[#22d3ee]">gestao pecuaria.</span>
+            </h1>
 
-            {/* Mensagem de erro */}
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-start gap-3 p-4 mb-6 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
-              >
-                <FiAlertCircle className="flex-shrink-0 mt-0.5" />
-                <span>{error}</span>
-              </motion.div>
-            )}
-
-            {/* Email não confirmado: instrução + botão para reenviar */}
-            {false && (<div />)}
-
-            {/* Formulário */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Campo de Email */}
-              <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Endereço de Email
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiMail className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`block w-full pl-10 pr-3 py-3 rounded-lg border ${isValidEmail && email ? 'border-green-500' : 'border-gray-300 dark:border-gray-600'} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white`}
-                    placeholder="seu@email.com"
-                    autoComplete="username"
-                    required
-                  />
-                  {isValidEmail && email && (
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                      <FiCheck className="h-5 w-5 text-green-500" />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Campo de Senha */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Senha
-                  </label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    Esqueceu a senha?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiLock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="••••••••"
-                    minLength={6}
-                    autoComplete="current-password"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Botão de Login */}
-              <motion.button
-                type="submit"
-                disabled={isLoading}
-                whileHover={!isLoading ? { scale: 1.02 } : {}}
-                whileTap={!isLoading ? { scale: 0.98 } : {}}
-                className="w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-medium shadow-lg transition-all"
-              >
-                {isLoading ? (
-                  <>
-                    <FiLoader className="animate-spin" />
-                    Carregando...
-                  </>
-                ) : (
-                  <>
-                    Acessar BOVINEXT
-                    <FiArrowRight />
-                  </>
-                )}
-              </motion.button>
-            </form>
-
-            {/* Recursos BOVINEXT - Compacto */}
-            <div className="mt-5 grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
-                <span className="text-lg">📊</span>
-                <span className="text-xs text-green-700 dark:text-green-300">Analytics IA</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                <span className="text-lg">🐄</span>
-                <span className="text-xs text-blue-700 dark:text-blue-300">Gestão Rebanho</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20">
-                <span className="text-lg">💉</span>
-                <span className="text-xs text-purple-700 dark:text-purple-300">Veterinário</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20">
-                <span className="text-lg">🤖</span>
-                <span className="text-xs text-amber-700 dark:text-amber-300">IA BOVI</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Rodapé do card */}
-          <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700/50 text-center border-t border-gray-200 dark:border-gray-700">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Novo no BOVINEXT?{' '}
-              <Link
-                href="/auth/register"
-                className="font-semibold text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300"
-              >
-                Criar conta grátis
-              </Link>
+            <p className="mt-5 max-w-[440px] text-[16px] leading-relaxed text-[#969696]">
+              Entre no {dashboardBranding.brandName} para acompanhar seu rebanho, manejos, producao e vendas em tempo real com inteligencia artificial.
             </p>
-          </div>
-        </div>
 
-        {/* Links adicionais */}
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <Link
-            href="/"
-            className="hover:text-gray-700 dark:hover:text-gray-300"
-          >
-            ← Voltar para a página inicial
-          </Link>
+            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+              {[
+                { icon: BarChart2, title: 'Dashboard', text: 'KPIs e metricas em tempo real' },
+                { icon: Brain, title: 'IA aplicada', text: 'Alertas e previsoes automaticas' },
+                { icon: Shield, title: 'Seguro', text: 'Dados protegidos com Supabase' },
+              ].map((card, i) => (
+                <motion.div
+                  key={card.title}
+                  custom={i + 1}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4"
+                >
+                  <card.icon className="w-5 h-5 text-[#22d3ee] mb-3" />
+                  <p className="text-[13px] font-semibold text-white">{card.title}</p>
+                  <p className="text-[12px] text-[#969696] mt-1">{card.text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-8 flex flex-wrap gap-2">
+              {['Plataforma completa', 'White-label pronto', 'Suporte dedicado'].map((point) => (
+                <span key={point} className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[12px] font-medium text-white/60">
+                  <Check className="w-3.5 h-3.5 text-[#22d3ee]" />
+                  {point}
+                </span>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right — Login form */}
+          <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible">
+            <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8 md:p-10 backdrop-blur-xl shadow-[0_40px_100px_rgba(0,0,0,0.3)]">
+              <div className="flex items-start justify-between gap-3 mb-8">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#969696]">Entrada segura</p>
+                  <h2 className="mt-2 text-[24px] font-semibold tracking-tight">Acessar conta</h2>
+                  <p className="mt-1 text-[14px] text-[#969696]">Use seu email e senha para entrar.</p>
+                </div>
+                <div className="rounded-xl bg-white/[0.05] p-3">
+                  <Lock className="w-5 h-5 text-[#22d3ee]" />
+                </div>
+              </div>
+
+              {showRegistrationSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3 text-[14px] text-emerald-400"
+                >
+                  <Check className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  Cadastro concluido. Agora voce pode fazer login.
+                </motion.div>
+              )}
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-[14px] text-red-400"
+                >
+                  <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  {error}
+                </motion.div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <label className="block">
+                  <span className="mb-2 block text-[13px] font-medium text-white/80">Email</span>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#969696]" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="seu@email.com"
+                      autoComplete="username"
+                      required
+                      className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] py-3.5 pl-11 pr-10 text-white text-[14px] outline-none transition placeholder:text-white/30 focus:border-[#22d3ee]/50 focus:ring-1 focus:ring-[#22d3ee]/30"
+                    />
+                    {email && emailIsValid && (
+                      <Check className="pointer-events-none absolute right-4 top-1/2 w-4 h-4 -translate-y-1/2 text-emerald-400" />
+                    )}
+                  </div>
+                </label>
+
+                <label className="block">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[13px] font-medium text-white/80">Senha</span>
+                    <Link href="/auth/forgot-password" className="text-[12px] font-medium text-[#22d3ee] hover:text-[#22d3ee]/80 transition-colors">
+                      Esqueci minha senha
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#969696]" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      minLength={6}
+                      required
+                      className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] py-3.5 pl-11 pr-11 text-white text-[14px] outline-none transition placeholder:text-white/30 focus:border-[#22d3ee]/50 focus:ring-1 focus:ring-[#22d3ee]/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#969696] hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#121212] py-3.5 text-[14px] font-semibold transition-all duration-300 hover:bg-[#22d3ee] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Entrando...
+                    </>
+                  ) : (
+                    <>
+                      Entrar no dashboard
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-center text-[14px] text-[#969696]">
+                Nao tem conta?{' '}
+                <Link href="/auth/register" className="font-semibold text-white hover:text-[#22d3ee] transition-colors">
+                  Criar conta agora
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </main>
     </div>
   );
 }

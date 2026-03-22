@@ -1,7 +1,10 @@
 const https = require('https');
 
-const SUPABASE_PROJECT_REF = 'jygspicbqnbriafmcufc';
-const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5Z3NwaWNicW5icmlhZm1jdWZjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzA1ODU3OSwiZXhwIjoyMDgyNjM0NTc5fQ.4aDBFQh84qIzo9uvSH8TMwdCwqt6I8Ji06MLvAcfH8o';
+const SUPABASE_PROJECT_REF = process.env.SUPABASE_PROJECT_REF;
+
+if (!SUPABASE_PROJECT_REF) {
+  throw new Error('Configure SUPABASE_PROJECT_REF antes de executar este script.');
+}
 
 // SQL para criar as tabelas
 const sql = `
@@ -43,13 +46,14 @@ async function executeSQL() {
 
   // Usar a conexão direta via pg (PostgreSQL)
   // Vamos tentar usar o endpoint de database do Supabase
-  
-  const connectionString = `postgresql://postgres.${SUPABASE_PROJECT_REF}:${process.env.DB_PASSWORD || 'SuaSenh@123'}@aws-0-sa-east-1.pooler.supabase.com:6543/postgres`;
-  
   try {
     // Tentar usar pg se disponível
     const { Client } = require('pg');
-    
+
+    if (!process.env.SUPABASE_DB_PASSWORD) {
+      throw new Error('Configure SUPABASE_DB_PASSWORD antes de executar este script.');
+    }
+
     const client = new Client({
       connectionString: `postgresql://postgres:${process.env.SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres`,
       ssl: { rejectUnauthorized: false }

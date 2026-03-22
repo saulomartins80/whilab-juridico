@@ -3,24 +3,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  FiGlobe,
-  FiBell,  
-  FiUser,
-  FiMail,
-  FiLock,
-  FiCreditCard,
-  FiMoon,
-  FiSun,
-  FiMonitor,
-  FiShield,
-  FiKey,
-  FiDatabase,
-  FiPlusCircle,
-  FiSave,
-  FiCheck,
-  FiX,
-  FiAlertTriangle
-} from 'react-icons/fi';
+  Globe,
+  Bell,
+  User,
+  Mail,
+  Lock,
+  CreditCard,
+  Moon,
+  Sun,
+  Monitor,
+  Shield,
+  Key,
+  Database,
+  PlusCircle,
+  Save,
+  Check,
+  X,
+  AlertTriangle
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
@@ -98,9 +98,9 @@ const CURRENCY_OPTIONS = [
 ];
 
 const THEME_OPTIONS = [
-  { value: 'light', label: 'Claro', icon: <FiSun className="w-4 h-4" /> },
-  { value: 'dark', label: 'Escuro', icon: <FiMoon className="w-4 h-4" /> },
-  { value: 'system', label: 'Automático', icon: <FiMonitor className="w-4 h-4" /> }
+  { value: 'light', label: 'Claro', icon: <Sun className="w-4 h-4" /> },
+  { value: 'dark', label: 'Escuro', icon: <Moon className="w-4 h-4" /> },
+  { value: 'system', label: 'Automático', icon: <Monitor className="w-4 h-4" /> }
 ];
 
 const SESSION_TIMEOUT_OPTIONS = [
@@ -112,10 +112,10 @@ const SESSION_TIMEOUT_OPTIONS = [
 ];
 
 const TABS = [
-  { id: 'account', label: 'Conta', icon: <FiUser className="mr-3" />, color: 'blue' },
-  { id: 'notifications', label: 'Notificações', icon: <FiBell className="mr-3" />, color: 'green' },
-  { id: 'privacy', label: 'Privacidade', icon: <FiDatabase className="mr-3" />, color: 'purple' },
-  { id: 'security', label: 'Segurança', icon: <FiShield className="mr-3" />, color: 'orange' }
+  { id: 'account', label: 'Conta', icon: <User className="mr-3" />, color: 'blue' },
+  { id: 'notifications', label: 'Notificações', icon: <Bell className="mr-3" />, color: 'green' },
+  { id: 'privacy', label: 'Privacidade', icon: <Database className="mr-3" />, color: 'purple' },
+  { id: 'security', label: 'Segurança', icon: <Shield className="mr-3" />, color: 'orange' }
 ] as const;
 
 export default function ConfiguracoesPage() {
@@ -283,7 +283,7 @@ export default function ConfiguracoesPage() {
           }
         }
       },
-      icon: <FiGlobe className="w-5 h-5" />,
+      icon: <Globe className="w-5 h-5" />,
       category: 'Personalização'
     },
     {
@@ -294,7 +294,7 @@ export default function ConfiguracoesPage() {
       options: LANGUAGE_OPTIONS,
       currentValue: settings.language,
       onChange: (value: unknown) => handleSettingChange('language', value as string | number | boolean),
-      icon: <FiGlobe className="w-5 h-5" />,
+      icon: <Globe className="w-5 h-5" />,
       category: 'Personalização'
     },
     {
@@ -305,7 +305,7 @@ export default function ConfiguracoesPage() {
       options: CURRENCY_OPTIONS,
       currentValue: settings.currency,
       onChange: (value: unknown) => handleSettingChange('currency', value as string | number | boolean),
-      icon: <FiCreditCard className="w-5 h-5" />,
+      icon: <CreditCard className="w-5 h-5" />,
       category: 'Personalização'
     },
     {
@@ -316,7 +316,7 @@ export default function ConfiguracoesPage() {
       options: THEME_OPTIONS,
       currentValue: theme,
       onChange: (value: unknown) => handleThemeChange(value as Theme),
-      icon: <FiMonitor className="w-5 h-5" />,
+      icon: <Monitor className="w-5 h-5" />,
       category: 'Aparência'
     },
     {
@@ -325,7 +325,7 @@ export default function ConfiguracoesPage() {
       description: 'Atualize sua senha de acesso',
       type: 'action',
       action: () => router.push('/auth/change-password'),
-      icon: <FiLock className="w-5 h-5" />,
+      icon: <Lock className="w-5 h-5" />,
       category: 'Segurança'
     },
     {
@@ -334,7 +334,7 @@ export default function ConfiguracoesPage() {
       description: 'Faça backup dos seus dados pessoais',
       type: 'action',
       action: handleBackupData,
-      icon: <FiDatabase className="w-5 h-5" />,
+      icon: <Database className="w-5 h-5" />,
       status: backupStatus === 'in-progress' ? 'Gerando backup...' : 
               backupStatus === 'completed' ? 'Backup concluído' : 
               backupStatus === 'failed' ? 'Falha no backup' : undefined,
@@ -351,7 +351,7 @@ export default function ConfiguracoesPage() {
       type: 'toggle',
       currentValue: settings.emailNotifications,
       onChange: (value: unknown) => handleSettingChange('emailNotifications', value as string | number | boolean),
-      icon: <FiMail className="w-5 h-5" />
+      icon: <Mail className="w-5 h-5" />
     },
     {
       name: 'pushNotifications',
@@ -360,7 +360,7 @@ export default function ConfiguracoesPage() {
       type: 'toggle',
       currentValue: settings.pushNotifications,
       onChange: (value: unknown) => handleSettingChange('pushNotifications', value as string | number | boolean),
-      icon: <FiBell className="w-5 h-5" />
+      icon: <Bell className="w-5 h-5" />
     }
   ], [settings, handleSettingChange]);
 
@@ -372,7 +372,7 @@ export default function ConfiguracoesPage() {
       type: 'toggle',
       currentValue: settings.dataSharing,
       onChange: (value: unknown) => handleSettingChange('dataSharing', value as string | number | boolean),
-      icon: <FiDatabase className="w-5 h-5" />
+      icon: <Database className="w-5 h-5" />
     }
   ], [settings, handleSettingChange]);
 
@@ -383,7 +383,7 @@ export default function ConfiguracoesPage() {
       description: 'Adicione uma camada extra de segurança à sua conta',
       type: 'action',
       action: () => setShow2FAModal(true),
-      icon: <FiShield className="w-5 h-5" />,
+      icon: <Shield className="w-5 h-5" />,
       status: settings.twoFactorEnabled ? 'Ativado' : 'Desativado'
     },
     {
@@ -394,7 +394,7 @@ export default function ConfiguracoesPage() {
       options: SESSION_TIMEOUT_OPTIONS,
       currentValue: settings.sessionTimeout,
       onChange: (value: unknown) => handleSettingChange('sessionTimeout', value as string | number | boolean),
-      icon: <FiKey className="w-5 h-5" />
+      icon: <Key className="w-5 h-5" />
     }
   ], [settings, handleSettingChange]);
 
@@ -545,7 +545,7 @@ export default function ConfiguracoesPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center text-amber-600 dark:text-amber-400"
             >
-              <FiAlertTriangle className="w-4 h-4 mr-1" />
+              <AlertTriangle className="w-4 h-4 mr-1" />
               <span className="text-sm">Alterações não salvas</span>
             </motion.div>
           )}
@@ -557,7 +557,7 @@ export default function ConfiguracoesPage() {
               onClick={resetToDefaults}
               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              <FiX className="w-4 h-4 mr-1" />
+              <X className="w-4 h-4 mr-1" />
               Resetar
             </button>
           )}
@@ -578,12 +578,12 @@ export default function ConfiguracoesPage() {
               </>
             ) : hasUnsavedChanges ? (
               <>
-                <FiSave className="w-4 h-4 mr-2" />
+                <Save className="w-4 h-4 mr-2" />
                 Salvar Alterações
               </>
             ) : (
               <>
-                <FiCheck className="w-4 h-4 mr-2" />
+                <Check className="w-4 h-4 mr-2" />
                 Salvo
               </>
             )}
@@ -694,7 +694,7 @@ export default function ConfiguracoesPage() {
                       resolvedTheme === 'dark' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
                     } flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors`}
                   >
-                    <FiPlusCircle size={16} /> Adicionar Exemplo
+                    <PlusCircle size={16} /> Adicionar Exemplo
                   </button>
                 </SettingsSection>
               )}
@@ -743,7 +743,7 @@ export default function ConfiguracoesPage() {
                   </>
                 ) : (
                   <>
-                    <FiSave className="w-5 h-5 mr-2" />
+                    <Save className="w-5 h-5 mr-2" />
                     Salvar Alterações
                   </>
                 )}

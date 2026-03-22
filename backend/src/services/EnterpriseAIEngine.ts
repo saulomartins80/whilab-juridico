@@ -1,7 +1,8 @@
 import OpenAI from 'openai';
 import { EventEmitter } from 'events';
+import { AI_BRAND, BRAND_TEXT, SYSTEM_PROMPT, AI_MODEL_CONFIG, FALLBACK_RESPONSES } from '../config/aiPrompts';
 
-// ===== SISTEMA DE IA ENTERPRISE ADAPTADO PARA BOVINEXT =====
+// ===== SISTEMA DE IA ENTERPRISE ADAPTADO PARA O ASSISTENTE =====
 export class EnterpriseAIEngine extends EventEmitter {
   private deepseek: OpenAI | null = null;
   private models = {
@@ -52,7 +53,7 @@ export class EnterpriseAIEngine extends EventEmitter {
       // 3. EXECUÇÃO INTELIGENTE
       const actions = await this.intelligentExecution(reasoning, context);
       
-      // 4. RESPOSTA PERSONALIZADA COMO BOVI
+      // 4. RESPOSTA PERSONALIZADA COM A IDENTIDADE ATUAL DO ASSISTENTE
       const response = await this.generatePersonalizedResponse(
         message, reasoning, actions, context
       );
@@ -79,12 +80,12 @@ export class EnterpriseAIEngine extends EventEmitter {
   // ===== ANÁLISE MULTI-DIMENSIONAL ADAPTADA PARA PECUÁRIA =====
   private async advancedAnalysis(message: string, context: any): Promise<any> {
     const prompt = `
-    ANÁLISE PECUÁRIA ENTERPRISE - BOVINEXT IA
+    ANÁLISE PECUÁRIA ENTERPRISE - ${AI_BRAND.productName} IA
 
     Mensagem: "${message}"
     Contexto: ${JSON.stringify(context)}
 
-    Analise como BOVI, especialista em pecuária, em JSON:
+    Analise como ${AI_BRAND.assistantName}, especialista em ${AI_BRAND.vertical}, em JSON:
     {
       "intent": "intenção principal pecuária",
       "complexity": 1-10,
@@ -119,7 +120,7 @@ export class EnterpriseAIEngine extends EventEmitter {
   // ===== RACIOCÍNIO COMPLEXO PECUÁRIO =====
   private async complexReasoning(message: string, analysis: any, context: any): Promise<any> {
     const prompt = `
-    RACIOCÍNIO PECUÁRIO AVANÇADO - BOVI IA
+    RACIOCÍNIO PECUÁRIO AVANÇADO - ${AI_BRAND.assistantName} IA
 
     Análise: ${JSON.stringify(analysis)}
     Contexto: ${JSON.stringify(context)}
@@ -341,7 +342,7 @@ export class EnterpriseAIEngine extends EventEmitter {
     };
   }
 
-  // ===== RESPOSTA PERSONALIZADA COMO BOVI =====
+  // ===== RESPOSTA PERSONALIZADA COM A IDENTIDADE ATUAL DO ASSISTENTE =====
   private async generatePersonalizedResponse(
     message: string,
     reasoning: any,
@@ -349,7 +350,7 @@ export class EnterpriseAIEngine extends EventEmitter {
     context: any
   ): Promise<string> {
     const prompt = `
-    Como BOVI, assistente pecuário ENTERPRISE do BOVINEXT, responda de forma:
+    Como ${AI_BRAND.assistantName}, assistente pecuário ENTERPRISE do ${AI_BRAND.productName}, responda de forma:
     - Extremamente profissional e técnica em pecuária
     - Com insights únicos sobre gado e mercado
     - Proativa e orientada a resultados da fazenda
@@ -422,7 +423,7 @@ export class EnterpriseAIEngine extends EventEmitter {
 
   private fallbackResponse(): any {
     return {
-      response: 'Sistema BOVI processando... Como posso ajudar com sua fazenda?',
+      response: FALLBACK_RESPONSES[0] || `Sistema ${BRAND_TEXT.assistantLabel} processando...`,
       actions: [],
       insights: { fallback: true },
       confidence: 0.5,

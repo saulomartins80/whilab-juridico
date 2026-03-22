@@ -3,11 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import { 
-  FiHome, 
-  FiSun, 
-  FiMoon
-} from 'react-icons/fi';
+import { Home, Sun, Moon } from 'lucide-react';
 
 import { useTheme } from '../../context/ThemeContext';
 
@@ -59,7 +55,7 @@ export const InstitutionalHeader: React.FC<InstitutionalHeaderProps> = ({
               }`}
               aria-label={resolvedTheme === 'dark' ? 'Modo claro' : 'Modo escuro'}
             >
-              {resolvedTheme === 'dark' ? <FiSun className="w-4 h-4 md:w-5 md:h-5" /> : <FiMoon className="w-4 h-4 md:w-5 md:h-5" />}
+              {resolvedTheme === 'dark' ? <Sun className="w-4 h-4 md:w-5 md:h-5" /> : <Moon className="w-4 h-4 md:w-5 md:h-5" />}
             </button>
 
             {/* Botão Principal */}
@@ -84,7 +80,7 @@ export const InstitutionalHeader: React.FC<InstitutionalHeaderProps> = ({
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
-              <FiHome className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+              <Home className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
               Início
             </Link>
             

@@ -1,0 +1,2 @@
+-- Seed placeholder for ForgeCore / BoviNext white-label base.
+-- Intentionally empty for now.

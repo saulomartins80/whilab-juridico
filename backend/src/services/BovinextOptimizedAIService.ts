@@ -7,6 +7,7 @@ import { OpenAI } from 'openai';
 import { bovinextSupabaseService } from './BovinextSupabaseService';
 import { IAnimal, IManejo, IProducao, IVenda } from '../types/bovinext-supabase.types';
 import logger from '../utils/logger';
+import { AI_BRAND, SYSTEM_PROMPT, AI_MODEL_CONFIG } from '../config/aiPrompts';
 
 // Interface para mensagens de chat
 interface ChatMessage {
@@ -487,8 +488,8 @@ export class BovinextOptimizedAIService {
      const completion = await openaiClient.chat.completions.create({
        model: 'gpt-4',
        messages,
-       max_tokens: 500,
-       temperature: 0.7
+       max_tokens: AI_MODEL_CONFIG.maxTokens,
+       temperature: AI_MODEL_CONFIG.temperature
      });
 
       const response = completion.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.';
@@ -508,28 +509,12 @@ export class BovinextOptimizedAIService {
  }
 
   private buildSystemPrompt(context: any): string {
-    return `Você é o BovinextHo, um assistente de IA especializado em pecuária bovina.
+    return `${SYSTEM_PROMPT}
 
 CONTEXTO DO USUÁRIO:
 - Total de animais: ${context.totalAnimais || 0}
 - Animais ativos: ${context.animaisAtivos || 0}
-- Alertas pendentes: ${context.alertasPendentes?.length || 0}
-
-SUAS CARACTERÍSTICAS:
-- Especialista em manejo bovino, nutrição, sanidade e reprodução
-- Linguagem amigável e técnica quando necessário
-- Sempre oferece soluções práticas
-- Foca em produtividade e bem-estar animal
-- Conhece legislação sanitária brasileira
-
-DIRETRIZES:
-- Seja conciso mas informativo
-- Use emojis relacionados à pecuária (🐄, 🥛, 💉, 📊)
-- Sempre considere o contexto do rebanho do usuário
-- Ofereça dicas práticas e acionáveis
-- Em caso de dúvida médica veterinária, recomende consultar um profissional
-
-Responda de forma útil e especializada sobre pecuária bovina.`;
+- Alertas pendentes: ${context.alertasPendentes?.length || 0}`;
   }
 
   private updateConversationHistory(userId: string, userMessage: string, assistantResponse: string): void {

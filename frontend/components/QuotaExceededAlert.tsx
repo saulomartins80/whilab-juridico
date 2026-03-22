@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiAlertTriangle, FiRefreshCw } from 'react-icons/fi';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface QuotaExceededAlertProps {
   onRetry?: () => void;
@@ -10,7 +10,7 @@ const QuotaExceededAlert: React.FC<QuotaExceededAlertProps> = ({ onRetry }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-xl">
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full">
-          <FiAlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
+          <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
         </div>
         
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white text-center mb-2">
@@ -27,7 +27,7 @@ const QuotaExceededAlert: React.FC<QuotaExceededAlertProps> = ({ onRetry }) => {
               onClick={onRetry}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
-              <FiRefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" />
               Tentar Novamente
             </button>
           )}

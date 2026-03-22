@@ -30,8 +30,9 @@ import {
   // Video
 } from 'lucide-react';
 
-// Simulando hooks externos
-const useTheme = () => ({ resolvedTheme: 'light' });
+// Theme hook - usa o contexto real do app
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useTheme } from '../context/ThemeContext';
 const LoadingSpinner = () => <Loader2 className="animate-spin" size={24} />;
 
 // Tipos e interfaces

@@ -1,5 +1,7 @@
-// src/config/supabaseAdmin.ts - BOVINEXT usa 100% Supabase
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import jwt from 'jsonwebtoken';
+import { supabase } from './supabase';
+import { runtimeConfig } from './runtime';
 
 let supabaseAdminInstance: SupabaseClient | null = null;
 
@@ -12,7 +14,7 @@ const getSupabaseAdminInstance = (): SupabaseClient => {
   }
 
   if (!supabaseAdminInstance) {
-    console.log('[BOVINEXT] 🚀 Inicializando Supabase Admin...');
+    console.log(`[SupabaseAdmin] Inicializando Admin para ${runtimeConfig.brandName}...`);
 
     supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
@@ -21,8 +23,8 @@ const getSupabaseAdminInstance = (): SupabaseClient => {
       }
     });
 
-    console.log('[BOVINEXT] ✅ Supabase Admin inicializado com sucesso');
-    console.log(`[BOVINEXT] 🔗 URL: ${supabaseUrl}`);
+    console.log('[SupabaseAdmin] Admin inicializado com sucesso');
+    console.log(`[SupabaseAdmin] URL: ${supabaseUrl}`);
   }
 
   return supabaseAdminInstance;
@@ -51,33 +53,151 @@ export const testConnection = async () => {
       .limit(1);
     
     if (error) {
-      console.log('[BOVINEXT] ⚠️ Tabela usuarios ainda não existe - será criada automaticamente');
+      console.log('[SupabaseAdmin] Tabela usuarios ainda nao existe - sera criada automaticamente');
       return true;
     }
     
-    console.log('[BOVINEXT] ✅ Conexão com Supabase testada com sucesso');
+    console.log('[SupabaseAdmin] Conexao com Supabase testada com sucesso');
     return true;
   } catch (error) {
-    console.error('[BOVINEXT] ❌ Erro na conexão com Supabase:', error);
+    console.error('[SupabaseAdmin] Erro na conexao com Supabase:', error);
     return false;
   }
+};
+
+const getAuthSecret = (): string | null => {
+  return process.env.APP_JWT_SECRET || process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || null;
+};
+
+const normalizeUserUpdate = (payload: Record<string, unknown>) => {
+  const normalized: Record<string, unknown> = {};
+
+  if (payload.email !== undefined) normalized.email = payload.email;
+  if (payload.name !== undefined) normalized.display_name = payload.name;
+  if (payload.display_name !== undefined) normalized.display_name = payload.display_name;
+  if (payload.fazenda_nome !== undefined) normalized.fazenda_nome = payload.fazenda_nome;
+  if (payload.updatedAt !== undefined) normalized.updated_at = payload.updatedAt;
+
+  return normalized;
 };
 
 // Compatibilidade com código legado que usa Firebase Admin
 export const adminAuth = {
   verifyIdToken: async (token: string) => {
-    // Mock para desenvolvimento - substituir por verificação JWT do Supabase
-    console.log('[BOVINEXT] 🔧 Mock auth verification for token:', token.substring(0, 20) + '...');
-    return { uid: 'mock-user-id', email: 'user@bovinext.com' };
+    if (!token) {
+      throw new Error('Token não fornecido');
+    }
+
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (!error && user) {
+        return { uid: user.id, email: user.email || '' };
+      }
+    } catch {
+      // segue para fallback JWT
+    }
+
+    const secret = getAuthSecret();
+    if (!secret) {
+      throw new Error('Não foi possível validar o token sem APP_JWT_SECRET, JWT_SECRET ou Supabase Auth');
+    }
+
+    const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+    const uid = typeof decoded.sub === 'string' ? decoded.sub : (decoded.uid as string | undefined);
+
+    if (!uid) {
+      throw new Error('Token inválido: uid ausente');
+    }
+
+    return { uid, email: typeof decoded.email === 'string' ? decoded.email : '' };
+  },
+
+  createCustomToken: async (uid: string) => {
+    const secret = getAuthSecret();
+    if (!secret) {
+      throw new Error('Não foi possível emitir token sem APP_JWT_SECRET, JWT_SECRET ou NEXTAUTH_SECRET');
+    }
+
+    return jwt.sign({ uid }, secret, {
+      subject: uid,
+      expiresIn: '1h'
+    });
   }
 };
 
+class LegacyFirestoreDoc {
+  constructor(private readonly collectionName: string, private readonly docId: string) {}
+
+  async set(data: Record<string, unknown>, options?: { merge?: boolean }) {
+    if (this.collectionName !== 'users') {
+      throw new Error(`Coleção não suportada: ${this.collectionName}`);
+    }
+
+    const payload = normalizeUserUpdate(data);
+    const { error } = await supabase
+      .from('users')
+      .upsert({
+        firebase_uid: this.docId,
+        email: typeof payload.email === 'string' ? payload.email : '',
+        display_name: typeof payload.display_name === 'string' ? payload.display_name : '',
+        fazenda_nome: typeof payload.fazenda_nome === 'string' && payload.fazenda_nome.trim()
+          ? payload.fazenda_nome
+          : (typeof payload.display_name === 'string' && payload.display_name.trim() ? payload.display_name : 'Fazenda'),
+        subscription_plan: 'fazendeiro',
+        subscription_status: 'active',
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'firebase_uid',
+        ignoreDuplicates: false
+      });
+
+    if (error) {
+      throw error;
+    }
+
+    return { merge: !!options?.merge };
+  }
+
+  async get() {
+    if (this.collectionName !== 'users') {
+      return { exists: false };
+    }
+
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('firebase_uid', this.docId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      exists: !!data,
+      data: () => data
+    };
+  }
+}
+
+class LegacyFirestoreCollection {
+  constructor(private readonly collectionName: string) {}
+
+  doc(docId: string) {
+    return new LegacyFirestoreDoc(this.collectionName, docId);
+  }
+}
+
 export const adminFirestore = {
-  // Mock para compatibilidade
-  collection: () => ({ doc: () => ({ get: () => Promise.resolve({ exists: false }) }) })
+  collection: (name: string) => new LegacyFirestoreCollection(name)
 };
 
 export const adminStorage = {
-  // Mock para compatibilidade  
-  bucket: () => ({ file: () => ({ getSignedUrl: () => Promise.resolve(['mock-url']) }) })
+  bucket: () => ({
+    file: () => ({
+      getSignedUrl: async () => {
+        throw new Error(`Storage legacy adapter nao implementado no backend ${runtimeConfig.brandName}`);
+      }
+    })
+  })
 };

@@ -1,28 +1,26 @@
 /* eslint-disable no-unused-vars */
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
-  PieChart,
-  BarChart2,
-  Target,
-  DollarSign,
-  Sliders,
+  Activity,
   ChevronLeft,
   ChevronRight,
+  CreditCard,
+  HelpCircle,
+  List,
   Menu,
-  HelpCircle, // Ícone para Suporte
-  Activity, // Ícone para IA & Analytics e Leite
-  TrendingUp, // Ícone para Investimentos
-  Trophy, // Ícone para Metas
-  Users, // Ícone para Rebanho
-  List, // Ícone para Manejo
-  Building, // Ícone para Produção
-  CreditCard, // Ícone para Transações
-} from "lucide-react";
-import { useRouter } from "next/router";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import type { LucideIcon } from "lucide-react";
+  PieChart,
+  Settings,
+  Target,
+  TrendingUp,
+  User,
+  Users,
+  Building,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { dashboardBranding } from '../config/branding';
 
 interface SidebarProps {
   isMobile: boolean;
@@ -37,6 +35,11 @@ interface MenuItem {
   path: string;
   icon: LucideIcon;
   label: string;
+}
+
+interface MenuGroup {
+  title: string;
+  items: MenuItem[];
 }
 
 export default function Sidebar({
@@ -66,183 +69,182 @@ export default function Sidebar({
     if (!isMobile) return;
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
-      window.addEventListener("keydown", handleEscape);
+      window.addEventListener('keydown', handleEscape);
     }
 
     return () => {
-      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose, isMobile]);
 
   useEffect(() => {
-    if (!isMobile && typeof window !== "undefined") {
-      localStorage.setItem("sidebarCollapsed", String(collapsed));
+    if (!isMobile && typeof window !== 'undefined') {
+      localStorage.setItem('sidebarCollapsed', String(collapsed));
     }
   }, [collapsed, isMobile]);
 
-  const menuItems: MenuItem[] = [
+  const menuGroups: MenuGroup[] = [
     {
-      path: "/dashboard",
-      icon: PieChart,
-      label: "Dashboard",
+      title: 'Visão geral',
+      items: [{ path: '/dashboard', icon: PieChart, label: 'Dashboard' }],
     },
     {
-      path: "/rebanho",
-      icon: Users,
-      label: "Rebanho",
+      title: 'Operação',
+      items: [
+        { path: '/rebanho', icon: Users, label: 'Rebanho' },
+        { path: '/manejo', icon: List, label: 'Manejo' },
+        { path: '/producao', icon: Building, label: 'Produção' },
+        { path: '/leite', icon: Activity, label: 'Leite' },
+      ],
     },
     {
-      path: "/manejo",
-      icon: List,
-      label: "Manejo",
+      title: 'Financeiro',
+      items: [
+        { path: '/vendas', icon: CreditCard, label: 'Vendas' },
+        { path: '/transacoes', icon: CreditCard, label: 'Transações' },
+        { path: '/investimentos', icon: TrendingUp, label: 'Investimentos' },
+        { path: '/metas', icon: Target, label: 'Metas' },
+      ],
     },
     {
-      path: "/producao",
-      icon: Building,
-      label: "Produção",
-    },
-    {
-      path: "/leite",
-      icon: Activity,
-      label: "Leite",
-    },
-    {
-      path: "/vendas",
-      icon: DollarSign,
-      label: "Vendas",
-    },
-    {
-      path: "/transacoes",
-      icon: CreditCard,
-      label: "Transações",
-    },
-    {
-      path: "/investimentos",
-      icon: TrendingUp,
-      label: "Investimentos",
-    },
-    {
-      path: "/metas",
-      icon: Trophy,
-      label: "Metas",
-    },
-    {
-      path: "/configuracoes",
-      icon: Sliders,
-      label: "Configurações",
-    },
-    {
-      path: "/suporte",
-      icon: HelpCircle,
-      label: "Suporte",
+      title: 'Conta',
+      items: [
+        { path: '/configuracoes', icon: Settings, label: 'Configurações' },
+        { path: '/profile', icon: User, label: 'Perfil' },
+        { path: '/suporte', icon: HelpCircle, label: 'Suporte' },
+      ],
     },
   ];
 
   const sidebarContent = (
-    <>
-      <div
-        className={`flex items-center mb-6 ${
-          collapsed ? "px-2 justify-center" : "px-4 justify-between"
-        }`}
-      >
+    <div className="flex h-full flex-col">
+      <div className={`mb-6 flex items-center gap-3 ${collapsed ? 'justify-center px-2' : 'justify-between px-4'}`}>
         {!collapsed ? (
-          <Link
-            href="/dashboard"
-            className="flex items-center space-x-2"
-          >
-            <div className="w-10 h-10 flex items-center justify-center relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700">
-              <Image src="/Bovinext.png" alt="Bovinext" width={36} height={36} className="object-contain" />
-            </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-500">
-              BOVINEXT
+          <Link href="/dashboard" className="flex items-center gap-3">
+            <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
+            <span className="flex flex-col leading-tight">
+              <span className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 dark:text-white">
+                {dashboardBranding.brandName}
+              </span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                {dashboardBranding.shellSubtitle}
+              </span>
             </span>
           </Link>
         ) : (
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-center"
-          >
-            <div className="w-10 h-10 flex items-center justify-center relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700">
-              <Image src="/Bovinext.png" alt="Bovinext" width={36} height={36} className="object-contain" />
-            </div>
+          <Link href="/dashboard" className="flex items-center justify-center">
+            <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
           </Link>
         )}
+
         {isMobile ? (
           <button
-            className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            className="rounded-xl border border-slate-200/80 bg-white/80 p-2 text-slate-600 transition hover:-translate-y-0.5 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-white"
             onClick={onClose}
             aria-label="Fechar menu"
             aria-expanded={isOpen}
           >
-            <Menu size={24} className="text-blue-500 dark:text-blue-400" />
+            <Menu size={22} />
           </button>
         ) : (
           <button
-            className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            className="rounded-xl border border-slate-200/80 bg-white/80 p-2 text-slate-600 transition hover:-translate-y-0.5 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-white"
             onClick={() => {
               setCollapsed(!collapsed);
               onToggle();
             }}
-            aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
             aria-expanded={!collapsed}
           >
-            {collapsed ? (
-              <ChevronRight size={20} className="text-blue-500 dark:text-blue-400" />
-            ) : (
-              <ChevronLeft size={20} className="text-blue-500 dark:text-blue-400" />
-            )}
+            {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
           </button>
         )}
       </div>
 
-      <nav aria-label="Navegação principal">
-        <ul className="space-y-2">
-          {menuItems.map(({ path, icon: Icon, label }) => (
-            <li key={path}>
-              <Link
-                href={path}
-                className={`flex items-center p-3 rounded-lg transition-colors ${
-                  isActive(path)
-                    ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-                } ${collapsed ? "justify-center" : ""}`}
-                onClick={isMobile ? onClose : undefined}
-                aria-current={isActive(path) ? "page" : undefined}
-              >
-                <div className={`relative ${collapsed ? "mr-0" : "mr-3"}`}>
-                  <Icon
-                    size={22}
-                    className={`flex-shrink-0 ${
-                      isActive(path)
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-gray-600 dark:text-gray-400"
-                    }`}
-                    aria-hidden="true"
-                    strokeWidth={2.5}
-                  />
-                  {isActive(path) && (
-                    <motion.span
-                      layoutId="activeIndicator"
-                      className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 dark:bg-blue-400 rounded-r-full"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
+      {!collapsed && (
+        <div className="mb-6 px-4">
+          <div className="app-shell-stat">
+            <div className="app-shell-section-title">{dashboardBranding.workspaceLabel}</div>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {dashboardBranding.shellDescription}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <nav aria-label="Navegação principal" className="flex-1 px-2">
+        <div className="space-y-5">
+          {menuGroups.map((group) => (
+            <div key={group.title}>
+              {!collapsed && (
+                <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
+                  {group.title}
                 </div>
-                {!collapsed && (
-                  <span className="text-sm font-medium">{label}</span>
-                )}
-              </Link>
-            </li>
+              )}
+              <ul className="space-y-2">
+                {group.items.map(({ path, icon: Icon, label }) => {
+                  const active = isActive(path);
+
+                  return (
+                    <li key={path}>
+                      <Link
+                        href={path}
+                        className={`flex items-center rounded-xl px-3 py-3 transition ${
+                          active
+                            ? 'bg-teal-500/12 text-teal-700 dark:bg-teal-400/12 dark:text-teal-300'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white'
+                        } ${collapsed ? 'justify-center' : ''}`}
+                        onClick={isMobile ? onClose : undefined}
+                        aria-current={active ? 'page' : undefined}
+                      >
+                        <div className={`relative ${collapsed ? '' : 'mr-3'}`}>
+                          <Icon
+                            size={20}
+                            className={active ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}
+                            aria-hidden="true"
+                            strokeWidth={2.25}
+                          />
+                          {active && !collapsed && (
+                            <motion.span
+                              layoutId="sidebar-active-indicator"
+                              className="absolute -left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-teal-600 dark:bg-teal-400"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.2 }}
+                            />
+                          )}
+                        </div>
+                        {!collapsed && <span className="text-sm font-medium">{label}</span>}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </nav>
-    </>
+
+      {!collapsed && (
+        <div className="px-4 pb-4 pt-6">
+          <div className="app-shell-hero p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="app-shell-section-title">{dashboardBranding.whiteLabelPrompt}</div>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  Ajuste nome, cores e narrativa sem desmontar o produto.
+                </p>
+              </div>
+              <span className="app-shell-badge !h-10 !w-10">{dashboardBranding.badgeLabel}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 
   return (
@@ -255,26 +257,22 @@ export default function Sidebar({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm md:hidden"
                 onClick={onClose}
                 aria-hidden="true"
               />
 
-              <motion.div
-                initial={{ x: "-100%" }}
+              <motion.aside
+                initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
-                exit={{ x: "-100%" }}
-                transition={{
-                  type: "tween",
-                  duration: 0.2,
-                  ease: "easeInOut",
-                }}
-                className="fixed top-0 left-0 w-64 bg-white dark:bg-gray-800 h-full flex flex-col p-5 shadow-lg z-50 md:hidden"
+                exit={{ x: '-100%' }}
+                transition={{ type: 'tween', duration: 0.22, ease: 'easeInOut' }}
+                className="app-shell-sidebar fixed left-0 top-0 z-50 flex h-full w-72 flex-col p-5 md:hidden"
                 role="dialog"
                 aria-modal="true"
               >
                 {sidebarContent}
-              </motion.div>
+              </motion.aside>
             </>
           )}
         </AnimatePresence>
@@ -283,17 +281,17 @@ export default function Sidebar({
       {!isMobile && (
         <motion.aside
           initial={false}
-          animate={{ width: collapsed ? 80 : 256 }}
+          animate={{ width: collapsed ? 80 : 296 }}
           transition={{
-            type: "spring",
+            type: 'spring',
             stiffness: 300,
             damping: 30,
             mass: 0.5,
           }}
-          className="hidden md:flex flex-col fixed inset-y-0 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-x-hidden"
+          className="app-shell-sidebar hidden flex-col fixed inset-y-0 left-0 z-50 overflow-x-hidden md:flex"
           aria-label="Barra lateral"
         >
-          <div className="p-2 h-full overflow-y-auto">{sidebarContent}</div>
+          <div className="h-full overflow-y-auto p-3">{sidebarContent}</div>
         </motion.aside>
       )}
     </>

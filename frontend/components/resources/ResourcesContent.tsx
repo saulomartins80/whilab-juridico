@@ -1,37 +1,37 @@
 'use client';
 
-import { FiTrendingUp, FiPieChart, FiTarget, FiShield, FiUsers, FiBarChart2 } from 'react-icons/fi';
+import { TrendingUp, PieChart, Target, Shield, Users, BarChart2 } from 'lucide-react';
 
 const features = [
   {
     title: 'Análise de Investimentos',
     description: 'Ferramentas avançadas para análise e acompanhamento de seus investimentos.',
-    icon: FiTrendingUp,
+    icon: TrendingUp,
   },
   {
     title: 'Dashboard Personalizado',
     description: 'Visualize todas as suas informações financeiras em um só lugar.',
-    icon: FiPieChart,
+    icon: PieChart,
   },
   {
     title: 'Metas Financeiras',
     description: 'Defina e acompanhe suas metas com planos personalizados.',
-    icon: FiTarget,
+    icon: Target,
   },
   {
     title: 'Segurança Avançada',
     description: 'Proteção de dados com criptografia de ponta a ponta.',
-    icon: FiShield,
+    icon: Shield,
   },
   {
     title: 'Comunidade Ativa',
     description: 'Conecte-se com outros investidores e compartilhe experiências.',
-    icon: FiUsers,
+    icon: Users,
   },
   {
     title: 'Relatórios Detalhados',
     description: 'Relatórios completos e insights sobre seus investimentos.',
-    icon: FiBarChart2,
+    icon: BarChart2,
   },
 ];
 
