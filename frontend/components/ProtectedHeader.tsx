@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { Moon, Sun } from 'lucide-react';
 
 import { useTheme } from '../context/ThemeContext';
 import { dashboardBranding } from '../config/branding';
+import OptimizedLogo from './OptimizedLogo';
 
 interface ProtectedHeaderProps {
   title: string;
@@ -17,17 +17,18 @@ export default function ProtectedHeader({ title, subtitle = 'Workspace autentica
   return (
     <header className="fixed left-0 right-0 top-0 z-50 w-full">
       <div className="app-shell-header mx-auto flex h-16 max-w-[1520px] items-center justify-between gap-4 border-b border-slate-200/70 px-4 md:px-6">
-        <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
-          <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 dark:text-white">
-              {dashboardBranding.brandName}
-            </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              {dashboardBranding.shellSubtitle}
-            </span>
+        <div className="flex min-w-0 items-center gap-3">
+          <OptimizedLogo
+            href="/dashboard"
+            size={38}
+            showText
+            gapClassName="gap-3"
+            textClassName="hidden text-[17px] tracking-tight sm:inline-flex"
+          />
+          <span className="hidden text-[11px] text-slate-500 dark:text-slate-400 lg:inline-flex">
+            {dashboardBranding.shellSubtitle}
           </span>
-        </Link>
+        </div>
 
         <div className="hidden min-w-0 flex-1 px-6 lg:block">
           <div className="flex items-center gap-3">

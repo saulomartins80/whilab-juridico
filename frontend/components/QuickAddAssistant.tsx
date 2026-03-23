@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { X } from 'lucide-react';
 
 import { metaAPI } from '../services/api';
-import { Meta, Prioridade } from '../types/Meta';
+import { Prioridade } from '../types/Meta';
 
 interface QuickAddAssistantProps {
   onClose: () => void;
-  onSuccess?: (type: string, data: Record<string, any>) => void;
+  onSuccess?: (type: string, data: Record<string, string | number>) => void;
   activeTab: string;
 }
 
 export default function QuickAddAssistant({ onClose, onSuccess, activeTab }: QuickAddAssistantProps) {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, string | number | boolean>>({});
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -38,7 +38,7 @@ export default function QuickAddAssistant({ onClose, onSuccess, activeTab }: Qui
         categoria: formData.categoria ? String(formData.categoria) : undefined,
         prioridade: formData.prioridade ? (String(formData.prioridade).toLowerCase() as Prioridade) : undefined
       };
-      const result = await metaAPI.create(metaData as any);
+      const result = await metaAPI.create(metaData as Parameters<typeof metaAPI.create>[0]);
       if (onSuccess && result) onSuccess('goal', result as unknown as Record<string, string | number>);
       // Limpar o formulário antes de fechar
       resetForm();

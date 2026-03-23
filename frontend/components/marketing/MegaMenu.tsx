@@ -1,5 +1,4 @@
 ﻿import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,16 +13,19 @@ import {
   LayoutDashboard,
   Mail,
   Menu,
+  Moon,
   Newspaper,
   Shield,
   Sparkles,
+  Sun,
   Target,
   TrendingUp,
   Users,
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../OptimizedLogo';
+import { useTheme } from '../../context/ThemeContext';
 
 /* ================================================================
    MEGA MENU — WhiLab Navigation
@@ -125,6 +127,7 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const;
 function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const openGroup = navGroups.find((g) => g.id === openGroupId) ?? null;
 
@@ -155,16 +158,19 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
         transition={{ duration: 0.5, ease }}
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-[#121212]/80 backdrop-blur-2xl border-b border-white/[0.06]'
+            ? 'bg-white/80 backdrop-blur-2xl border-b border-slate-200 dark:bg-[#0a0a0a]/80 dark:border-white/[0.06]'
             : 'bg-transparent'
         }`}
       >
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={28} height={28} />
-            <span className="text-[16px] font-semibold tracking-tight text-white">{dashboardBranding.brandName}</span>
-          </Link>
+          <OptimizedLogo
+            href="/"
+            size={40}
+            showText
+            gapClassName="gap-3"
+            textClassName="text-[18px] md:text-[20px] tracking-tight"
+          />
 
           {/* Nav groups */}
           <div className="flex items-center gap-1">
@@ -176,10 +182,10 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
                   type="button"
                   onMouseEnter={() => handleEnter(group.id)}
                   onMouseLeave={handleLeave}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-medium transition-all duration-200 ${
+                  className={`group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-white/[0.1] text-white'
-                      : 'text-white/60 hover:text-white'
+                      ? 'bg-slate-100 text-slate-900 dark:bg-white/[0.1] dark:text-white'
+                      : 'text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white'
                   }`}
                 >
                   {group.label}
@@ -189,22 +195,30 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
             })}
 
             {/* Direct links */}
-            <Link href="/precos" className="px-4 py-2 text-[14px] font-medium text-white/60 hover:text-white transition-colors rounded-full">
+            <Link href="/precos" className="px-4 py-2 text-[14px] font-medium text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white transition-colors rounded-full">
               Precos
             </Link>
           </div>
 
           {/* CTA */}
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.1] dark:text-white/60 dark:hover:text-white dark:hover:bg-white/[0.05]"
+              aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+            >
+              {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <Link
               href="/auth/login"
-              className="inline-flex items-center rounded-full px-5 py-2.5 text-[14px] font-medium text-white/70 hover:text-white transition-colors"
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-[14px] font-medium text-slate-500 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors"
             >
               Entrar
             </Link>
             <Link
               href="/contato"
-              className="inline-flex items-center gap-2 rounded-full bg-white text-[#121212] px-6 py-2.5 text-[14px] font-medium hover:bg-[#22d3ee] transition-all duration-300"
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 text-white px-6 py-2.5 text-[14px] font-medium hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee] transition-all duration-300"
             >
               Falar com vendas
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -222,13 +236,13 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
               transition={{ duration: 0.2 }}
               onMouseEnter={handlePanelEnter}
               onMouseLeave={handleLeave}
-              className="border-t border-white/[0.06] bg-[#121212]/95 backdrop-blur-2xl"
+              className="border-t border-slate-200 bg-white/95 backdrop-blur-2xl dark:border-white/[0.06] dark:bg-[#0a0a0a]/95"
             >
               <div className="mx-auto max-w-[1200px] px-5 md:px-10 py-6">
                 <div className="grid grid-cols-2 gap-6">
                   {openGroup.sections.map((section) => (
                     <div key={section.title}>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#969696] mb-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#969696] mb-3">
                         {section.title}
                       </p>
                       <div className="space-y-1">
@@ -239,16 +253,16 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
                               key={link.href}
                               href={link.href}
                               onClick={() => setOpenGroupId(null)}
-                              className="group flex items-start gap-3 rounded-xl px-3 py-3 transition-all hover:bg-white/[0.05]"
+                              className="group flex items-start gap-3 rounded-xl px-3 py-3 transition-all hover:bg-slate-50 dark:hover:bg-white/[0.05]"
                             >
-                              <div className="rounded-lg bg-white/[0.05] p-2 text-[#22d3ee] group-hover:bg-[#22d3ee]/10 transition-colors">
+                              <div className="rounded-lg bg-[#0f766e]/10 p-2 text-[#0f766e] group-hover:bg-[#0f766e]/15 dark:bg-white/[0.05] dark:text-[#22d3ee] dark:group-hover:bg-[#22d3ee]/10 transition-colors">
                                 <Icon className="w-4 h-4" />
                               </div>
                               <div className="min-w-0">
-                                <p className="text-[14px] font-medium text-white group-hover:text-[#22d3ee] transition-colors">
+                                <p className="text-[14px] font-medium text-slate-900 group-hover:text-[#0f766e] dark:text-white dark:group-hover:text-[#22d3ee] transition-colors">
                                   {link.label}
                                 </p>
-                                <p className="text-[12px] text-[#969696] mt-0.5">{link.desc}</p>
+                                <p className="text-[12px] text-slate-400 dark:text-[#969696] mt-0.5">{link.desc}</p>
                               </div>
                             </Link>
                           );
@@ -273,30 +287,44 @@ function DesktopMegaMenu({ scrolled }: { scrolled: boolean }) {
 function MobileMenu({ scrolled }: { scrolled: boolean }) {
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
     <div className="lg:hidden">
       <nav
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
           scrolled || open
-            ? 'bg-[#121212]/90 backdrop-blur-2xl border-b border-white/[0.06]'
+            ? 'bg-white/90 backdrop-blur-2xl border-b border-slate-200 dark:bg-[#0a0a0a]/90 dark:border-white/[0.06]'
             : 'bg-transparent'
         }`}
       >
         <div className="flex items-center justify-between px-5 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={24} height={24} />
-            <span className="text-[15px] font-semibold tracking-tight text-white">{dashboardBranding.brandName}</span>
-          </Link>
+          <OptimizedLogo
+            href="/"
+            size={34}
+            showText
+            gapClassName="gap-2.5"
+            textClassName="text-[17px] tracking-tight"
+          />
 
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.05] text-white"
-            aria-label={open ? 'Fechar menu' : 'Abrir menu'}
-          >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white/60"
+              aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+            >
+              {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(!open)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white"
+              aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+            >
+              {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -307,7 +335,7 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#121212]/98 backdrop-blur-xl pt-[72px] overflow-y-auto"
+            className="fixed inset-0 z-40 bg-white/98 backdrop-blur-xl pt-[72px] overflow-y-auto dark:bg-[#0a0a0a]/98"
           >
             <div className="px-5 py-6 space-y-2">
               {navGroups.map((group) => (
@@ -315,7 +343,7 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
                   <button
                     type="button"
                     onClick={() => setExpandedGroup(expandedGroup === group.id ? null : group.id)}
-                    className="w-full flex items-center justify-between rounded-xl px-4 py-3 text-[15px] font-medium text-white hover:bg-white/[0.05] transition-colors"
+                    className="w-full flex items-center justify-between rounded-xl px-4 py-3 text-[15px] font-medium text-slate-900 hover:bg-slate-50 dark:text-white dark:hover:bg-white/[0.05] transition-colors"
                   >
                     {group.label}
                     <ChevronDown className={`w-4 h-4 text-[#969696] transition-transform ${expandedGroup === group.id ? 'rotate-180' : ''}`} />
@@ -333,7 +361,7 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
                         <div className="px-2 pb-2 space-y-1">
                           {group.sections.map((section) => (
                             <div key={section.title} className="pt-2">
-                              <p className="px-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#969696] mb-2">
+                              <p className="px-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#969696] mb-2">
                                 {section.title}
                               </p>
                               {section.links.map((link) => {
@@ -343,12 +371,12 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setOpen(false)}
-                                    className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/[0.05] transition-colors"
+                                    className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/[0.05] transition-colors"
                                   >
-                                    <Icon className="w-4 h-4 text-[#22d3ee]" />
+                                    <Icon className="w-4 h-4 text-[#0f766e] dark:text-[#22d3ee]" />
                                     <div>
-                                      <p className="text-[14px] font-medium text-white">{link.label}</p>
-                                      <p className="text-[12px] text-[#969696]">{link.desc}</p>
+                                      <p className="text-[14px] font-medium text-slate-900 dark:text-white">{link.label}</p>
+                                      <p className="text-[12px] text-slate-400 dark:text-[#969696]">{link.desc}</p>
                                     </div>
                                   </Link>
                                 );
@@ -366,24 +394,24 @@ function MobileMenu({ scrolled }: { scrolled: boolean }) {
               <Link
                 href="/precos"
                 onClick={() => setOpen(false)}
-                className="block rounded-xl px-4 py-3 text-[15px] font-medium text-white hover:bg-white/[0.05] transition-colors"
+                className="block rounded-xl px-4 py-3 text-[15px] font-medium text-slate-900 hover:bg-slate-50 dark:text-white dark:hover:bg-white/[0.05] transition-colors"
               >
                 Precos
               </Link>
 
               {/* CTA buttons */}
-              <div className="pt-4 space-y-2 border-t border-white/[0.06]">
+              <div className="pt-4 space-y-2 border-t border-slate-200 dark:border-white/[0.06]">
                 <Link
                   href="/auth/login"
                   onClick={() => setOpen(false)}
-                  className="block w-full rounded-full border border-white/[0.15] py-3 text-center text-[14px] font-medium text-white hover:bg-white/[0.05] transition-colors"
+                  className="block w-full rounded-full border border-slate-300 py-3 text-center text-[14px] font-medium text-slate-700 hover:bg-slate-50 dark:border-white/[0.15] dark:text-white dark:hover:bg-white/[0.05] transition-colors"
                 >
                   Entrar
                 </Link>
                 <Link
                   href="/contato"
                   onClick={() => setOpen(false)}
-                  className="block w-full rounded-full bg-white py-3 text-center text-[14px] font-medium text-[#121212] hover:bg-[#22d3ee] transition-colors"
+                  className="block w-full rounded-full bg-slate-900 py-3 text-center text-[14px] font-medium text-white hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee] transition-colors"
                 >
                   Falar com vendas
                 </Link>
@@ -416,4 +444,3 @@ export default function MegaMenu() {
     </>
   );
 }
-

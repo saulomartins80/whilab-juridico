@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { dashboardBranding } from '../config/branding';
+import OptimizedLogo from './OptimizedLogo';
 
 interface SidebarProps {
   isMobile: boolean;
@@ -124,21 +126,20 @@ export default function Sidebar({
     <div className="flex h-full flex-col">
       <div className={`mb-6 flex items-center gap-3 ${collapsed ? 'justify-center px-2' : 'justify-between px-4'}`}>
         {!collapsed ? (
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 dark:text-white">
-                {dashboardBranding.brandName}
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
-                {dashboardBranding.shellSubtitle}
-              </span>
+          <div className="flex items-center gap-3">
+            <OptimizedLogo
+              href="/dashboard"
+              size={38}
+              showText
+              gapClassName="gap-3"
+              textClassName="text-[17px] tracking-tight"
+            />
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              {dashboardBranding.shellSubtitle}
             </span>
-          </Link>
+          </div>
         ) : (
-          <Link href="/dashboard" className="flex items-center justify-center">
-            <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
-          </Link>
+          <OptimizedLogo href="/dashboard" size={30} />
         )}
 
         {isMobile ? (
@@ -239,7 +240,7 @@ export default function Sidebar({
                   Ajuste nome, cores e narrativa sem desmontar o produto.
                 </p>
               </div>
-              <span className="app-shell-badge !h-10 !w-10">{dashboardBranding.badgeLabel}</span>
+              <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={36} height={36} />
             </div>
           </div>
         </div>

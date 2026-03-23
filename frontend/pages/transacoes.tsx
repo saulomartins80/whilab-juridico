@@ -3,17 +3,15 @@ import {
   DollarSign,
   TrendingUp,
   TrendingDown,
-  Filter,
   Plus,
   Search,
-  Calendar,
-  Download,
   Eye,
   Edit,
   Trash2,
   ArrowUpRight,
   ArrowDownRight,
   RefreshCw,
+  Download,
   FileText,
   PieChart,
 } from "lucide-react";
@@ -307,7 +305,7 @@ function TransacaoModal({ isOpen, onClose, onSave, transacao, mode }: TransacaoM
 }
 
 export default function Transacoes() {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

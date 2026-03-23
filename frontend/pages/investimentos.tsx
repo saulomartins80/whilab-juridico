@@ -6,13 +6,9 @@ import {
   DollarSign,
   Plus,
   Search,
-  Filter,
-  Download,
   Eye,
   Edit,
   Trash2,
-  Calendar,
-  AlertCircle,
   Shield,
   Zap,
   Target,
@@ -27,7 +23,6 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "react-hot-toast";
 import dynamic from "next/dynamic";
 
-import { useAuth } from "../context/AuthContext";
 import type { Investimento, TipoInvestimento } from "../types/Investimento";
 import { investimentoAPI } from "../services/api";
 
@@ -426,7 +421,6 @@ function InvestimentoModal({ isOpen, onClose, onSave, investimento, mode }: Inve
 }
 
 export default function Investimentos() {
-  const { user } = useAuth();
   const [investimentos, setInvestimentos] = useState<Investimento[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

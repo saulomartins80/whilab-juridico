@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, Search, Edit3, Trash2, MapPin, Camera, TrendingUp,
-  Eye, X, Check, Loader2, ChevronDown, AlertCircle, Filter,
-  Calendar, Weight, Heart, DollarSign, Tag
+  Plus, Search, Edit3, Trash2, MapPin,
+  Eye, X, Check, Loader2, AlertCircle, Filter,
+  Weight, Heart, DollarSign, Tag
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 

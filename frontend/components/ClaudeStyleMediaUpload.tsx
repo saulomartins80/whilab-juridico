@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useCallback } from 'react';
-import { Plus, Image as ImageIcon } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ClaudeStyleMediaUploadProps {

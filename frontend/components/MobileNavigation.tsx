@@ -285,7 +285,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
                     Atalhos contextuais da tela atual
                   </p>
                 </div>
-                <span className="app-shell-badge !h-10 !w-10">AI</span>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-sm font-bold text-teal-600 dark:bg-teal-400/10 dark:text-teal-400">AI</span>
               </div>
 
               <div className="space-y-2">

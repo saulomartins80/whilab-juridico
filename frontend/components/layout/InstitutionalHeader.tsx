@@ -1,12 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { Home, Sun, Moon } from 'lucide-react';
 
 import { useTheme } from '../../context/ThemeContext';
-import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../OptimizedLogo';
 
 interface InstitutionalHeaderProps {
   title: string;
@@ -35,12 +34,13 @@ export const InstitutionalHeader: React.FC<InstitutionalHeaderProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 md:py-4">
-          <Link href="/" className="flex items-center space-x-2 md:space-x-3 group">
-            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={32} height={32} className="md:w-10 md:h-10" />
-            <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-              {dashboardBranding.brandNameUpper}
-            </span>
-          </Link>
+          <OptimizedLogo
+            href="/"
+            size={40}
+            showText
+            gapClassName="gap-3"
+            textClassName="text-[18px] md:text-[22px] tracking-tight"
+          />
 
           <div className="flex items-center space-x-2 md:space-x-4">
             <button

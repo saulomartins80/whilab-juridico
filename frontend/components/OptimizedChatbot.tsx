@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Send, Bot, CheckCircle, X, Lightbulb, TrendingUp, Trash2, Brain, Rocket, Target, Copy, ThumbsUp, MessageCircle, XCircle, Sparkles, Zap, Plus, Clock, ChevronLeft, Mic, Square, Calendar } from 'lucide-react';
+import { Send, Bot, CheckCircle, X, Lightbulb, TrendingUp, Trash2, Brain, Target, Copy, ThumbsUp, MessageCircle, XCircle, Sparkles, Zap, Plus, Clock, Mic, Square } from 'lucide-react';
 import { useOptimizedChat } from '../src/hooks/useOptimizedChat';
 import { useAuth } from '../context/AuthContext';
 import { useBusiness } from '../context/BusinessContext';
@@ -524,7 +524,7 @@ const EnterpriseMessageBubble: React.FC<{
   onFeedback: (messageId: string) => void;
   avatarUrl?: string;
   showBusinessData?: boolean;
-}> = ({ message, theme, onFeedback, avatarUrl, showBusinessData = false }) => {
+}> = ({ message, theme, onFeedback, showBusinessData = false }) => {
   const isUser = message.sender === 'user';
   const isStreaming = message.metadata?.isStreaming;
   const hasRichAttachments = Array.isArray(message.metadata?.richAttachments) && message.metadata!.richAttachments!.length > 0;
@@ -797,7 +797,7 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
   const [pendingImage, setPendingImage] = useState<{ file: File; preview: string } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [isViewingHistorySession, setIsViewingHistorySession] = useState(false);
-  const [chatSessions, setChatSessions] = useState<Array<{ chatId: string; title: string; createdAt: string; messageCount: number }>>([]);
+  const [_chatSessions, _setChatSessions] = useState<Array<{ chatId: string; title: string; createdAt: string; messageCount: number }>>([]);
   const [deleteConversation, setDeleteConversation] = useState<{ chatId: string | null; title?: string } | null>(null);
   const [isDeletingConversation, setIsDeletingConversation] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -1323,7 +1323,7 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
       const sessions = response?.conversations || response?.data || response || [];
       console.log('[OptimizedChatbot] Sessões encontradas:', sessions);
       
-      setChatSessions(sessions);
+      _setChatSessions(sessions);
       setShowHistory(true);
       
       // Silencioso: lista de histórico já mostra visualmente
@@ -1334,7 +1334,7 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
   }, []);
   
   // Função para carregar uma conversa específica
-  const loadChat = useCallback(async (selectedChatId: string) => {
+  const _loadChat = useCallback(async (selectedChatId: string) => {
     try {
       console.log('[OptimizedChatbot] Carregando conversa:', selectedChatId);
       
@@ -1374,7 +1374,7 @@ export default function OptimizedChatbot({ isOpen: externalIsOpen, onToggle }: C
 
       if (targetChatId) {
         await chatbotAPI.deleteSession(targetChatId);
-        setChatSessions((prev) => prev.filter((s) => s.chatId !== targetChatId));
+        _setChatSessions((prev) => prev.filter((s) => s.chatId !== targetChatId));
       }
 
       if (isDeletingCurrentConversation) {

@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 
 import { useTheme } from '../../context/ThemeContext';
-import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../OptimizedLogo';
 
 export function ClientHeader() {
   const router = useRouter();
@@ -29,12 +28,13 @@ export function ClientHeader() {
     <header className="bg-white dark:bg-gray-900 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 md:py-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2 md:space-x-3">
-            <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={32} height={32} className="md:w-10 md:h-10" />
-            <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-              {dashboardBranding.brandNameUpper}
-            </span>
-          </Link>
+          <OptimizedLogo
+            href="/"
+            size={40}
+            showText
+            gapClassName="gap-3"
+            textClassName="text-[18px] md:text-[21px] tracking-tight"
+          />
 
           <nav className="hidden md:flex space-x-6 lg:space-x-8">
             {filteredMenuItems.map((item) => (

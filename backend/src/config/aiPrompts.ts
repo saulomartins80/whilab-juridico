@@ -15,7 +15,7 @@ const buildAssistantName = (value: string): string => {
   return compact.slice(0, 4).toUpperCase() || 'AI';
 };
 
-const defaultProductName = runtimeConfig.brandName || 'BoviNext';
+const defaultProductName = runtimeConfig.brandName || 'WhiLab';
 const defaultAssistantName = buildAssistantName(defaultProductName);
 const defaultVertical = 'pecuaria';
 const defaultOperationLabel = 'fazenda';

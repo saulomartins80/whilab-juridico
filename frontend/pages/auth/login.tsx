@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -13,13 +12,17 @@ import {
   Loader2,
   Lock,
   Mail,
+  Moon,
   Shield,
+  Sun,
   AlertCircle,
 } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { usePreloadCheck } from '../../src/hooks/usePreloadCheck';
 import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../../components/OptimizedLogo';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -43,6 +46,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showRegistrationSuccess, setShowRegistrationSuccess] = useState(false);
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const emailIsValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
 
@@ -92,57 +96,70 @@ export default function LoginPage() {
 
   if (isPreloading || loading || user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#121212]">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#0a0a0a]">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="h-11 w-11 rounded-full border-2 border-white/20 border-t-[#22d3ee]"
+          className="h-11 w-11 rounded-full border-2 border-slate-200 border-t-[#0f766e] dark:border-white/20 dark:border-t-[#22d3ee]"
         />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white antialiased overflow-hidden" style={{ fontFamily: '"Inter", sans-serif' }}>
+    <div className="min-h-screen bg-white text-slate-900 antialiased overflow-hidden dark:bg-[#0a0a0a] dark:text-white" style={{ fontFamily: '"Inter", sans-serif' }}>
       {/* Background effects */}
-      <div className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-[#22d3ee]/[0.06] blur-[120px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.04] blur-[120px]" />
+      <div className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-[#0f766e]/[0.04] dark:bg-[#22d3ee]/[0.06] blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.03] dark:bg-indigo-500/[0.04] blur-[120px]" />
 
       {/* Header */}
       <header className="relative z-10 mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-5">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={28} height={28} />
-          <span className="text-[16px] font-semibold tracking-tight">{dashboardBranding.brandName}</span>
-        </Link>
-        <Link
+        <OptimizedLogo
           href="/"
-          className="inline-flex items-center rounded-full border border-white/[0.15] px-5 py-2.5 text-[14px] font-medium text-white/70 hover:text-white hover:bg-white/[0.05] transition-all"
-        >
-          Voltar para home
-        </Link>
+          size={38}
+          showText
+          gapClassName="gap-3"
+          textClassName="text-[18px] tracking-tight"
+        />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.1] dark:text-white/60 dark:hover:text-white dark:hover:bg-white/[0.05]"
+            aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+          >
+            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+          <Link
+            href="/"
+            className="inline-flex items-center rounded-full border border-slate-300 px-5 py-2.5 text-[14px] font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.15] dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.05]"
+          >
+            Voltar para home
+          </Link>
+        </div>
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 mx-auto max-w-[1200px] px-5 md:px-10 mt-8 lg:mt-16">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-120px)]">
+      <main className="relative z-10 mx-auto max-w-[1200px] px-5 md:px-10 mt-2 lg:mt-6">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[calc(100vh-100px)]">
 
           {/* Left — Branding */}
           <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-1.5 mb-8">
-              <Shield className="w-3.5 h-3.5 text-[#22d3ee]" />
-              <span className="text-[13px] font-medium text-[#969696]">Acesso seguro</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 mb-6 dark:border-white/[0.1] dark:bg-white/[0.03]">
+              <Shield className="w-3.5 h-3.5 text-[#0f766e] dark:text-[#22d3ee]" />
+              <span className="text-[13px] font-medium text-slate-500 dark:text-[#969696]">Acesso seguro</span>
             </div>
 
-            <h1 className="text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.08] tracking-[-0.03em]">
+            <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-slate-900 dark:text-white">
               Acesse sua<br />
-              <span className="text-[#22d3ee]">operacao premium.</span>
+              <span className="text-[#0f766e] dark:text-[#22d3ee]">operacao premium.</span>
             </h1>
 
-            <p className="mt-5 max-w-[440px] text-[16px] leading-relaxed text-[#969696]">
+            <p className="mt-4 max-w-[440px] text-[15px] leading-relaxed text-slate-500 dark:text-[#969696]">
               Entre no {dashboardBranding.brandName} para acompanhar rebanho, manejo, producao e vendas com uma camada comercial pronta para implantar, operar e revender.
             </p>
 
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
               {[
                 { icon: BarChart2, title: 'Dashboard', text: 'KPIs e metricas em tempo real' },
                 { icon: Brain, title: 'IA aplicada', text: 'Alertas e previsoes automaticas' },
@@ -154,19 +171,19 @@ export default function LoginPage() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4"
+                  className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.03]"
                 >
-                  <card.icon className="w-5 h-5 text-[#22d3ee] mb-3" />
-                  <p className="text-[13px] font-semibold text-white">{card.title}</p>
-                  <p className="text-[12px] text-[#969696] mt-1">{card.text}</p>
+                  <card.icon className="w-5 h-5 text-[#0f766e] dark:text-[#22d3ee] mb-3" />
+                  <p className="text-[13px] font-semibold text-slate-900 dark:text-white">{card.title}</p>
+                  <p className="text-[12px] text-slate-500 dark:text-[#969696] mt-1">{card.text}</p>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-8 flex flex-wrap gap-2">
+            <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-6 flex flex-wrap gap-2">
               {['Plataforma completa', 'Marca propria', 'Suporte dedicado'].map((point) => (
-                <span key={point} className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[12px] font-medium text-white/60">
-                  <Check className="w-3.5 h-3.5 text-[#22d3ee]" />
+                <span key={point} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] font-medium text-slate-500 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/60">
+                  <Check className="w-3.5 h-3.5 text-[#0f766e] dark:text-[#22d3ee]" />
                   {point}
                 </span>
               ))}
@@ -175,15 +192,15 @@ export default function LoginPage() {
 
           {/* Right — Login form */}
           <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible">
-            <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8 md:p-10 backdrop-blur-xl shadow-[0_40px_100px_rgba(0,0,0,0.3)]">
+            <div className="rounded-[2rem] border border-slate-200 bg-white/80 p-8 md:p-10 backdrop-blur-xl shadow-[0_40px_100px_rgba(15,23,42,0.08)] dark:border-white/[0.08] dark:bg-white/[0.03] dark:shadow-[0_40px_100px_rgba(0,0,0,0.3)]">
               <div className="flex items-start justify-between gap-3 mb-8">
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#969696]">Entrada segura</p>
-                  <h2 className="mt-2 text-[24px] font-semibold tracking-tight">Acessar conta</h2>
-                  <p className="mt-1 text-[14px] text-[#969696]">Use seu email e senha para entrar.</p>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 dark:text-[#969696]">Entrada segura</p>
+                  <h2 className="mt-2 text-[24px] font-semibold tracking-tight text-slate-900 dark:text-white">Acessar conta</h2>
+                  <p className="mt-1 text-[14px] text-slate-500 dark:text-[#969696]">Use seu email e senha para entrar.</p>
                 </div>
-                <div className="rounded-xl bg-white/[0.05] p-3">
-                  <Lock className="w-5 h-5 text-[#22d3ee]" />
+                <div className="rounded-xl bg-slate-100 p-3 dark:bg-white/[0.05]">
+                  <Lock className="w-5 h-5 text-[#0f766e] dark:text-[#22d3ee]" />
                 </div>
               </div>
 
@@ -191,7 +208,7 @@ export default function LoginPage() {
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3 text-[14px] text-emerald-400"
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-[14px] text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/[0.08] dark:text-emerald-400"
                 >
                   <Check className="mt-0.5 w-4 h-4 flex-shrink-0" />
                   Cadastro concluido. Agora voce pode fazer login.
@@ -202,7 +219,7 @@ export default function LoginPage() {
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-[14px] text-red-400"
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-600 dark:border-red-500/20 dark:bg-red-500/[0.08] dark:text-red-400"
                 >
                   <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
                   {error}
@@ -211,9 +228,9 @@ export default function LoginPage() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <label className="block">
-                  <span className="mb-2 block text-[13px] font-medium text-white/80">Email</span>
+                  <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Email</span>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#969696]" />
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
                     <input
                       type="email"
                       value={email}
@@ -221,23 +238,23 @@ export default function LoginPage() {
                       placeholder="seu@email.com"
                       autoComplete="username"
                       required
-                      className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] py-3.5 pl-11 pr-10 text-white text-[14px] outline-none transition placeholder:text-white/30 focus:border-[#22d3ee]/50 focus:ring-1 focus:ring-[#22d3ee]/30"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3.5 pl-11 pr-10 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
                     />
                     {email && emailIsValid && (
-                      <Check className="pointer-events-none absolute right-4 top-1/2 w-4 h-4 -translate-y-1/2 text-emerald-400" />
+                      <Check className="pointer-events-none absolute right-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#0f766e] dark:text-emerald-400" />
                     )}
                   </div>
                 </label>
 
                 <label className="block">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[13px] font-medium text-white/80">Senha</span>
-                    <Link href="/auth/forgot-password" className="text-[12px] font-medium text-[#22d3ee] hover:text-[#22d3ee]/80 transition-colors">
+                    <span className="text-[13px] font-medium text-slate-700 dark:text-white/80">Senha</span>
+                    <Link href="/auth/forgot-password" className="text-[12px] font-medium text-[#0f766e] hover:text-[#0f766e]/80 transition-colors dark:text-[#22d3ee] dark:hover:text-[#22d3ee]/80">
                       Esqueci minha senha
                     </Link>
                   </div>
                   <div className="relative">
-                    <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#969696]" />
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -246,12 +263,12 @@ export default function LoginPage() {
                       autoComplete="current-password"
                       minLength={6}
                       required
-                      className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] py-3.5 pl-11 pr-11 text-white text-[14px] outline-none transition placeholder:text-white/30 focus:border-[#22d3ee]/50 focus:ring-1 focus:ring-[#22d3ee]/30"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3.5 pl-11 pr-11 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#969696] hover:text-white transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors dark:text-[#969696] dark:hover:text-white"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -261,7 +278,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#121212] py-3.5 text-[14px] font-semibold transition-all duration-300 hover:bg-[#22d3ee] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white py-3.5 text-[14px] font-semibold transition-all duration-300 hover:bg-[#0f766e] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]"
                 >
                   {isLoading ? (
                     <>
@@ -277,9 +294,9 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-center text-[14px] text-[#969696]">
+              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-center text-[14px] text-slate-500 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-[#969696]">
                 Nao tem conta?{' '}
-                <Link href="/auth/register" className="font-semibold text-white hover:text-[#22d3ee] transition-colors">
+                <Link href="/auth/register" className="font-semibold text-slate-900 hover:text-[#0f766e] transition-colors dark:text-white dark:hover:text-[#22d3ee]">
                   Criar conta agora
                 </Link>
               </div>

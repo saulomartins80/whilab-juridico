@@ -14,48 +14,50 @@
 
 :root {
   color-scheme: light;
-  --background: #f6f7fb;
-  --background-elevated: rgba(255, 255, 255, 0.82);
-  --background-surface: rgba(255, 255, 255, 0.94);
+  --background: #f8f9fc;
+  --background-elevated: rgba(255, 255, 255, 0.86);
+  --background-surface: rgba(255, 255, 255, 0.96);
   --background-dark: #020617;
-  --background-elevated-dark: rgba(15, 23, 42, 0.84);
-  --background-surface-dark: rgba(15, 23, 42, 0.92);
+  --background-elevated-dark: rgba(15, 23, 42, 0.88);
+  --background-surface-dark: rgba(15, 23, 42, 0.94);
   --text-primary: #0f172a;
-  --text-muted: #475569;
-  --text-primary-dark: #e2e8f0;
+  --text-muted: #64748b;
+  --text-primary-dark: #f1f5f9;
   --text-muted-dark: #94a3b8;
-  --border-subtle: rgba(148, 163, 184, 0.24);
-  --border-subtle-dark: rgba(148, 163, 184, 0.16);
+  --border-subtle: rgba(148, 163, 184, 0.22);
+  --border-subtle-dark: rgba(148, 163, 184, 0.12);
   --brand-primary: #0f766e;
   --brand-secondary: #1d4ed8;
   --brand-strong: #0f172a;
   --shell-bg:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 30%),
-    radial-gradient(circle at top right, rgba(29, 78, 216, 0.06), transparent 26%),
-    linear-gradient(180deg, #f7f8fc 0%, #edf2f7 100%);
-  --shell-card: rgba(255, 255, 255, 0.76);
-  --shell-card-strong: rgba(255, 255, 255, 0.92);
-  --shell-card-dark: rgba(15, 23, 42, 0.76);
-  --shell-card-dark-strong: rgba(15, 23, 42, 0.94);
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15, 118, 110, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(29, 78, 216, 0.04), transparent),
+    linear-gradient(180deg, #f8f9fc 0%, #eef2f7 100%);
+  --shell-card: rgba(255, 255, 255, 0.78);
+  --shell-card-strong: rgba(255, 255, 255, 0.94);
+  --shell-card-dark: rgba(15, 23, 42, 0.72);
+  --shell-card-dark-strong: rgba(15, 23, 42, 0.92);
   --shell-border: rgba(148, 163, 184, 0.18);
-  --shell-border-dark: rgba(148, 163, 184, 0.16);
-  --shell-shadow: 0 24px 90px rgba(15, 23, 42, 0.1);
+  --shell-border-dark: rgba(148, 163, 184, 0.1);
+  --shell-shadow: 0 20px 60px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
 
 html.dark {
+  color-scheme: dark;
   --background: #020617;
-  --background-elevated: rgba(15, 23, 42, 0.84);
-  --background-surface: rgba(15, 23, 42, 0.92);
-  --text-primary: #e2e8f0;
+  --background-elevated: rgba(15, 23, 42, 0.88);
+  --background-surface: rgba(15, 23, 42, 0.94);
+  --text-primary: #f1f5f9;
   --text-muted: #94a3b8;
-  --border-subtle: rgba(148, 163, 184, 0.16);
+  --border-subtle: rgba(148, 163, 184, 0.12);
   --shell-bg:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.1), transparent 24%),
-    radial-gradient(circle at top right, rgba(29, 78, 216, 0.08), transparent 22%),
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15, 118, 110, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(29, 78, 216, 0.08), transparent),
     linear-gradient(180deg, #020617 0%, #0f172a 100%);
-  --shell-card: rgba(15, 23, 42, 0.76);
-  --shell-card-strong: rgba(15, 23, 42, 0.94);
-  --shell-shadow: 0 24px 90px rgba(2, 6, 23, 0.42);
+  --shell-card: rgba(15, 23, 42, 0.72);
+  --shell-card-strong: rgba(15, 23, 42, 0.92);
+  --shell-border: rgba(148, 163, 184, 0.1);
+  --shell-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(148, 163, 184, 0.06);
 }
 
 /* Permite rolagem global (correção principal) */
@@ -74,11 +76,8 @@ body {
 
 /* Transições de tema */
 html.light {
-  @apply bg-white text-gray-900;
-}
-
-html.dark {
-  @apply bg-gray-900 text-white;
+  background-color: var(--background);
+  color: var(--text-primary);
 }
 
 html.dark body {

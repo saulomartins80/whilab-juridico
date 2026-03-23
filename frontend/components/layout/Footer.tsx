@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Github, Instagram, Linkedin, Twitter } from 'lucide-react';
 import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../OptimizedLogo';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -65,12 +66,13 @@ export const Footer: React.FC = () => {
 
         <div className="mt-10 grid gap-10 md:grid-cols-4">
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-3">
-              <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
-              <span className="text-2xl font-semibold tracking-[0.18em] text-slate-950 dark:text-white">
-                {dashboardBranding.brandName}
-              </span>
-            </Link>
+            <OptimizedLogo
+              href="/"
+              size={38}
+              showText
+              gapClassName="gap-3"
+              textClassName="text-[18px] tracking-tight"
+            />
             <p className="max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">
               Plataforma pecuaria premium com base white-label, pronta para implantar, revender e adaptar por operacao.
             </p>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface BusinessData {
   metrics?: Record<string, number>;

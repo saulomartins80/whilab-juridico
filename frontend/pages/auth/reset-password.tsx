@@ -2,18 +2,23 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { AlertCircle, ArrowLeft, CheckCircle, Loader2, Lock } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle, Loader2, Lock, Moon, Sun, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { supabase } from '../../lib/supabaseClient';
 import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../../components/OptimizedLogo';
+import { useTheme } from '../../context/ThemeContext';
 
 type RecoveryStatus = 'checking' | 'ready' | 'invalid' | 'success';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const { resolvedTheme, toggleTheme } = useTheme();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [status, setStatus] = useState<RecoveryStatus>('checking');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -128,145 +133,207 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 antialiased dark:bg-[#0a0a0a] dark:text-white" style={{ fontFamily: '"Inter", sans-serif' }}>
       <Head>
         <title>Nova senha | {dashboardBranding.brandName}</title>
-        <meta
-          name="description"
-          content={`Defina uma nova senha para continuar usando o ${dashboardBranding.brandName}.`}
-        />
+        <meta name="description" content={`Defina uma nova senha para continuar usando o ${dashboardBranding.brandName}.`} />
       </Head>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden"
-      >
-        <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center">
-          <h1 className="text-2xl font-bold text-white">Criar nova senha</h1>
-          <p className="text-green-100 mt-2">
-            {status === 'success'
-              ? 'Sua senha foi atualizada'
-              : 'Finalize o acesso com uma senha nova e segura'}
-          </p>
-        </div>
+      <div className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-[#0f766e]/[0.04] dark:bg-[#22d3ee]/[0.06] blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.03] dark:bg-indigo-500/[0.04] blur-[120px]" />
 
-        <div className="p-8">
-          {status === 'checking' && (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-              <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-                Validando o link de redefinicao...
-              </p>
+      <header className="relative z-10 mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-5">
+        <OptimizedLogo
+          href="/"
+          size={38}
+          showText
+          gapClassName="gap-3"
+          textClassName="text-[18px] tracking-tight"
+        />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.1] dark:text-white/60 dark:hover:text-white dark:hover:bg-white/[0.05]"
+            aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+          >
+            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+          <Link
+            href="/auth/login"
+            className="inline-flex items-center rounded-full border border-slate-300 px-5 py-2.5 text-[14px] font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.15] dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.05]"
+          >
+            Voltar ao login
+          </Link>
+        </div>
+      </header>
+
+      <main className="relative z-10 mx-auto flex max-w-[480px] flex-col items-center justify-center px-5 mt-8 lg:mt-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full"
+        >
+          <div className="rounded-[2rem] border border-slate-200 bg-white/80 p-8 md:p-10 backdrop-blur-xl shadow-[0_40px_100px_rgba(15,23,42,0.08)] dark:border-white/[0.08] dark:bg-white/[0.03] dark:shadow-[0_40px_100px_rgba(0,0,0,0.3)]">
+            <div className="flex items-start justify-between gap-3 mb-8">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 dark:text-[#969696]">Seguranca</p>
+                <h2 className="mt-2 text-[24px] font-semibold tracking-tight text-slate-900 dark:text-white">Criar nova senha</h2>
+                <p className="mt-1 text-[14px] text-slate-500 dark:text-[#969696]">
+                  {status === 'success' ? 'Sua senha foi atualizada' : 'Defina uma senha nova e segura'}
+                </p>
+              </div>
+              <div className="rounded-xl bg-slate-100 p-3 dark:bg-white/[0.05]">
+                <Lock className="w-5 h-5 text-[#0f766e] dark:text-[#22d3ee]" />
+              </div>
             </div>
-          )}
 
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-start gap-2 p-4 mb-6 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
-            >
-              <AlertCircle className="flex-shrink-0 mt-0.5 h-5 w-5" />
-              <span className="text-sm">{error}</span>
-            </motion.div>
-          )}
-
-          {success && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-start gap-2 p-4 mb-6 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
-            >
-              <CheckCircle className="flex-shrink-0 mt-0.5 h-5 w-5" />
-              <span className="text-sm">{success}</span>
-            </motion.div>
-          )}
-
-          {status === 'ready' && (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Nova senha
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="newPassword"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Minimo de 8 caracteres"
-                  />
-                </div>
+            {status === 'checking' && (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-[#0f766e] dark:text-[#22d3ee]" />
+                <p className="mt-4 text-[14px] text-slate-500 dark:text-[#969696]">
+                  Validando o link de redefinicao...
+                </p>
               </div>
+            )}
 
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Confirmar nova senha
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Repita a senha"
-                  />
-                </div>
-                {confirmPassword.length > 0 && !passwordsMatch && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                    As senhas precisam ser identicas.
-                  </p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                disabled={!passwordsMatch || newPassword.length < 8 || isSubmitting}
-                className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  !passwordsMatch || newPassword.length < 8 || isSubmitting
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700'
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-150`}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-600 dark:border-red-500/20 dark:bg-red-500/[0.08] dark:text-red-400"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />
-                    Atualizando...
-                  </>
-                ) : (
-                  'Salvar nova senha'
-                )}
-              </button>
-            </form>
-          )}
+                <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                {error}
+              </motion.div>
+            )}
 
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <Link
-              href="/auth/login"
-              className="w-full flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para o login
-            </Link>
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-[14px] text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/[0.08] dark:text-emerald-400"
+              >
+                <CheckCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                {success}
+              </motion.div>
+            )}
+
+            {status === 'ready' && (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <label className="block">
+                  <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Nova senha</span>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      required
+                      minLength={8}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Minimo de 8 caracteres"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-11 pr-11 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-[#969696] dark:hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Confirmar nova senha</span>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      required
+                      minLength={8}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repita a senha"
+                      className={`w-full rounded-xl border bg-slate-50/80 py-3 pl-11 pr-11 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 ${
+                        confirmPassword.length > 0 && !passwordsMatch
+                          ? 'border-red-400 dark:border-red-500'
+                          : 'border-slate-200 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-[#969696] dark:hover:text-white transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {confirmPassword.length > 0 && !passwordsMatch && (
+                    <p className="mt-1.5 text-[12px] text-red-500">As senhas precisam ser identicas.</p>
+                  )}
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={!passwordsMatch || newPassword.length < 8 || isSubmitting}
+                  className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-[14px] font-semibold transition-all duration-300 ${
+                    passwordsMatch && newPassword.length >= 8 && !isSubmitting
+                      ? 'bg-slate-900 text-white hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]'
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-white/[0.1] dark:text-white/30'
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Atualizando...
+                    </>
+                  ) : (
+                    'Salvar nova senha'
+                  )}
+                </button>
+              </form>
+            )}
+
+            {status === 'invalid' && (
+              <div className="text-center">
+                <Link
+                  href="/auth/forgot-password"
+                  className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#0f766e] hover:text-[#0f766e]/80 transition-colors dark:text-[#22d3ee] dark:hover:text-[#22d3ee]/80"
+                >
+                  Solicitar novo link de redefinicao
+                </Link>
+              </div>
+            )}
+
+            {status === 'success' && (
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/[0.06]">
+                <Link
+                  href="/auth/login"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white py-3 text-[14px] font-semibold transition-all duration-300 hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]"
+                >
+                  Ir para o login
+                </Link>
+              </div>
+            )}
+
+            {status !== 'success' && (
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/[0.06]">
+                <Link
+                  href="/auth/login"
+                  className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-slate-500 hover:text-slate-900 transition-colors dark:text-[#969696] dark:hover:text-white"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Voltar para o login
+                </Link>
+              </div>
+            )}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </main>
     </div>
   );
 }

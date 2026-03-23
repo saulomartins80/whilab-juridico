@@ -59,7 +59,7 @@ export default function DashboardPage() {
     );
   }
 
-  const userName = (user as any)?.name || (user as any)?.user_metadata?.name || (user as any)?.email?.split('@')[0] || 'Produtor';
+  const userName = (user as { name?: string })?.name || (user as { user_metadata?: { name?: string } })?.user_metadata?.name || (user as { email?: string })?.email?.split('@')[0] || 'Produtor';
 
   return (
     <>

@@ -15,12 +15,10 @@ import {
   RefreshCw,
   Star,
   Flag,
-  Award,
   Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, parseISO, differenceInDays, isAfter, isBefore } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { toast } from "react-hot-toast";
 
 import { metaAPI } from "../services/api";

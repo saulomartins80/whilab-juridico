@@ -7,6 +7,7 @@ import { ArrowRight, Menu, Moon, Sun, X } from 'lucide-react';
 
 import { useTheme } from '../context/ThemeContext';
 import { dashboardBranding } from '../config/branding';
+import OptimizedLogo from './OptimizedLogo';
 
 // Public marketing header. The authenticated dashboard uses ProtectedHeader.
 interface HeaderProps {
@@ -33,17 +34,18 @@ export default function Header({ toggleMobileSidebar }: HeaderProps) {
   return (
     <header className="app-shell-header fixed top-0 z-50 w-full">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="app-shell-badge">{dashboardBranding.badgeLabel}</span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-950 dark:text-white">
-              {dashboardBranding.brandName}
-            </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              {dashboardBranding.shellSubtitle}
-            </span>
+        <div className="flex items-center gap-3">
+          <OptimizedLogo
+            href="/"
+            size={40}
+            showText
+            gapClassName="gap-3"
+            textClassName="text-[18px] tracking-tight"
+          />
+          <span className="hidden text-[11px] text-slate-500 dark:text-slate-400 lg:inline-flex">
+            {dashboardBranding.shellSubtitle}
           </span>
-        </Link>
+        </div>
 
         <nav className="hidden items-center gap-1 lg:flex">
           {menuItems.map((item) => (

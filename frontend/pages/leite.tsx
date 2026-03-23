@@ -3,10 +3,7 @@ import {
   // only icons declared in frontend/types/lucide.d.ts
   Plus,
   Search,
-  Calendar,
   TrendingUp,
-  TrendingDown,
-  AlertCircle,
   CheckCircle,
   Edit,
   Trash2,
@@ -23,23 +20,17 @@ import {
   Activity,
   FileText,
   PieChart,
-  Clock,
   ArrowUpRight,
   ArrowDownRight,
   Info,
   DollarSign,
+  Calendar,
+  AlertCircle,
   AlertTriangle,
-  XCircle,
-  Square,
-  CircleHelp,
 } from "lucide-react";
 import { format, parseISO, subDays, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
   PieChart as RePieChart,
   Pie,
   Cell,
@@ -101,10 +92,10 @@ const GraficoProducao = ({ dados }: { dados: ProducaoLeite[] }) => {
       acc[data].quantidade += prod.quantidade;
       acc[data].count += 1;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, { data: string; quantidade: number; count: number }>);
 
     return Object.values(grouped)
-      .map((item: any) => ({
+      .map((item) => ({
         data: item.data,
         quantidade: item.quantidade,
         media: item.quantidade / item.count,
@@ -136,7 +127,7 @@ const GraficoProducao = ({ dados }: { dados: ProducaoLeite[] }) => {
             borderRadius: '8px',
             color: 'white'
           }}
-          formatter={(value: any) => [`${value} L`, 'Quantidade']}
+          formatter={(value: number | string) => [`${value} L`, 'Quantidade']}
         />
         <Area
           type="monotone"
@@ -180,7 +171,7 @@ const GraficoQualidade = ({ dados }: { dados: ProducaoLeite[] }) => {
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={(entry: any) => {
+          label={(entry: { percentage?: string; value: number }) => {
             const percentage = entry.percentage || ((entry.value / dados.length) * 100).toFixed(1);
             return `${percentage}%`;
           }}

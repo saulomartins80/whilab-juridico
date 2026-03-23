@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import { useTheme } from '../context/ThemeContext';
 import { dashboardBranding } from '../config/branding';
+import OptimizedLogo from './OptimizedLogo';
 
 // Protected mobile header for the authenticated dashboard shell.
 interface MobileHeaderProps {
@@ -58,7 +59,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ title, onMenuToggle }) => {
         </div>
 
         <div className="flex h-10 w-10 items-center justify-center">
-          <span className="app-shell-badge !h-10 !w-10">{dashboardBranding.badgeLabel}</span>
+          <OptimizedLogo size={34} href="/dashboard" />
         </div>
       </div>
     </motion.header>

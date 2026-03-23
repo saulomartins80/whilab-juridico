@@ -52,7 +52,7 @@ export default function Profile() {
   interface CustomUserMetadata {
     name?: string;
     avatar_url?: string;
-    [key: string]: any;
+    [key: string]: string | undefined;
   }
 
   // Extend the User type to include our custom fields
@@ -226,9 +226,9 @@ export default function Profile() {
       }
       
       setIsEditing(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erro ao atualizar perfil:', error);
-      toast.error(error.message || 'Erro ao atualizar perfil. Tente novamente.');
+      toast.error((error instanceof Error ? error.message : null) || 'Erro ao atualizar perfil. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -351,12 +351,12 @@ export default function Profile() {
                   onClick={() => {
                     setIsEditing(false);
                     setAvatarFile(null);
-                    setAvatarPreview((user?.user_metadata as any)?.avatar_url || '/default-avatar.png');
+                    setAvatarPreview(user?.user_metadata?.avatar_url || '/default-avatar.png');
                     setFormData({
-                      name: (user?.user_metadata as any)?.name || user?.name || '',
+                      name: user?.user_metadata?.name || user?.name || '',
                       email: user?.email || '',
-                      phone: (user as any)?.phone || '',
-                      fazenda: (user as any)?.fazenda || '',
+                      phone: user?.phone || '',
+                      fazenda: user?.fazenda || '',
                       currentPassword: '',
                       newPassword: '',
                       confirmPassword: ''

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -13,11 +12,29 @@ import {
   Home,
   Eye,
   EyeOff,
+  Moon,
+  Shield,
+  Sun,
+  Zap,
+  Globe,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { dashboardBranding } from '../../config/branding';
+import OptimizedLogo from '../../components/OptimizedLogo';
+
+const ease = [0.25, 0.46, 0.45, 0.94] as const;
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.5, ease },
+  }),
+};
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -40,6 +57,7 @@ export default function RegisterPage() {
 
   const router = useRouter();
   const { register } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const isEmailValid = formData.email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -116,25 +134,25 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#0a0a0a] p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center border border-green-200 dark:border-green-800"
+          className="rounded-[2rem] border border-slate-200 bg-white/80 p-10 shadow-[0_40px_100px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.03] dark:shadow-[0_40px_100px_rgba(0,0,0,0.3)] max-w-md w-full text-center"
         >
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 mb-4">
-            <Check className="h-8 w-8 text-white" />
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#0f766e] dark:bg-[#22d3ee] mb-6">
+            <Check className="h-8 w-8 text-white dark:text-[#0a0a0a]" />
           </div>
-          <h2 className="text-2xl font-bold mb-2 text-green-600">Bem-vindo ao {dashboardBranding.brandName}!</h2>
-          <p className="mb-4 text-gray-600 dark:text-gray-300 text-sm">
-            Conta criada com sucesso. Redirecionando...
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Bem-vindo ao {dashboardBranding.brandName}!</h2>
+          <p className="mt-3 text-[15px] text-slate-500 dark:text-[#969696]">
+            Conta criada com sucesso. Redirecionando para o login...
           </p>
-          <div className="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div className="mt-6 h-1 w-full rounded-full bg-slate-200 dark:bg-white/[0.1] overflow-hidden">
             <motion.div
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{ duration: 2 }}
-              className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+              className="h-full rounded-full bg-[#0f766e] dark:bg-[#22d3ee]"
             />
           </div>
         </motion.div>
@@ -143,217 +161,287 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-          <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-4 text-center">
-            <div className="flex items-center justify-center gap-3">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg">
-                <Image src="/logo.svg" alt={dashboardBranding.logoAlt} width={22} height={22} />
-              </div>
-              <div className="text-left">
-                <h1 className="text-lg font-bold text-white">Criar conta</h1>
-                <p className="text-green-100 text-xs">{dashboardBranding.brandName} - Operacao conectada ao campo</p>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-white text-slate-900 antialiased overflow-hidden dark:bg-[#0a0a0a] dark:text-white" style={{ fontFamily: '"Inter", sans-serif' }}>
+      {/* Background effects */}
+      <div className="pointer-events-none absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-[#0f766e]/[0.04] dark:bg-[#22d3ee]/[0.06] blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-indigo-500/[0.03] dark:bg-indigo-500/[0.04] blur-[120px]" />
 
-          <div className="p-5">
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mb-4"
-                >
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
-                    <AlertCircle className="flex-shrink-0 h-4 w-4" />
-                    <span className="text-sm">{error}</span>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="name" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nome completo
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="block w-full pl-8 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="Joao Silva"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="fazenda" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nome da operacao
-                  </label>
-                  <div className="relative">
-                    <Home className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      id="fazenda"
-                      name="fazenda"
-                      type="text"
-                      required
-                      value={formData.fazenda}
-                      onChange={handleInputChange}
-                      className="block w-full pl-8 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="Estancia Bela Vista"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`block w-full pl-8 pr-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white ${
-                      emailValid ? 'border-gray-300 dark:border-gray-600' : 'border-red-500'
-                    }`}
-                    placeholder="seu@email.com"
-                  />
-                </div>
-                {!emailValid && formData.email.length > 0 && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> Email invalido
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="password" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Senha (min. 8)
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      minLength={8}
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      className="block w-full pl-8 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="********"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Confirmar
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      required
-                      minLength={8}
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      className={`block w-full pl-8 pr-8 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white ${
-                        passwordMatch ? 'border-gray-300 dark:border-gray-600' : 'border-red-500'
-                      }`}
-                      placeholder="********"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  {!passwordMatch && formData.confirmPassword.length > 0 && (
-                    <p className="mt-1 text-xs text-red-600">Senhas nao coincidem</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  checked={agreedToTerms}
-                  onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                />
-                <label htmlFor="terms" className="text-xs text-gray-600 dark:text-gray-400">
-                  Concordo com os <Link href="/termos" className="text-green-600 hover:underline">Termos</Link> e <Link href="/privacidade" className="text-green-600 hover:underline">Privacidade</Link>
-                </label>
-              </div>
-
-              <motion.button
-                type="submit"
-                disabled={!formValid || loading}
-                whileHover={{ scale: formValid ? 1.01 : 1 }}
-                whileTap={{ scale: formValid ? 0.99 : 1 }}
-                className={`w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white transition-all ${
-                  formValid
-                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg'
-                    : 'bg-gray-400 cursor-not-allowed'
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Criando...
-                  </>
-                ) : (
-                  <>
-                    <ArrowRight className="mr-2 h-4 w-4" /> Criar conta
-                  </>
-                )}
-              </motion.button>
-            </form>
-
-            <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-              <Link href="/" className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400">
-                Voltar
-              </Link>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Ja tem conta? <Link href="/auth/login" className="text-green-600 font-medium hover:underline">Entrar</Link>
-              </p>
-            </div>
-          </div>
+      {/* Header */}
+      <header className="relative z-10 mx-auto flex max-w-[1200px] items-center justify-between px-5 md:px-10 py-5">
+        <OptimizedLogo
+          href="/"
+          size={38}
+          showText
+          gapClassName="gap-3"
+          textClassName="text-[18px] tracking-tight"
+        />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.1] dark:text-white/60 dark:hover:text-white dark:hover:bg-white/[0.05]"
+            aria-label={resolvedTheme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+          >
+            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+          <Link
+            href="/"
+            className="inline-flex items-center rounded-full border border-slate-300 px-5 py-2.5 text-[14px] font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all dark:border-white/[0.15] dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.05]"
+          >
+            Voltar para home
+          </Link>
         </div>
-      </motion.div>
+      </header>
+
+      {/* Main content */}
+      <main className="relative z-10 mx-auto max-w-[1200px] px-5 md:px-10 mt-2 lg:mt-4">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[calc(100vh-100px)]">
+
+          {/* Left — Branding */}
+          <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 mb-6 dark:border-white/[0.1] dark:bg-white/[0.03]">
+              <Shield className="w-3.5 h-3.5 text-[#0f766e] dark:text-[#22d3ee]" />
+              <span className="text-[13px] font-medium text-slate-500 dark:text-[#969696]">Cadastro seguro</span>
+            </div>
+
+            <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-slate-900 dark:text-white">
+              Crie sua<br />
+              <span className="text-[#0f766e] dark:text-[#22d3ee]">operacao premium.</span>
+            </h1>
+
+            <p className="mt-4 max-w-[440px] text-[15px] leading-relaxed text-slate-500 dark:text-[#969696]">
+              Comece a usar o {dashboardBranding.brandName} e tenha acesso a uma plataforma completa para gestao pecuaria, IA aplicada e operacao white-label.
+            </p>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {[
+                { icon: Zap, title: 'Rapido', text: 'Operacao ativa em minutos' },
+                { icon: Globe, title: 'White-label', text: 'Sua marca, sua plataforma' },
+                { icon: Shield, title: 'Seguro', text: 'Dados protegidos com Supabase' },
+              ].map((card, i) => (
+                <motion.div
+                  key={card.title}
+                  custom={i + 1}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.03]"
+                >
+                  <card.icon className="w-5 h-5 text-[#0f766e] dark:text-[#22d3ee] mb-3" />
+                  <p className="text-[13px] font-semibold text-slate-900 dark:text-white">{card.title}</p>
+                  <p className="text-[12px] text-slate-500 dark:text-[#969696] mt-1">{card.text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="mt-6 flex flex-wrap gap-2">
+              {['Plataforma completa', 'Marca propria', 'Suporte dedicado'].map((point) => (
+                <span key={point} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] font-medium text-slate-500 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/60">
+                  <Check className="w-3.5 h-3.5 text-[#0f766e] dark:text-[#22d3ee]" />
+                  {point}
+                </span>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right — Register form */}
+          <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible">
+            <div className="rounded-[2rem] border border-slate-200 bg-white/80 p-6 md:p-8 backdrop-blur-xl shadow-[0_40px_100px_rgba(15,23,42,0.08)] dark:border-white/[0.08] dark:bg-white/[0.03] dark:shadow-[0_40px_100px_rgba(0,0,0,0.3)]">
+              <div className="flex items-start justify-between gap-3 mb-6">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 dark:text-[#969696]">Cadastro gratuito</p>
+                  <h2 className="mt-2 text-[24px] font-semibold tracking-tight text-slate-900 dark:text-white">Criar conta</h2>
+                  <p className="mt-1 text-[14px] text-slate-500 dark:text-[#969696]">Preencha os dados abaixo para comecar.</p>
+                </div>
+                <div className="rounded-xl bg-slate-100 p-3 dark:bg-white/[0.05]">
+                  <User className="w-5 h-5 text-[#0f766e] dark:text-[#22d3ee]" />
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-600 dark:border-red-500/20 dark:bg-red-500/[0.08] dark:text-red-400"
+                  >
+                    <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                    {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Nome completo</span>
+                    <div className="relative">
+                      <User className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                      <input
+                        name="name"
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Joao Silva"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-11 pr-4 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
+                      />
+                    </div>
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Nome da operacao</span>
+                    <div className="relative">
+                      <Home className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                      <input
+                        name="fazenda"
+                        type="text"
+                        required
+                        value={formData.fazenda}
+                        onChange={handleInputChange}
+                        placeholder="Estancia Bela Vista"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-11 pr-4 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
+                      />
+                    </div>
+                  </label>
+                </div>
+
+                <label className="block">
+                  <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Email</span>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                    <input
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="seu@email.com"
+                      className={`w-full rounded-xl border bg-slate-50/80 py-3 pl-11 pr-10 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 ${
+                        emailValid
+                          ? 'border-slate-200 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30'
+                          : 'border-red-400 dark:border-red-500'
+                      }`}
+                    />
+                    {formData.email && emailValid && formData.email.includes('@') && (
+                      <Check className="pointer-events-none absolute right-4 top-1/2 w-4 h-4 -translate-y-1/2 text-[#0f766e] dark:text-emerald-400" />
+                    )}
+                  </div>
+                  {!emailValid && formData.email.length > 0 && (
+                    <p className="mt-1.5 text-[12px] text-red-500 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> Email invalido
+                    </p>
+                  )}
+                </label>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Senha (min. 8)</span>
+                    <div className="relative">
+                      <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                      <input
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        minLength={8}
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="••••••••"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-11 pr-11 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-[#969696] dark:hover:text-white transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Confirmar senha</span>
+                    <div className="relative">
+                      <Lock className="pointer-events-none absolute left-4 top-1/2 w-4 h-4 -translate-y-1/2 text-slate-400 dark:text-[#969696]" />
+                      <input
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        required
+                        minLength={8}
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        placeholder="••••••••"
+                        className={`w-full rounded-xl border bg-slate-50/80 py-3 pl-11 pr-11 text-slate-900 text-[14px] outline-none transition placeholder:text-slate-400 dark:bg-white/[0.05] dark:text-white dark:placeholder:text-white/30 ${
+                          passwordMatch
+                            ? 'border-slate-200 focus:border-[#0f766e]/50 focus:ring-1 focus:ring-[#0f766e]/30 dark:border-white/[0.1] dark:focus:border-[#22d3ee]/50 dark:focus:ring-[#22d3ee]/30'
+                            : 'border-red-400 dark:border-red-500'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-[#969696] dark:hover:text-white transition-colors"
+                      >
+                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {!passwordMatch && formData.confirmPassword.length > 0 && (
+                      <p className="mt-1.5 text-[12px] text-red-500">Senhas nao coincidem</p>
+                    )}
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3 pt-1">
+                  <input
+                    id="terms"
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-[#0f766e] focus:ring-[#0f766e] dark:border-white/20 dark:text-[#22d3ee] dark:focus:ring-[#22d3ee]"
+                  />
+                  <label htmlFor="terms" className="text-[13px] text-slate-500 dark:text-[#969696]">
+                    Concordo com os{' '}
+                    <Link href="/termos" className="text-[#0f766e] hover:underline dark:text-[#22d3ee]">Termos</Link>
+                    {' '}e{' '}
+                    <Link href="/privacidade" className="text-[#0f766e] hover:underline dark:text-[#22d3ee]">Privacidade</Link>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={!formValid || loading}
+                  className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-[14px] font-semibold transition-all duration-300 ${
+                    formValid
+                      ? 'bg-slate-900 text-white hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]'
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-white/[0.1] dark:text-white/30'
+                  }`}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Criando conta...
+                    </>
+                  ) : (
+                    <>
+                      Criar conta
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-center text-[14px] text-slate-500 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-[#969696]">
+                Ja tem conta?{' '}
+                <Link href="/auth/login" className="font-semibold text-slate-900 hover:text-[#0f766e] transition-colors dark:text-white dark:hover:text-[#22d3ee]">
+                  Entrar agora
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 }

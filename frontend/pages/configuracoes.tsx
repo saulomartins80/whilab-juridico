@@ -341,7 +341,7 @@ export default function ConfiguracoesPage() {
       isLoading: backupStatus === 'in-progress',
       category: 'Dados'
     }
-  ], [settings, theme, handleSettingChange, handleThemeChange, handleBackupData, backupStatus, router]);
+  ], [settings, theme, handleSettingChange, handleThemeChange, handleBackupData, backupStatus, router, updateProfile]);
 
   const notificationSettings: AccountSetting[] = useMemo(() => [
     {

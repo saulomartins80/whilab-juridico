@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
 import { dashboardBranding } from '../config/branding'
 
 interface OptimizedLogoProps {
@@ -8,37 +7,34 @@ interface OptimizedLogoProps {
   showText?: boolean
   href?: string
   className?: string
+  textClassName?: string
+  imageClassName?: string
+  gapClassName?: string
 }
 
-export default function OptimizedLogo({ 
-  size = 40, 
-  showText = true, 
-  href = "/", 
-  className = "" 
+export default function OptimizedLogo({
+  size = 36,
+  showText = false,
+  href = '/',
+  className = '',
+  textClassName = '',
+  imageClassName = '',
+  gapClassName = 'gap-3',
 }: OptimizedLogoProps) {
-  const { resolvedTheme } = useTheme()
-
   const logoContent = (
-    <div className={`flex items-center space-x-3 ${className}`}>
-      <Image 
-        src="/logo.svg" 
-        alt={dashboardBranding.logoAlt} 
-        width={size} 
+    <div className={`flex items-center ${gapClassName} ${className}`}>
+      <Image
+        src="/logo.svg"
+        alt={dashboardBranding.logoAlt}
+        width={size}
         height={size}
-        priority={size >= 40} // Priority for larger logos
-        quality={85}
-        sizes={`${size}px`}
-        style={{
-          width: size,
-          height: size,
-          objectFit: 'contain'
-        }}
+        priority
+        className={imageClassName}
+        style={{ width: size, height: size, objectFit: 'contain' }}
       />
       {showText && (
-        <span className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 ${
-          resolvedTheme === 'dark' ? '' : 'text-gray-900'
-        }`}>
-          {dashboardBranding.brandNameUpper}
+        <span className={`font-semibold text-slate-900 dark:text-white ${textClassName}`}>
+          {dashboardBranding.brandName}
         </span>
       )}
     </div>
