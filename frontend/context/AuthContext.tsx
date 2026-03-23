@@ -262,8 +262,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error('Cadastro nao retornou usuario valido.');
       }
 
+      // Criar perfil na tabela users (essencial para login e operacao)
+      const timestamp = new Date().toISOString();
+      const { error: profileError } = await supabase
+        .from('users')
+        .upsert({
+          id: registeredUser.id,
+          firebase_uid: registeredUser.id,
+          email: email,
+          display_name: nome,
+          fazenda_nome: fazenda || '',
+          subscription_plan: 'fazendeiro',
+          subscription_status: 'active',
+          created_at: timestamp,
+          updated_at: timestamp,
+        }, { onConflict: 'id' });
+
+      if (profileError) {
+        console.warn('[AuthContext] Erro ao criar perfil (nao bloqueante):', profileError.message);
+      }
+
       setState(prev => ({ ...prev, loading: false, error: null }));
-      router.push('/auth/login?registration=success');
     } catch (error: unknown) {
       const msg = (typeof error === 'object' && error !== null && 'message' in error) ? String((error as { message?: string }).message) : '';
       const errorMessage = /email.*(uso|cadastrado|registered)/i.test(msg)
@@ -277,7 +296,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAuthReady: true,
         error: errorMessage
       }));
-      router.push('/auth/login');
+      throw new Error(errorMessage);
     }
   }, [router]);
 

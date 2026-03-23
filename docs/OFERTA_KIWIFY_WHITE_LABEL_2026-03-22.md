@@ -1,6 +1,6 @@
 Data: 2026-03-22
 Responsavel: Caio
-Projeto: BoviNext
+Projeto: WhiLab
 
 # Oferta Kiwify - White Label
 
@@ -16,7 +16,7 @@ E uma base de software para o comprador colocar marca, dominio, credenciais e ni
 
 ## Nome Comercial Atual
 
-- Licenca White Label SaaS
+- Licenca White Label SaaS Premium
 
 ## Categoria
 
@@ -26,14 +26,14 @@ E uma base de software para o comprador colocar marca, dominio, credenciais e ni
 
 Licenca white-label de uma base SaaS pronta para rebrand. O comprador recebe auth, dashboard, estrutura de aplicacao, integracao com Supabase, camada de IA assistida e guias de setup, deploy e rebranding para publicar a propria marca com mais velocidade.
 
-## Estrutura De Planos
+## Estrutura Comercial Atual
 
 ### Oferta Principal
 
-- Nome: Licenca White Label SaaS
-- Recorrencia: mensal
-- Cobranca recorrente: R$ 29,90
-- Primeira cobranca: R$ 997,00
+- Nome: Licenca White Label SaaS Premium
+- Modelo: pagamento unico
+- Preco de lancamento: R$ 997,00
+- Preco percebido de referencia: R$ 1.997,00
 
 ## Logica Da Oferta
 
@@ -41,7 +41,7 @@ Licenca white-label de uma base SaaS pronta para rebrand. O comprador recebe aut
 - um checkout
 - uma mensagem comercial
 - compra simples para vender a mesma base varias vezes
-- recorrencia leve com entrada inicial mais forte
+- pagamento unico com ancora de lancamento
 
 ## O Que O Comprador Recebe
 
@@ -81,18 +81,17 @@ Licenca white-label de uma base SaaS pronta para rebrand. O comprador recebe aut
 - checkout builder: ativo
 - afiliados: desativado
 - Instagram no checkout: desativado
-- suporte atual: saulochagas29@outlook.com
+- suporte atual: suporte@whilab.com.br
 - nome de exibicao do produtor: Equipe White Label
 - soft descriptor: WLSAASPRO
 - sales page legada: desativada para nao contaminar a oferta
 
 ## Pendencias Para A Versao Final
 
-- subir imagem final do produto
-- trocar email de suporte por dominio proprio se necessario
+- revisar copy final do checkout com a promessa atual do WhiLab
 - conectar pagina de vendas oficial quando a landing final estiver pronta
-- recalibrar naming se a marca publica mudar junto com o repositorio
+- conectar fluxo pos-compra com obrigado + onboarding + entrega
 
 ## Veredito Atual
 
-A oferta ja esta comercialmente posicionada para white-label serio e deixou de parecer teste amador. O ajuste fino restante depende do estado final visual e da marca definitiva.
+A oferta ja esta comercialmente posicionada para white-label serio e deixou de parecer teste amador. O ajuste fino restante depende da copy final do checkout e da implementacao do fluxo real de pos-compra.
