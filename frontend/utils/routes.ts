@@ -12,8 +12,8 @@ export const PROTECTED_ROUTES = [
   '/producao',
   '/vendas',
   '/leite',
-  '/transacoes', 
-  '/investimentos', 
+  '/transacoes',
+  '/investimentos',
   '/metas',
   '/milhas',
   '/cartoes',
@@ -24,16 +24,15 @@ export const PROTECTED_ROUTES = [
   '/ebook',
   '/sistema',
   '/test-toast',
-  '/payment/sucesso'
 ];
 
 // Authentication pages (login, register, etc.) - these get minimal layout
 export const AUTH_PAGES = [
-  '/auth/login', 
-  '/auth/register', 
-  '/auth/forgot-password', 
+  '/auth/login',
+  '/auth/register',
+  '/auth/forgot-password',
   '/auth/reset-password',
-  '/auth/complete-registration'
+  '/auth/complete-registration',
 ];
 
 // Public pages (everything else) - marketing, legal, company info, blog, community, etc.
@@ -42,7 +41,7 @@ export const SAMPLE_PUBLIC_ROUTES = [
   '/',
   '/assinaturas',
   '/recursos',
-  '/solucoes', 
+  '/solucoes',
   '/precos',
   '/clientes',
   '/contato',
@@ -58,19 +57,26 @@ export const SAMPLE_PUBLIC_ROUTES = [
   '/juridico',
   '/empresa',
   '/licencas',
-  '/parceiros',  
-  '/demo',  
+  '/parceiros',
+  '/demo',
+  '/obrigado',
+  '/onboarding',
+  '/payment/sucesso',
   '/connect',
   '/test-toast',
   // Add any other public routes here
 ];
 
+const isExplicitPublicRoute = (pathname: string): boolean => SAMPLE_PUBLIC_ROUTES.includes(pathname);
+
 /**
  * Check if a route requires authentication
  */
 export const isProtectedRoute = (pathname: string): boolean => {
-  // Protege rotas explícitas e prefixos (ex.: /profile/123)
-  return PROTECTED_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
+  if (isExplicitPublicRoute(pathname)) return false;
+
+  // Protect explicit routes and prefixes (for example /profile/123).
+  return PROTECTED_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'));
 };
 
 /**

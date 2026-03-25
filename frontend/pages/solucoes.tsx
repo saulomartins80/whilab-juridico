@@ -4,6 +4,7 @@
   MarketingPageFrame,
   MarketingSection,
 } from '../components/marketing/MarketingPage';
+import { dashboardBranding } from '../config/branding';
 import { solutionsPage } from '../content/publicPages';
 
 export default function SolucoesPage() {
@@ -15,7 +16,7 @@ export default function SolucoesPage() {
       title={solutionsPage.title}
       description={solutionsPage.description}
       stats={solutionsPage.stats}
-      primaryCta={{ label: 'Comecar agora', href: '/auth/register' }}
+      primaryCta={{ label: 'Comprar licenca', href: dashboardBranding.checkoutUrl }}
       secondaryCta={{ label: 'Ver recursos', href: '/recursos' }}
     >
       <MarketingSection

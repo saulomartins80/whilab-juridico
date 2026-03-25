@@ -1,7 +1,7 @@
 {
-  "name": "WHILAB - Operacao Pecuaria Premium",
+  "name": "WHILAB - Base SaaS White-label Premium",
   "short_name": "WHILAB",
-  "description": "Plataforma pecuaria premium com dashboard, IA aplicada e estrutura pronta para implantar.",
+  "description": "Base SaaS white-label com dashboard, auth, IA assistida e estrutura pronta para rebrand.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "pt-BR",
-  "categories": ["business", "productivity", "agriculture"],
+  "categories": ["business", "productivity", "software"],
   "icons": [
     {
       "src": "/favicon.ico",

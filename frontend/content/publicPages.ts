@@ -237,7 +237,7 @@ export const contactPage = {
       title: 'WhatsApp executivo',
       description:
         'Canal rapido para alinhamento de proposta, demo e fechamento do pacote.',
-      value: '+55 (62) 99966-7963',
+      value: '+55 (64) 93501-8001',
     },
     {
       title: 'Implantacao e setup',
@@ -280,35 +280,35 @@ export const pricingPage = {
   plans: [
     {
       name: 'Base',
-      price: 'R$ 697',
-      note: 'preco de validacao',
+      price: 'R$ 997',
+      note: 'oferta ativa de lancamento',
       highlights: [
-        'Codigo-fonte do produto medio',
-        'Landing, auth, dashboard e shell',
-        'Supabase, docs e guia de setup',
-        'Rebranding inicial orientado',
+        'Licenca white-label pronta para rebrand',
+        'Dashboard, auth, shell e IA assistida',
+        'Setup, deploy e rebranding guiados por docs',
+        'Fluxo pensado para compra e onboarding rapido',
       ],
     },
     {
-      name: 'Core',
-      price: 'R$ 1.497',
-      note: 'preco cheio recomendado',
-      highlights: [
-        'Entrega completa do produto white-label medio',
-        'Estrutura comercial e docs mais robustas',
-        'Base ideal para Kiwify e venda direta',
-        'Melhor equilibrio entre valor e margem',
-      ],
-    },
-    {
-      name: 'Max',
+      name: 'Ancora',
       price: 'R$ 1.997',
-      note: 'teto sem prova mais forte',
+      note: 'referencia comercial',
       highlights: [
-        'Mesma base com posicionamento premium',
-        'Indicado apenas com prova visual e narrativa fortes',
-        'Serve como ancora de valor para upsells',
-        'Nao deve ser o preco inicial sem conversao validada',
+        'Preco percebido oficial da oferta',
+        'Sustenta a narrativa de lancamento',
+        'Evita cara de promocao improvisada',
+        'Ajuda a segurar valor nos upsells',
+      ],
+    },
+    {
+      name: 'Servicos',
+      price: 'Sob consulta',
+      note: 'camada extra',
+      highlights: [
+        'Instalacao assistida',
+        'Rebranding completo',
+        'Adaptacao por nicho',
+        'Apoio tecnico adicional',
       ],
     },
   ],
@@ -334,7 +334,7 @@ export const pricingPage = {
     {
       question: 'Qual preco voce recomenda para comecar?',
       answer:
-        'Hoje, o ponto mais saudavel para o produto final e R$ 1.497. Para validacao inicial, R$ 697 e uma boa porta de entrada.',
+        'Hoje, a oferta ativa esta em R$ 997 para destravar compra mais rapida. A ancora comercial segue em R$ 1.997 para sustentar valor percebido.',
     },
     {
       question: 'O produto inclui suporte infinito?',
@@ -344,7 +344,7 @@ export const pricingPage = {
     {
       question: 'Vale cobrar mais caro logo no inicio?',
       answer:
-        'So se a home, a demo e a narrativa estiverem muito fortes. Sem isso, o teto tende a derrubar conversao.',
+        'So com prova, narrativa e entrega muito bem amarradas. Sem isso, a melhor rota e validar no ticket atual e crescer com servicos e prova social.',
     },
     {
       question: 'Onde entra o ganho maior?',

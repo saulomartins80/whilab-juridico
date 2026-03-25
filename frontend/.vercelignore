@@ -1,1 +1,5 @@
 # Arquivo para ignorar arquivos no Vercel
+docs/prints/
+public/real/dashboard-finnextho.png
+public/real/assistant-finnextho.png
+public/real/reports-finnextho.png

@@ -55,6 +55,14 @@ const canonicalHost =
   trim(process.env.NEXT_PUBLIC_CANONICAL_HOST) ||
   'whilab.com.br';
 
+const whatsAppNumber =
+  trim(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER) ||
+  '5564935018001';
+
+const whatsAppDisplay =
+  trim(process.env.NEXT_PUBLIC_WHATSAPP_DISPLAY) ||
+  '+55 64 93501-8001';
+
 export const dashboardBranding = {
   brandName,
   brandNameUpper:
@@ -72,10 +80,10 @@ export const dashboardBranding = {
     `${brandName} workspace`,
   shellSubtitle:
     trim(process.env.NEXT_PUBLIC_SHELL_SUBTITLE) ||
-    'Plataforma pecuaria premium',
+    'Base SaaS white-label premium',
   shellDescription:
     trim(process.env.NEXT_PUBLIC_SHELL_DESCRIPTION) ||
-    'Operacao pecuaria com dashboard executivo, IA aplicada e estrutura pronta para implantar, revender e evoluir.',
+    'Base SaaS com dashboard, auth, IA assistida e estrutura pronta para rebrand, ativacao e revenda.',
   whiteLabelPrompt:
     trim(process.env.NEXT_PUBLIC_WHITE_LABEL_PROMPT) ||
     'Troque marca, dominio e narrativa sem desmontar a base comercial.',
@@ -85,15 +93,27 @@ export const dashboardBranding = {
   supportEmailExample,
   canonicalHost,
   siteUrl: `https://${canonicalHost}`,
+  whatsAppNumber,
+  whatsAppDisplay,
+  whatsAppUrl: `https://wa.me/${whatsAppNumber}`,
   marketingTagline:
     trim(process.env.NEXT_PUBLIC_MARKETING_TAGLINE) ||
-    'Operacao pecuaria premium pronta para marca propria.',
+    'Licenca white-label de uma base SaaS pronta para marca propria.',
   seoKeywords:
     trim(process.env.NEXT_PUBLIC_SEO_KEYWORDS) ||
-    'pecuaria premium, software pecuario, gestao de rebanho, manejo, producao, dashboard pecuario, plataforma pecuaria',
+    'white-label saas, base saas, rebrand saas, dashboard white-label, licenca saas, supabase white-label',
   verticalLabel:
     trim(process.env.NEXT_PUBLIC_VERTICAL_LABEL) ||
-    'Pecuaria premium',
+    'White-label premium',
+  checkoutUrl:
+    trim(process.env.NEXT_PUBLIC_CHECKOUT_URL) ||
+    'https://pay.kiwify.com.br/JFkbSsJ',
+  thankYouUrl:
+    trim(process.env.NEXT_PUBLIC_THANK_YOU_URL) ||
+    `https://${canonicalHost}/obrigado`,
+  onboardingUrl:
+    trim(process.env.NEXT_PUBLIC_ONBOARDING_URL) ||
+    `https://${canonicalHost}/onboarding`,
   logoAlt:
     trim(process.env.NEXT_PUBLIC_LOGO_ALT) ||
     `Logo ${brandName}`,

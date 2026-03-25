@@ -32,8 +32,8 @@ const supportChannels = [
     id: 'whatsapp',
     title: 'WhatsApp',
     description: 'Canal rapido para suporte e implantacao com retorno mais agil.',
-    detail: '+55 62 99966-7963',
-    href: 'https://wa.me/5562999667963',
+    detail: dashboardBranding.whatsAppDisplay,
+    href: dashboardBranding.whatsAppUrl,
     icon: Zap,
   },
   {
@@ -79,10 +79,10 @@ const resources = [
     icon: CircleHelp,
   },
   {
-    title: 'Contato comercial',
-    description: 'Canal direto para proposta, escopo e fechamento da operacao.',
-    href: '/contato',
-    icon: Users,
+    title: 'Onboarding do comprador',
+    description: 'Checklist de ativacao, dados iniciais e proximo passo depois da compra.',
+    href: '/onboarding',
+    icon: FileText,
   },
 ];
 
@@ -105,7 +105,7 @@ const faqItems = [
   {
     question: 'Qual e o melhor canal para falar com humano rapido?',
     answer:
-      'Para urgencia operacional use WhatsApp. Para suporte tecnico use suporte@whilab.com.br. Para vendas e implantacao use vendas@whilab.com.br.',
+      `Para urgencia operacional use o WhatsApp ${dashboardBranding.whatsAppDisplay}. Para suporte tecnico use suporte@whilab.com.br. Para vendas e implantacao use vendas@whilab.com.br.`,
   },
 ];
 
@@ -122,7 +122,7 @@ export default function SuportePage() {
         { label: 'Cobertura', value: 'Suporte tecnico + comercial' },
         { label: 'Operacao', value: 'Fluxo pensado para onboarding' },
       ]}
-      primaryCta={{ label: 'Falar com vendas', href: '/contato' }}
+      primaryCta={{ label: 'Iniciar onboarding', href: '/onboarding' }}
       secondaryCta={{ label: 'Ver planos', href: '/precos' }}
     >
       <MarketingSection
@@ -180,7 +180,7 @@ export default function SuportePage() {
                 Para situacoes urgentes, use o WhatsApp e depois centralize o contexto no e-mail de atendimento para manter a trilha organizada.
               </p>
               <a
-                href="https://wa.me/5562999667963"
+                href={dashboardBranding.whatsAppUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[14px] font-medium text-[#121212] transition-all hover:bg-[#22d3ee]"

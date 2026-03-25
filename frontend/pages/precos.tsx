@@ -5,31 +5,71 @@
   MarketingSection,
 } from '../components/marketing/MarketingPage';
 import { pricingPage } from '../content/publicPages';
+import { dashboardBranding } from '../config/branding';
 
 export default function PrecosPage() {
+  const offerCards = [
+    {
+      note: 'Licenca ativa',
+      name: 'Licenca White Label SaaS Premium',
+      price: 'R$ 997',
+      highlights: [
+        'Pagamento unico',
+        'Base white-label pronta para rebrand',
+        'Dashboard, auth e estrutura inicial',
+        'Supabase e IA assistida',
+        'Docs de setup, deploy e rebranding',
+      ],
+    },
+    {
+      note: 'Referencia comercial',
+      name: 'Ancora de valor',
+      price: 'R$ 1.997',
+      highlights: [
+        'Preco percebido oficial da oferta',
+        'Sustenta a oferta de lancamento',
+        'Evita cara de promocao solta',
+        'Mantem uma mensagem comercial unica',
+        'Apoia a percepcao de produto serio',
+      ],
+    },
+    {
+      note: 'Escopo extra',
+      name: 'Servicos adicionais',
+      price: 'Sob consulta',
+      highlights: [
+        'Deploy assistido',
+        'Rebranding guiado',
+        'Adaptacao por nicho',
+        'Customizacao sob escopo',
+        'Apoio tecnico adicional',
+      ],
+    },
+  ];
+
   return (
     <MarketingPageFrame
       metaTitle="Precos | WhiLab White-label"
-      metaDescription="Faixas de preco recomendadas para o WhiLab white-label, com produto base e upsells."
+      metaDescription="Oferta ativa do WhiLab white-label, com licenca principal, ancora comercial e servicos adicionais."
       eyebrow="Precificacao"
-      title="Produto medio, margem saudavel e espaco claro para upsell."
-      description="A precificacao certa protege caixa, melhora conversao e abre espaco para instalacao, rebranding e adaptacao por nicho."
+      title="Uma oferta principal, uma ancora clara e servicos extras separados."
+      description="A pagina de precos precisa ajudar a comprar a licenca sem confundir a entrada com customizacao ou suporte infinito."
       stats={[
-        { label: 'Entrada', value: 'R$ 697' },
-        { label: 'Preco cheio', value: 'R$ 1.497' },
-        { label: 'Teto atual', value: 'R$ 1.997' },
-        { label: 'Upsell', value: 'margem alta' },
+        { label: 'Lancamento', value: 'R$ 997' },
+        { label: 'Referencia', value: 'R$ 1.997' },
+        { label: 'Modelo', value: 'pagamento unico' },
+        { label: 'Fluxo', value: 'onboarding guiado' },
       ]}
-      primaryCta={{ label: 'Falar com vendas', href: '/contato' }}
+      primaryCta={{ label: 'Comprar licenca', href: dashboardBranding.checkoutUrl }}
       secondaryCta={{ label: 'Ver solucoes', href: '/solucoes' }}
     >
       <MarketingSection
-        eyebrow="Faixas"
-        title="Como pensar o valor do produto final."
-        description="O foco nao e parecer caro. O foco e vender com margem e com verdade sobre o que esta sendo entregue."
+        eyebrow="Oferta ativa"
+        title="Como a oferta deve aparecer para o comprador hoje."
+        description="A entrada precisa ser simples: a licenca vende a base, o resto fica separado para nao contaminar a conversao."
       >
         <div className="grid gap-4 lg:grid-cols-3">
-          {pricingPage.plans.map((plan) => (
+          {offerCards.map((plan) => (
             <article key={plan.name} className="app-shell-panel p-6">
               <div className="app-shell-section-title">{plan.note}</div>
               <h3 className="mt-3 text-2xl font-semibold text-slate-950 dark:text-white">{plan.name}</h3>

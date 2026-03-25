@@ -16,7 +16,7 @@ export default function SobrePage() {
       title={aboutPage.title}
       description={aboutPage.description}
       stats={aboutPage.stats}
-      primaryCta={{ label: 'Ver demo', href: '/dashboard' }}
+      primaryCta={{ label: 'Ver demo guiada', href: '/demo' }}
       secondaryCta={{ label: 'Falar com vendas', href: '/contato' }}
     >
       <MarketingSection

@@ -6,6 +6,7 @@
   MarketingSection,
 } from '../components/marketing/MarketingPage';
 import { contactPage } from '../content/publicPages';
+import { dashboardBranding } from '../config/branding';
 
 export default function ContatoPage() {
   return (
@@ -21,7 +22,7 @@ export default function ContatoPage() {
         { label: 'Canal', value: 'direto' },
         { label: 'Fechamento', value: 'sem enrolacao' },
       ]}
-      primaryCta={{ label: 'Abrir conta', href: '/auth/register' }}
+      primaryCta={{ label: 'Comprar licenca', href: dashboardBranding.checkoutUrl }}
       secondaryCta={{ label: 'Ver precos', href: '/precos' }}
     >
       <MarketingSection

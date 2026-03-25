@@ -187,7 +187,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={`fixed bottom-0 left-0 right-0 z-40 md:hidden ${
           resolvedTheme === 'dark'
-            ? 'border-t border-slate-800/60 bg-slate-950/92'
+            ? 'border-t border-slate-800/60 bg-[#040b15]/94'
             : 'border-t border-slate-200/80 bg-white/92'
         } backdrop-blur-xl shadow-[0_-18px_40px_rgba(15,23,42,0.12)]`}
       >
@@ -243,7 +243,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
                 className={`flex flex-col items-center justify-center rounded-xl px-2 py-2 transition ${
                   isActive(item.path)
                     ? resolvedTheme === 'dark'
-                      ? 'text-white'
+                      ? 'bg-white/[0.04] text-white'
                       : 'text-slate-950'
                     : resolvedTheme === 'dark'
                       ? 'text-slate-400 hover:bg-slate-800/70 hover:text-white'
@@ -273,7 +273,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
               exit={{ y: 20, opacity: 0, scale: 0.96 }}
               className={`absolute bottom-20 left-1/2 w-[min(92vw,22rem)] -translate-x-1/2 rounded-3xl border p-4 shadow-2xl ${
                 resolvedTheme === 'dark'
-                  ? 'border-slate-800 bg-slate-950'
+                  ? 'border-slate-800 bg-[#040b15]'
                   : 'border-slate-200 bg-white'
               }`}
               onClick={(e) => e.stopPropagation()}
@@ -285,7 +285,9 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
                     Atalhos contextuais da tela atual
                   </p>
                 </div>
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-sm font-bold text-teal-600 dark:bg-teal-400/10 dark:text-teal-400">AI</span>
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 text-sm font-bold text-teal-600 dark:bg-teal-400/10 dark:text-teal-400">
+                  AI
+                </span>
               </div>
 
               <div className="space-y-2">

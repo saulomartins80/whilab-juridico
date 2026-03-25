@@ -15,7 +15,7 @@ export default function RecursosPage() {
       title={resourcesPage.title}
       description={resourcesPage.description}
       stats={resourcesPage.stats}
-      primaryCta={{ label: 'Explorar dashboard', href: '/dashboard' }}
+      primaryCta={{ label: 'Abrir onboarding', href: '/onboarding' }}
       secondaryCta={{ label: 'Ver precos', href: '/precos' }}
     >
       <MarketingSection
