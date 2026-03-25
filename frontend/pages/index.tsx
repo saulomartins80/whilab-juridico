@@ -20,6 +20,7 @@ import {
 import { supabase } from '../lib/supabaseClient';
 import MegaMenu from '../components/marketing/MegaMenu';
 import OptimizedLogo from '../components/OptimizedLogo';
+import { dashboardBranding } from '../config/branding';
 
 /* ================================================================
    DESIGN TOKENS
@@ -197,8 +198,8 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>WhiLab | Operacao Pecuaria Premium</title>
-        <meta name="description" content="Plataforma pecuaria premium com dashboard executivo, IA aplicada, base white-label e estrutura pronta para implantar, operar e revender." />
+        <title>WhiLab | Base SaaS White-label Premium</title>
+        <meta name="description" content="Licenca white-label de uma base SaaS pronta para rebrand, com auth, dashboard, Supabase, IA assistida e documentacao de setup." />
         <meta name="theme-color" content="#121212" />
       </Head>
 
@@ -218,10 +219,11 @@ export default function HomePage() {
         <div ref={heroRef} className="relative min-h-screen overflow-hidden bg-[#050505]">
           <div className="absolute inset-0">
             <Image
-              src="/real/whilab-hero-tractor.jpg"
-              alt="Trator operando no campo"
+              src="/real/whilab-home-hero.webp"
+              alt="Operacao no campo com suporte de tecnologia"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,7,12,0.58)_0%,rgba(4,7,12,0.16)_22%,rgba(4,7,12,0.74)_68%,rgba(4,7,12,0.94)_100%)]" />
@@ -241,7 +243,7 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0d1117]/68 px-4 py-2 backdrop-blur-xl"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]" />
-                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-white/72">Operacao Pecuaria Premium</span>
+                <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-white/72">Licenca White-label SaaS</span>
               </motion.div>
 
               <motion.h1
@@ -251,10 +253,10 @@ export default function HomePage() {
                 animate="visible"
                 className="mt-8 text-[clamp(3.35rem,8vw,7rem)] font-semibold leading-[0.94] tracking-[-0.05em] text-white"
               >
-                Seu rebanho
+                Tenha sua propria
                 <br />
-                merece
-                <span className="text-[#22d3ee]"> controle real.</span>
+                base SaaS
+                <span className="text-[#22d3ee]"> pronta para rebrand.</span>
               </motion.h1>
 
               <motion.p
@@ -264,17 +266,18 @@ export default function HomePage() {
                 animate="visible"
                 className="mt-6 max-w-[620px] text-[17px] leading-relaxed text-white/74 md:text-[19px]"
               >
-                WhiLab conecta pecuaria, rotina operacional e inteligencia aplicada para transformar o campo em uma operacao mais rastreavel, comercial e pronta para crescer.
+                WhiLab vende uma base comercial com auth, dashboard, Supabase e IA assistida para voce trocar marca, dominio e narrativa sem comecar do zero.
               </motion.p>
 
-              <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="mt-10">
-                <Link
-                  href="/demo"
-                  className="group inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.22em] text-white/76 transition-colors hover:text-[#22d3ee]"
-                >
-                  Ver estrutura completa
-                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </Link>
+              <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <PillButton href={dashboardBranding.checkoutUrl} variant="white">
+                  Comprar licenca
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </PillButton>
+                <PillButton href="/demo" variant="outline">
+                  Ver demo
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </PillButton>
               </motion.div>
 
               <motion.div
@@ -285,9 +288,9 @@ export default function HomePage() {
                 className="mt-10 grid gap-3 sm:grid-cols-3"
               >
                 {[
-                  'Gestao do campo ao escritorio',
-                  'Rastreabilidade com leitura operacional',
-                  'Base premium pronta para evoluir'
+                  'Base pronta para rebrand',
+                  'Dashboard, auth e Supabase',
+                  'Demo operacional para adaptar'
                 ].map((item) => (
                   <div
                     key={item}
@@ -302,7 +305,7 @@ export default function HomePage() {
 
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="absolute bottom-0 inset-x-0 border-t border-white/10">
             <Marquee>
-              {['Pecuaria premium', 'Inteligencia artificial', 'Supabase', 'White-label', 'Dashboard executivo', 'Manejo inteligente'].map((t) => (
+              {['White-label premium', 'IA assistida', 'Supabase', 'Auth pronta', 'Dashboard executivo', 'Rebrand rapido'].map((t) => (
                 <span key={t} className="flex items-center gap-3 text-[14px] font-medium text-white/36 uppercase tracking-[0.15em]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]/50" />{t}
                 </span>
@@ -316,10 +319,9 @@ export default function HomePage() {
           <div className="grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]">
             <div className="max-w-[620px]">
               <SectionLabel>Dashboard executivo</SectionLabel>
-              <SectionHeading>Controle visual da fazenda, sem perder o ritmo da operacao.</SectionHeading>
+              <SectionHeading>Uma base pronta para vender, adaptar e publicar com sua marca.</SectionHeading>
               <SectionSub>
-                Esse bloco fica como leitura rapida do negocio: rebanho, producao, vendas e rotina em uma mesma camada,
-                com clareza suficiente para decidir no escritorio sem perder a realidade do campo.
+                Mostramos um painel real para reduzir a cara de template cru. O comprador enxerga estrutura, fluxo e capacidade de rebranding antes de decidir.
               </SectionSub>
 
               <motion.div variants={fadeUp} custom={3} className="mt-8">
@@ -334,8 +336,8 @@ export default function HomePage() {
 
               <motion.div variants={fadeUp} custom={4} className="mt-8 grid gap-3 sm:grid-cols-2">
                 {[
-                  'KPIs de rebanho, producao e vendas em uma unica superficie',
-                  'Leitura operacional pronta para rotina real de fazenda'
+                  'Dashboard, auth e fluxo base em uma unica superficie',
+                  'Demo operacional que acelera proposta e rebrand'
                 ].map((item) => (
                   <div
                     key={item}
@@ -369,9 +371,9 @@ export default function HomePage() {
                   </div>
                   <div className="absolute bottom-5 left-5 right-5 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
                     <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 p-4 backdrop-blur-xl">
-                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#22d3ee]">Visao completa da operacao</p>
+                      <p className="text-[11px] uppercase tracking-[0.2em] text-[#22d3ee]">Visao completa da base</p>
                       <p className="mt-2 text-sm leading-6 text-white/80">
-                        KPIs de rebanho, producao, vendas e rotina operacional em uma unica tela.
+                        Leitura executiva, modulos, auth e camada comercial em uma unica tela.
                       </p>
                     </div>
                     <div className="rounded-[1.25rem] border border-white/[0.1] bg-[#121212]/78 px-4 py-3 backdrop-blur-xl">
@@ -390,15 +392,15 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
               <SectionLabel>Sobre o WhiLab</SectionLabel>
-              <SectionHeading>Tecnologia que entende o campo.</SectionHeading>
-              <SectionSub>Nascemos para resolver a distancia entre a gestao pecuaria real e as ferramentas digitais disponiveis. Combinamos IA, dados e experiencia de usuario para quem opera no campo e decide no escritorio.</SectionSub>
+              <SectionHeading>Tecnologia pronta para virar produto com a sua marca.</SectionHeading>
+              <SectionSub>WhiLab nao vende codigo solto. Vende uma base SaaS com docs honestas, demo operacional e estrutura de rebranding para acelerar colocacao em producao.</SectionSub>
             </div>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { value: 50, suffix: 'K+', label: 'Cabecas gerenciadas' },
-                { value: 120, suffix: '+', label: 'Fazendas conectadas' },
-                { value: 98, suffix: '%', label: 'Uptime da plataforma' },
-                { value: 3, suffix: 'x', label: 'Mais rapido que planilhas' },
+                { value: 1, suffix: ' base', label: 'para varias vendas' },
+                { value: 3, suffix: ' frentes', label: 'setup, rebrand e deploy' },
+                { value: 1, suffix: ' checkout', label: 'mensagem comercial unica' },
+                { value: 997, suffix: '', label: 'oferta de lancamento' },
               ].map((s, i) => (
                 <motion.div key={s.label} variants={fadeUp} custom={i} className="text-left">
                   <p className="text-[clamp(2.5rem,5vw,3.5rem)] font-semibold tracking-[-0.03em] text-slate-900 dark:text-white"><AnimStat value={s.value} suffix={s.suffix} /></p>
@@ -412,16 +414,16 @@ export default function HomePage() {
         {/* SOLUCOES */}
         <Section className="py-24" id="solucoes">
           <SectionLabel>Solucoes</SectionLabel>
-          <SectionHeading>Tudo que sua operacao precisa.</SectionHeading>
-          <SectionSub>Modulos integrados para cobrir cada etapa da gestao pecuaria.</SectionSub>
+          <SectionHeading>O que entra na licenca.</SectionHeading>
+          <SectionSub>A oferta foca no que o comprador realmente recebe para ativar uma operacao com menos atrito.</SectionSub>
           <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { icon: BarChart2, title: 'Dashboard Executivo', desc: 'Visao consolidada de KPIs, alertas e metricas de producao em tempo real.', features: ['KPIs de rebanho', 'Alertas inteligentes', 'Graficos interativos', 'Exportacao PDF'] },
-              { icon: Target, title: 'Gestao de Rebanho', desc: 'Controle completo do ciclo de vida dos animais com historico rastreavel.', features: ['Cadastro individual', 'Historico de manejo', 'Genealogia', 'Rastreabilidade'] },
-              { icon: Brain, title: 'Inteligencia Artificial', desc: 'IA aplicada ao fluxo real: previsoes, alertas de saude e sugestoes.', features: ['Previsao de producao', 'Deteccao de anomalias', 'Chatbot especializado', 'Insights automaticos'] },
+              { icon: BarChart2, title: 'Dashboard Executivo', desc: 'Painel base para leitura de KPIs, modulos e demonstracao comercial.', features: ['Visao pronta', 'Componentes reais', 'Demo navegavel', 'Exportacao PDF'] },
+              { icon: Target, title: 'Autenticacao e Acesso', desc: 'Login, cadastro, recuperacao e fluxo inicial de usuarios ja conectados.', features: ['Cadastro', 'Login', 'Recuperacao', 'Acesso inicial'] },
+              { icon: Brain, title: 'IA Assistida', desc: 'Camada de IA aplicada para perguntas, orientacao e leitura contextual da base.', features: ['Assistente contextual', 'Respostas guiadas', 'Insights iniciais', 'Leitura comercial'] },
               { icon: Database, title: 'Infraestrutura Supabase', desc: 'Banco, auth e storage configurados para performance e escala.', features: ['Auth multi-provider', 'PostgreSQL', 'Storage de arquivos', 'APIs real-time'] },
-              { icon: Paintbrush, title: 'White-label', desc: 'Estrutura para troca de marca, cores e posicionamento.', features: ['Marca customizavel', 'Temas e cores', 'Dominio proprio', 'Copy editavel'] },
-              { icon: TrendingUp, title: 'Vendas e Producao', desc: 'Controle financeiro com vendas, producao leiteira e margem.', features: ['Registro de vendas', 'Producao de leite', 'Analise de custos', 'Margem por animal'] },
+              { icon: Paintbrush, title: 'White-label', desc: 'Estrutura para trocar marca, cores, narrativa e posicionamento.', features: ['Marca customizavel', 'Temas e cores', 'Dominio proprio', 'Copy editavel'] },
+              { icon: TrendingUp, title: 'Setup e Deploy', desc: 'Guias para conectar ambiente, ajustar dominio e publicar com menos risco.', features: ['Variaveis de ambiente', 'Deploy guiado', 'Checklist minimo', 'Ativacao mais rapida'] },
             ].map((svc, i) => (
               <motion.div key={svc.title} variants={fadeUp} custom={i} className="group rounded-2xl border border-slate-200 bg-white p-7 dark:border-white/[0.08] dark:bg-[#121212] hover:border-slate-300 dark:hover:border-white/[0.15] transition-all duration-300 hover:shadow-lg dark:hover:shadow-none">
                 <div className="flex items-start justify-between mb-5">
@@ -443,14 +445,14 @@ export default function HomePage() {
         {/* PROCESSO */}
         <Section className="py-24" id="processo">
           <SectionLabel>Processo</SectionLabel>
-          <SectionHeading>Da contratacao a operacao em dias.</SectionHeading>
-          <SectionSub>Um processo direto para colocar sua gestao no ar com seguranca.</SectionSub>
+          <SectionHeading>Da compra a ativacao em poucos passos.</SectionHeading>
+          <SectionSub>Um fluxo simples para o comprador sair do checkout e chegar no rebrand com contexto.</SectionSub>
           <div className="mt-14 grid md:grid-cols-4 gap-4">
             {[
-              { step: '1', title: 'Descoberta', desc: 'Entendemos sua operacao, tamanho do rebanho e necessidades.' },
-              { step: '2', title: 'Setup', desc: 'Configuramos Supabase, importamos dados e ajustamos a plataforma.' },
-              { step: '3', title: 'Treinamento', desc: 'Capacitamos sua equipe para operar dashboard, manejos e IA.' },
-              { step: '4', title: 'Operacao', desc: 'Acompanhamos os primeiros ciclos e otimizamos com dados reais.' },
+              { step: '1', title: 'Compra', desc: 'A licenca white-label e aprovada no checkout da Kiwify.' },
+              { step: '2', title: 'Onboarding', desc: 'O comprador informa marca, nicho e contexto minimo da operacao.' },
+              { step: '3', title: 'Entrega', desc: 'Buyer kit, documentacao e checklist seguem com escopo claro.' },
+              { step: '4', title: 'Rebrand', desc: 'Marca, dominio e credenciais sao configurados para publicacao.' },
             ].map((p, i) => (
               <motion.div key={p.step} variants={fadeUp} custom={i} className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-white/[0.08] dark:bg-[#121212]">
                 <div className="w-10 h-10 rounded-full bg-[#0f766e] dark:bg-[#22d3ee] flex items-center justify-center text-white dark:text-[#121212] text-[14px] font-bold mb-5">{p.step}</div>
@@ -464,13 +466,13 @@ export default function HomePage() {
         {/* RESULTADOS */}
         <Section className="py-24" id="resultados">
           <SectionLabel>Resultados</SectionLabel>
-          <SectionHeading>Impacto real no campo.</SectionHeading>
-          <SectionSub>Veja como a plataforma transforma operacoes pecuarias.</SectionSub>
+          <SectionHeading>Uma demo que ja ajuda a vender a base.</SectionHeading>
+          <SectionSub>O ativo fica mais convincente quando o comprador enxerga estrutura real, nao so promessa.</SectionSub>
           <div className="mt-14 space-y-4">
             {[
-              { name: 'Fazenda Santa Clara', tag: 'Gado de Corte', desc: 'Operacao de 2.800 cabecas que substituiu planilhas e ganhou visibilidade total sobre manejo e ciclo reprodutivo.', stats: [{ value: 34, suffix: '%', label: 'Reducao no tempo de manejo' }, { value: 22, suffix: '%', label: 'Aumento na margem' }], img: '/real/whilab-hero-dashboard.png' },
-              { name: 'Laticinio Vale Verde', tag: 'Producao Leiteira', desc: 'Controle de producao diaria de 450 vacas com monitoramento de qualidade e previsao via IA.', stats: [{ value: 18, suffix: '%', label: 'Aumento na producao' }, { value: 45, suffix: '%', label: 'Reducao em perdas' }], img: '/real/whilab-operations-overview.png' },
-              { name: 'Agropecuaria Horizonte', tag: 'Operacao Mista', desc: 'Gestao integrada de corte e leite com dashboard unificado e rastreabilidade completa.', stats: [{ value: 3, suffix: 'x', label: 'Mais rapido nas decisoes' }, { value: 60, suffix: '%', label: 'Menos retrabalho' }], img: '/real/whilab-assistant-panel.png' },
+              { name: 'Painel Executivo', tag: 'Leitura comercial', desc: 'Camada visual para apresentar a base com mais credibilidade e menos cara de prototipo vazio.', stats: [{ value: 1, suffix: ' tela', label: 'para explicar o produto' }, { value: 3, suffix: ' blocos', label: 'de leitura imediata' }], img: '/real/whilab-hero-dashboard.png' },
+              { name: 'Operacao Configuravel', tag: 'Setup modular', desc: 'Fluxo base com estrutura suficiente para adaptar narrativa, marca e contexto com mais velocidade.', stats: [{ value: 1, suffix: ' base', label: 'para varios nichos' }, { value: 4, suffix: ' frentes', label: 'de configuracao inicial' }], img: '/real/whilab-operations-overview.png' },
+              { name: 'Assistente Contextual', tag: 'IA assistida', desc: 'Uma camada de IA que ajuda a reforcar a percepcao de produto serio, guiado e evolutivo.', stats: [{ value: 1, suffix: ' camada', label: 'de apoio contextual' }, { value: 2, suffix: ' usos', label: 'suporte e demonstracao' }], img: '/real/whilab-assistant-panel.png' },
             ].map((cs, i) => (
               <motion.div key={cs.name} variants={fadeUp} custom={i} className="group rounded-2xl border border-slate-200 bg-white overflow-hidden dark:border-white/[0.08] dark:bg-[#121212]">
                 <div className="grid lg:grid-cols-2">
@@ -527,19 +529,19 @@ export default function HomePage() {
         {/* DEPOIMENTO */}
         <Section className="py-24">
           <SectionLabel>Depoimentos</SectionLabel>
-          <SectionHeading>O que nossos clientes dizem.</SectionHeading>
+          <SectionHeading>O que a base precisa transmitir.</SectionHeading>
           <motion.div variants={fadeUp} custom={3} className="mt-14 rounded-2xl border border-slate-200 bg-white p-8 dark:border-white/[0.08] dark:bg-[#121212] md:p-10">
             <div className="grid md:grid-cols-[1fr_auto] gap-10 items-start">
               <div>
-                <p className="text-[18px] md:text-[20px] leading-relaxed text-slate-600 dark:text-white/80">&quot;Antes do WhiLab, a gestao era feita em cadernos e planilhas. Hoje temos visao completa em tempo real, e a IA nos alerta sobre problemas antes que virem prejuizo.&quot;</p>
+                <p className="text-[18px] md:text-[20px] leading-relaxed text-slate-600 dark:text-white/80">&quot;Nao parece codigo cru nem promessa vazia. Parece uma base organizada para rebrand, ativacao e venda com mais seguranca.&quot;</p>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#22d3ee] to-[#06b6d4] flex items-center justify-center text-[12px] font-bold text-[#121212]">RS</div>
-                  <div><p className="text-[14px] font-semibold text-slate-900 dark:text-white">Ricardo Silva</p><p className="text-[13px] text-slate-400 dark:text-[#969696]">Gestor, Fazenda Santa Clara</p></div>
+                  <div><p className="text-[14px] font-semibold text-slate-900 dark:text-white">Leitura ideal do comprador</p><p className="text-[13px] text-slate-400 dark:text-[#969696]">Oferta white-label com contexto claro</p></div>
                 </div>
               </div>
               <div className="flex flex-row md:flex-col gap-6">
-                <div><p className="text-[32px] font-semibold tracking-tight text-[#0f766e] dark:text-[#22d3ee]">34%</p><p className="text-[12px] text-slate-400 dark:text-[#969696]">menos tempo no manejo</p></div>
-                <div><p className="text-[32px] font-semibold tracking-tight text-slate-900 dark:text-white">2.800</p><p className="text-[12px] text-slate-400 dark:text-[#969696]">cabecas gerenciadas</p></div>
+                <div><p className="text-[32px] font-semibold tracking-tight text-[#0f766e] dark:text-[#22d3ee]">1</p><p className="text-[12px] text-slate-400 dark:text-[#969696]">mensagem comercial clara</p></div>
+                <div><p className="text-[32px] font-semibold tracking-tight text-slate-900 dark:text-white">R$997</p><p className="text-[12px] text-slate-400 dark:text-[#969696]">oferta ativa de lancamento</p></div>
               </div>
             </div>
           </motion.div>
@@ -547,42 +549,42 @@ export default function HomePage() {
 
         {/* PRECOS */}
         <Section className="py-24" id="precos">
-          <SectionLabel>Planos</SectionLabel>
-          <SectionHeading>Simples e flexivel.</SectionHeading>
-          <SectionSub>Escolha o plano que se encaixa na sua operacao.</SectionSub>
+          <SectionLabel>Oferta</SectionLabel>
+          <SectionHeading>Uma licenca, uma mensagem, um checkout.</SectionHeading>
+          <SectionSub>A oferta ativa hoje e pagamento unico com ancora de lancamento. O resto entra depois, sem confundir a compra inicial.</SectionSub>
           <div className="mt-14 grid md:grid-cols-3 gap-4 max-w-[1000px]">
             <motion.div variants={fadeUp} custom={0} className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-white/[0.08] dark:bg-[#121212]">
-              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Starter</p>
-              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">R$297</span><span className="text-[14px] text-slate-400 dark:text-[#969696]">/mes</span></div>
-              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">Ideal para pequenas fazendas.</p>
-              <PillButton href="/contato" variant="outline">Comecar agora <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Licenca ativa</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">R$997</span><span className="text-[14px] text-slate-400 dark:text-[#969696]">pagamento unico</span></div>
+              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">Entrada mais simples para comprar a base e iniciar o rebrand.</p>
+              <PillButton href={dashboardBranding.checkoutUrl} variant="outline">Comprar agora <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
               <div className="mt-7 pt-6 border-t border-slate-100 dark:border-white/[0.06] space-y-3">
-                {['Ate 500 cabecas', 'Dashboard executivo', 'Gestao de rebanho', 'Registro de manejos', 'Suporte por email'].map((f) => (
+                {['Base white-label', 'Auth e dashboard', 'Supabase preparado', 'IA assistida', 'Docs de setup'].map((f) => (
                   <div key={f} className="flex items-center gap-2.5 text-[13px] text-slate-500 dark:text-white/60"><Check className="w-4 h-4 text-[#0f766e] dark:text-[#22d3ee] flex-shrink-0" />{f}</div>
                 ))}
               </div>
             </motion.div>
 
             <motion.div variants={fadeUp} custom={1} className="rounded-2xl border border-[#0f766e]/30 bg-white p-7 relative dark:border-[#22d3ee]/30 dark:bg-[#121212]">
-              <div className="absolute -top-3 left-7 rounded-full bg-[#0f766e] dark:bg-[#22d3ee] px-3 py-1 text-[11px] font-bold text-white dark:text-[#121212] uppercase tracking-wider">Popular</div>
-              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Profissional</p>
-              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">R$597</span><span className="text-[14px] text-slate-400 dark:text-[#969696]">/mes</span></div>
-              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">IA e controle completo.</p>
-              <PillButton href="/contato" variant="white">Comecar agora <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <div className="absolute -top-3 left-7 rounded-full bg-[#0f766e] dark:bg-[#22d3ee] px-3 py-1 text-[11px] font-bold text-white dark:text-[#121212] uppercase tracking-wider">Oferta de lancamento</div>
+              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Valor percebido</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">R$1.997</span><span className="text-[14px] text-slate-400 dark:text-[#969696]">referencia</span></div>
+              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">Ancora comercial para sustentar a oferta atual sem parecer liquidacao aleatoria.</p>
+              <PillButton href={dashboardBranding.checkoutUrl} variant="white">Ir para checkout <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
               <div className="mt-7 pt-6 border-t border-slate-100 dark:border-white/[0.06] space-y-3">
-                {['Ate 3.000 cabecas', 'Inteligencia artificial', 'Producao e vendas', 'Relatorios avancados', 'Suporte prioritario', 'Integracao com APIs'].map((f) => (
+                {['Uma mensagem comercial', 'Um checkout publico', 'Buyer kit guiado', 'Onboarding organizado', 'Escopo honesto', 'Sem mensalidade inicial'].map((f) => (
                   <div key={f} className="flex items-center gap-2.5 text-[13px] text-slate-500 dark:text-white/60"><Check className="w-4 h-4 text-[#0f766e] dark:text-[#22d3ee] flex-shrink-0" />{f}</div>
                 ))}
               </div>
             </motion.div>
 
             <motion.div variants={fadeUp} custom={2} className="rounded-2xl border border-slate-200 bg-white p-7 dark:border-white/[0.08] dark:bg-[#121212]">
-              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Enterprise</p>
-              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">Custom</span></div>
-              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">White-label completo.</p>
+              <p className="text-[13px] font-medium text-slate-400 dark:text-[#969696] uppercase tracking-wider mb-4">Servicos extras</p>
+              <div className="flex items-baseline gap-1 mb-2"><span className="text-[48px] font-semibold tracking-tight text-slate-900 dark:text-white">Sob consulta</span></div>
+              <p className="text-[14px] text-slate-500 dark:text-[#969696] leading-relaxed mb-6">Entram depois da compra quando houver necessidade real e escopo fechado.</p>
               <PillButton href="/contato" variant="dark">Falar com vendas <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
               <div className="mt-7 pt-6 border-t border-slate-100 dark:border-white/[0.06] space-y-3">
-                {['Cabecas ilimitadas', 'White-label completo', 'Dominio e marca propria', 'SLA dedicado', 'Onboarding personalizado', 'API e webhooks'].map((f) => (
+                {['Deploy assistido', 'Rebranding guiado', 'Adaptacao por nicho', 'Customizacao sob escopo', 'Apoio tecnico extra', 'Operacao adicional'].map((f) => (
                   <div key={f} className="flex items-center gap-2.5 text-[13px] text-slate-500 dark:text-white/60"><Check className="w-4 h-4 text-[#0f766e] dark:text-[#22d3ee] flex-shrink-0" />{f}</div>
                 ))}
               </div>
@@ -597,12 +599,12 @@ export default function HomePage() {
           <SectionSub>Tudo que voce precisa saber antes de comecar.</SectionSub>
           <div className="mt-14 max-w-[700px]">
             {[
-              { q: 'O que e a WhiLab?', a: 'Plataforma pecuaria premium com dashboard executivo, controle de rebanho, manejos, producao, vendas e IA em infraestrutura Supabase.' },
-              { q: 'Funciona para gado de corte e leite?', a: 'Sim. O WhiLab atende operacoes de corte, leite e mistas com modulos e KPIs especificos para cada modelo.' },
-              { q: 'Preciso de internet na fazenda?', a: 'Para acesso completo sim. Estamos desenvolvendo funcionalidades offline com sincronizacao automatica.' },
-              { q: 'Como funciona o white-label?', a: 'No plano Enterprise voce recebe a plataforma completa com sua marca, cores, dominio e copy para revender.' },
-              { q: 'Quanto tempo leva a implantacao?', a: 'De 3 a 7 dias para operacoes basicas. Ate 15 dias para operacoes maiores com importacao de dados.' },
-              { q: 'A IA substitui o veterinario?', a: 'Nao. A IA e ferramenta de apoio a decisao — analisa padroes, gera alertas e sugere acoes. A decisao final e do profissional.' },
+              { q: 'O que e a WhiLab?', a: 'Uma licenca white-label de base SaaS com dashboard, auth, Supabase, IA assistida e documentacao para rebrand.' },
+              { q: 'O que eu recebo na compra?', a: 'Base white-label, autenticacao, dashboard inicial, estrutura para Supabase, docs de setup, deploy e rebranding.' },
+              { q: 'Eu recebo tudo imediatamente apos pagar?', a: 'Nao. A compra libera o fluxo de onboarding para organizarmos a entrega do pacote e do checklist de ativacao.' },
+              { q: 'Posso trocar nome, logo e dominio?', a: 'Sim. A licenca foi pensada para rebrand, desde que o comprador configure a propria estrutura.' },
+              { q: 'Serve para qualquer nicho?', a: 'A base e flexivel, mas toda operacao white-label exige ajuste de marca, copy e configuracao.' },
+              { q: 'O deploy ja vem pronto?', a: 'Nao. O comprador recebe base, documentacao e orientacao. Suporte adicional pode ser contratado.' },
             ].map((faq) => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
           </div>
         </Section>
@@ -610,12 +612,12 @@ export default function HomePage() {
         {/* CTA FINAL */}
         <Section className="py-32">
           <motion.div variants={fadeUp} custom={0} className="text-center">
-            <p className="text-[13px] text-[#0f766e] dark:text-[#22d3ee] font-medium mb-4">Vagas limitadas para onboarding</p>
-            <h2 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-slate-900 dark:text-white">Pare de adivinhar.<br />Comece a <span className="text-[#0f766e] dark:text-[#22d3ee]">gerenciar.</span></h2>
-            <p className="mt-5 text-[16px] text-slate-500 dark:text-[#969696] max-w-[480px] mx-auto">Leve sua operacao pecuaria para o proximo nivel com dados, IA e uma plataforma que cresce junto com voce.</p>
+            <p className="text-[13px] text-[#0f766e] dark:text-[#22d3ee] font-medium mb-4">Oferta de lancamento</p>
+            <h2 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-slate-900 dark:text-white">Compre a licenca.<br />Troque a <span className="text-[#0f766e] dark:text-[#22d3ee]">marca.</span></h2>
+            <p className="mt-5 text-[16px] text-slate-500 dark:text-[#969696] max-w-[480px] mx-auto">Saia do zero com uma base SaaS white-label mais pronta para operacao, onboarding e ativacao.</p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <PillButton href="/demo" variant="white">Ver demonstracao <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
-              <PillButton href="/contato" variant="outline">Falar com vendas <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <PillButton href={dashboardBranding.checkoutUrl} variant="white">Ir para checkout <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
+              <PillButton href="/demo" variant="outline">Ver demonstracao <ArrowUpRight className="w-3.5 h-3.5" /></PillButton>
             </div>
           </motion.div>
         </Section>
@@ -634,13 +636,13 @@ export default function HomePage() {
                     textClassName="text-[18px] tracking-tight"
                   />
                 </div>
-                <p className="text-[13px] text-slate-500 dark:text-[#969696] leading-relaxed">Plataforma pecuaria premium com IA, dashboard executivo e infraestrutura pronta para implantar, operar e revender.</p>
+                <p className="text-[13px] text-slate-500 dark:text-[#969696] leading-relaxed">Base SaaS white-label com auth, dashboard, IA assistida e documentacao pronta para rebrand, setup e deploy.</p>
               </div>
               <div className="flex gap-12 sm:gap-16">
                 <div>
                   <p className="text-[12px] font-semibold uppercase tracking-[0.15em] text-slate-400 dark:text-[#969696] mb-4">Plataforma</p>
                   <div className="space-y-2.5">
-                    {[{ l: 'Solucoes', h: '/solucoes' }, { l: 'Recursos', h: '/recursos' }, { l: 'Precos', h: '/precos' }, { l: 'Demo', h: '/demo' }, { l: 'Dashboard', h: '/dashboard' }].map((x) => (
+                    {[{ l: 'Solucoes', h: '/solucoes' }, { l: 'Recursos', h: '/recursos' }, { l: 'Precos', h: '/precos' }, { l: 'Demo', h: '/demo' }, { l: 'Onboarding', h: '/onboarding' }].map((x) => (
                       <Link key={x.h} href={x.h} className="block text-[13px] text-slate-400 hover:text-slate-900 dark:text-white/40 dark:hover:text-white transition-colors">{x.l}</Link>
                     ))}
                   </div>
@@ -665,7 +667,7 @@ export default function HomePage() {
             </div>
             <div className="mt-14 pt-6 border-t border-slate-100 dark:border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3">
               <p className="text-[12px] text-slate-400 dark:text-white/20">&copy; 2026 WhiLab. Todos os direitos reservados.</p>
-              <p className="text-[12px] text-slate-400 dark:text-white/20">Operacao pecuaria premium com <span className="text-slate-600 dark:text-white/40">IA</span></p>
+              <p className="text-[12px] text-slate-400 dark:text-white/20">Base white-label premium com <span className="text-slate-600 dark:text-white/40">IA</span></p>
             </div>
           </div>
         </footer>

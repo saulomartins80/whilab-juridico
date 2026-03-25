@@ -14,54 +14,56 @@
 
 :root {
   color-scheme: light;
-  --background: #f8f9fc;
-  --background-elevated: rgba(255, 255, 255, 0.86);
+  --background: #f3f6fb;
+  --background-elevated: rgba(255, 255, 255, 0.9);
   --background-surface: rgba(255, 255, 255, 0.96);
-  --background-dark: #020617;
-  --background-elevated-dark: rgba(15, 23, 42, 0.88);
-  --background-surface-dark: rgba(15, 23, 42, 0.94);
+  --background-dark: #01050b;
+  --background-elevated-dark: rgba(6, 12, 22, 0.9);
+  --background-surface-dark: rgba(7, 14, 26, 0.96);
   --text-primary: #0f172a;
   --text-muted: #64748b;
   --text-primary-dark: #f1f5f9;
   --text-muted-dark: #94a3b8;
   --border-subtle: rgba(148, 163, 184, 0.22);
-  --border-subtle-dark: rgba(148, 163, 184, 0.12);
+  --border-subtle-dark: rgba(148, 163, 184, 0.14);
   --brand-primary: #0f766e;
-  --brand-secondary: #1d4ed8;
-  --brand-strong: #0f172a;
+  --brand-secondary: #0ea5e9;
+  --brand-strong: #08111d;
   --shell-bg:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15, 118, 110, 0.06), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(29, 78, 216, 0.04), transparent),
-    linear-gradient(180deg, #f8f9fc 0%, #eef2f7 100%);
+    radial-gradient(ellipse 78% 52% at 12% 0%, rgba(15, 118, 110, 0.08), transparent),
+    radial-gradient(ellipse 62% 42% at 82% 0%, rgba(14, 165, 233, 0.06), transparent),
+    linear-gradient(180deg, #f3f6fb 0%, #e7edf5 100%);
   --shell-card: rgba(255, 255, 255, 0.78);
-  --shell-card-strong: rgba(255, 255, 255, 0.94);
-  --shell-card-dark: rgba(15, 23, 42, 0.72);
-  --shell-card-dark-strong: rgba(15, 23, 42, 0.92);
+  --shell-card-strong: rgba(255, 255, 255, 0.92);
+  --shell-card-dark: rgba(7, 14, 26, 0.78);
+  --shell-card-dark-strong: rgba(5, 10, 20, 0.94);
   --shell-border: rgba(148, 163, 184, 0.18);
-  --shell-border-dark: rgba(148, 163, 184, 0.1);
-  --shell-shadow: 0 20px 60px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.08);
+  --shell-border-dark: rgba(71, 85, 105, 0.32);
+  --shell-shadow: 0 28px 80px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.08);
 }
 
 html.dark {
   color-scheme: dark;
-  --background: #020617;
-  --background-elevated: rgba(15, 23, 42, 0.88);
-  --background-surface: rgba(15, 23, 42, 0.94);
-  --text-primary: #f1f5f9;
-  --text-muted: #94a3b8;
-  --border-subtle: rgba(148, 163, 184, 0.12);
+  --background: #01050b;
+  --background-dark: #01050b;
+  --background-elevated: rgba(5, 11, 21, 0.92);
+  --background-surface: rgba(6, 13, 24, 0.96);
+  --text-primary: #f7fbff;
+  --text-muted: #9aa9bc;
+  --border-subtle: rgba(148, 163, 184, 0.1);
   --shell-bg:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15, 118, 110, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(29, 78, 216, 0.08), transparent),
-    linear-gradient(180deg, #020617 0%, #0f172a 100%);
-  --shell-card: rgba(15, 23, 42, 0.72);
-  --shell-card-strong: rgba(15, 23, 42, 0.92);
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15, 118, 110, 0.14), transparent 54%),
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(29, 78, 216, 0.1), transparent 48%),
+    linear-gradient(180deg, #01050b 0%, #040a14 48%, #02050c 100%);
+  --shell-card: rgba(7, 14, 26, 0.8);
+  --shell-card-strong: rgba(5, 10, 20, 0.94);
   --shell-border: rgba(148, 163, 184, 0.1);
-  --shell-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(148, 163, 184, 0.06);
+  --shell-shadow: 0 28px 90px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(148, 163, 184, 0.05);
 }
 
 /* Permite rolagem global (correção principal) */
-html, body {
+html,
+body {
   @apply h-full w-full; /* Remove overflow-hidden */
 }
 
@@ -99,12 +101,12 @@ html.dark body {
 }
 
 /* Força o esquema de cores do input date para light */
-input[type="date"] {
+input[type='date'] {
   color-scheme: light;
 }
 
 /* No modo dark, mantemos o esquema dark */
-.dark input[type="date"] {
+.dark input[type='date'] {
   color-scheme: dark;
 }
 
@@ -116,7 +118,10 @@ input,
 textarea,
 select,
 [role='button'] {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Melhora a legibilidade no modo escuro */
@@ -126,19 +131,19 @@ select,
 
 /* ESTILOS PARA CORREÇÃO DO AUTOFILL DO NAVEGADOR */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important; /* Fundo para modo claro */
-    -webkit-text-fill-color: #111827 !important; /* Texto (gray-900) para modo claro */
+  -webkit-box-shadow: 0 0 0 30px white inset !important; /* Fundo para modo claro */
+  -webkit-text-fill-color: #111827 !important; /* Texto (gray-900) para modo claro */
 }
 
 html.dark input:-webkit-autofill,
 html.dark input:-webkit-autofill:hover,
 html.dark input:-webkit-autofill:focus,
 html.dark input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #374151 inset !important; /* Fundo (gray-700) para modo escuro */
-    -webkit-text-fill-color: #ffffff !important; /* Texto (white) para modo escuro */
+  -webkit-box-shadow: 0 0 0 30px #374151 inset !important; /* Fundo (gray-700) para modo escuro */
+  -webkit-text-fill-color: #ffffff !important; /* Texto (white) para modo escuro */
 }
 
 input:-moz-autofill,
@@ -152,7 +157,7 @@ html.dark input:-moz-autofill,
 html.dark input:-moz-autofill:hover,
 html.dark input:-moz-autofill:focus,
 html.dark input:-moz-autofill:active {
-  filter: none !important; 
+  filter: none !important;
 }
 
 /* ESTILOS PARA REACT-TOASTIFY */
@@ -347,15 +352,15 @@ html.dark .Toastify__toast--success {
 }
 
 html.dark .Toastify__toast--error {
-  background-color: #DC2626 !important;
+  background-color: #dc2626 !important;
 }
 
 html.dark .Toastify__toast--warning {
-  background-color: #D97706 !important;
+  background-color: #d97706 !important;
 }
 
 html.dark .Toastify__toast--info {
-  background-color: #2563EB !important;
+  background-color: #2563eb !important;
 }
 
 /* Garantir que os toasts apareçam acima de tudo */
@@ -480,7 +485,7 @@ html.dark .Toastify__toast--info {
   .milhas-desktop-grid {
     @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
   }
-  
+
   .milhas-desktop-card-large {
     @apply lg:col-span-2;
   }
@@ -490,7 +495,7 @@ html.dark .Toastify__toast--info {
   .milhas-table-responsive {
     @apply overflow-x-auto;
   }
-  
+
   .milhas-card-grid {
     @apply grid grid-cols-1 md:grid-cols-2 gap-6;
   }
@@ -515,12 +520,12 @@ html.dark .Toastify__toast--info {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    background: linear-gradient(180deg, #f3f6fb 0%, #e7edf5 100%);
     color: #0f172a;
   }
 
   html.dark body {
-    background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    background: linear-gradient(180deg, #01050b 0%, #040a14 58%, #01040a 100%);
   }
 
   ::selection {
@@ -529,7 +534,11 @@ html.dark .Toastify__toast--info {
   }
 
   * {
-    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
   }
 }
 
@@ -557,19 +566,26 @@ html.dark .Toastify__toast--info {
     @apply rounded-2xl border backdrop-blur-md;
     background: var(--shell-card);
     border-color: var(--shell-border);
-    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
   }
 
   .app-shell-header {
-    @apply border-b backdrop-blur-xl;
-    background: var(--background-elevated);
+    @apply border backdrop-blur-xl;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.72)),
+      var(--background-elevated);
     border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
   }
 
   .app-shell-sidebar {
     @apply border-r backdrop-blur-xl;
-    background: var(--background-elevated);
+    background:
+      radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 36%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.86)),
+      var(--background-elevated);
     border-color: var(--shell-border);
+    box-shadow: 0 30px 90px rgba(15, 23, 42, 0.08);
   }
 
   .app-shell-chip {
@@ -580,7 +596,7 @@ html.dark .Toastify__toast--info {
   }
 
   html.dark .app-shell-chip {
-    background: rgba(15, 23, 42, 0.68);
+    background: rgba(8, 15, 28, 0.82);
     color: var(--text-muted-dark);
   }
 
@@ -613,8 +629,8 @@ html.dark .Toastify__toast--info {
   .app-shell-hero {
     @apply overflow-hidden rounded-[2rem] border;
     background:
-      radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 28%),
-      radial-gradient(circle at bottom left, rgba(29, 78, 216, 0.06), transparent 24%),
+      radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.08), transparent 24%),
       linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.58));
     border-color: var(--shell-border);
     box-shadow: var(--shell-shadow);
@@ -622,9 +638,9 @@ html.dark .Toastify__toast--info {
 
   .app-shell-hero-dark {
     background:
-      radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 30%),
-      radial-gradient(circle at bottom left, rgba(29, 78, 216, 0.1), transparent 24%),
-      linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.72));
+      radial-gradient(circle at top right, rgba(15, 118, 110, 0.2), transparent 30%),
+      radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.14), transparent 24%),
+      linear-gradient(135deg, rgba(8, 15, 28, 0.96), rgba(4, 10, 18, 0.88));
   }
 
   .app-shell-grid {
@@ -665,7 +681,7 @@ html.dark .Toastify__toast--info {
   }
 
   html.dark .bovinext-pill {
-    background: rgba(15, 23, 42, 0.68);
+    background: rgba(6, 12, 22, 0.74);
     color: var(--text-muted-dark);
   }
 
@@ -681,6 +697,132 @@ html.dark .Toastify__toast--info {
   }
 
   html.dark .app-shell-stat {
-    background: rgba(15, 23, 42, 0.72);
+    background: rgba(4, 10, 20, 0.86);
   }
+
+  html.dark .app-shell-header {
+    background:
+      radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 36%),
+      radial-gradient(circle at top right, rgba(14, 165, 233, 0.08), transparent 34%),
+      linear-gradient(180deg, rgba(4, 10, 20, 0.94), rgba(2, 8, 16, 0.9)),
+      var(--background-elevated);
+  }
+
+  html.dark .app-shell-sidebar {
+    background:
+      radial-gradient(circle at top left, rgba(15, 118, 110, 0.2), transparent 36%),
+      radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.08), transparent 30%),
+      linear-gradient(180deg, rgba(4, 10, 20, 0.98), rgba(2, 8, 16, 0.94)),
+      var(--background-elevated);
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+  }
+
+  .dashboard-surface {
+    @apply rounded-[2rem] border backdrop-blur-xl;
+    background: var(--shell-card-strong);
+    border-color: var(--shell-border);
+    box-shadow: var(--shell-shadow);
+  }
+
+  .dashboard-surface-soft {
+    @apply rounded-3xl border backdrop-blur-lg;
+    background: var(--shell-card);
+    border-color: var(--shell-border);
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  }
+
+  html.dark .dashboard-surface,
+  html.dark .dashboard-surface-soft {
+    box-shadow:
+      0 28px 90px rgba(0, 0, 0, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  }
+
+  .dashboard-surface-muted {
+    @apply rounded-2xl border;
+    background: rgba(255, 255, 255, 0.54);
+    border-color: var(--shell-border);
+  }
+
+  html.dark .dashboard-surface-muted {
+    background: rgba(5, 10, 20, 0.82);
+  }
+
+  .dashboard-secondary-button {
+    @apply inline-flex items-center justify-center rounded-2xl border px-4 py-2.5 text-sm font-semibold transition;
+    background: rgba(255, 255, 255, 0.78);
+    border-color: var(--shell-border);
+    color: var(--text-primary);
+  }
+
+  html.dark .dashboard-secondary-button {
+    background: rgba(4, 10, 20, 0.86);
+    color: var(--text-primary-dark);
+  }
+
+  .dashboard-secondary-button:hover {
+    transform: translateY(-1px);
+  }
+
+  html.dark .dashboard-secondary-button:hover {
+    background: rgba(8, 15, 28, 0.94);
+  }
+
+  .dashboard-segment {
+    @apply rounded-2xl border px-4 py-2 text-sm font-semibold transition;
+    border-color: transparent;
+    color: var(--text-muted);
+  }
+
+  html.dark .dashboard-segment {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .dashboard-segment:hover {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-primary);
+  }
+
+  .dashboard-segment-active {
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.16), rgba(14, 165, 233, 0.14));
+    border-color: rgba(15, 118, 110, 0.24);
+    color: var(--text-primary);
+    box-shadow: 0 16px 36px rgba(15, 118, 110, 0.16);
+  }
+
+  html.dark .dashboard-segment-active {
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.22), rgba(14, 165, 233, 0.18));
+    border-color: rgba(45, 212, 191, 0.2);
+    color: var(--text-primary-dark);
+  }
+
+  .dashboard-table-row:hover {
+    background: rgba(148, 163, 184, 0.08);
+  }
+
+  html.dark .dashboard-table-row:hover {
+    background: rgba(8, 15, 28, 0.86);
+  }
+}
+
+html.dark .dashboard-theme-scope .bg-gray-900,
+html.dark .dashboard-theme-scope .dark\:bg-gray-900 {
+  background-color: #020811 !important;
+}
+
+html.dark .dashboard-theme-scope .bg-gray-800,
+html.dark .dashboard-theme-scope .dark\:bg-gray-800 {
+  background-color: #08111f !important;
+}
+
+html.dark .dashboard-theme-scope .bg-gray-700,
+html.dark .dashboard-theme-scope .dark\:bg-gray-700,
+html.dark .dashboard-theme-scope .dark\:bg-gray-700\/50 {
+  background-color: rgba(12, 20, 33, 0.88) !important;
+}
+
+html.dark .dashboard-theme-scope .border-gray-200,
+html.dark .dashboard-theme-scope .dark\:border-gray-700,
+html.dark .dashboard-theme-scope .dark\:border-gray-800 {
+  border-color: rgba(71, 85, 105, 0.38) !important;
 }

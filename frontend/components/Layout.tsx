@@ -2,8 +2,8 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import ProtectedHeader from './ProtectedHeader';
-import MobileHeader from './MobileHeader';
+import DashboardShellHeader from './DashboardShellHeader';
+import DashboardMobileHeader from './DashboardMobileHeader';
 import Sidebar from './Sidebar';
 import MobileNavigation from './MobileNavigation';
 import OptimizedChatbot from './OptimizedChatbot';
@@ -12,7 +12,7 @@ import { dashboardBranding } from '../config/branding';
 
 const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number,
+  wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -229,7 +229,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <LayoutContext.Provider value={layoutContext}>
       <ProtectedRoute>
-        <div className="app-shell-page flex min-h-screen text-slate-900 dark:text-slate-100">
+        <div className="dashboard-theme-scope app-shell-page relative flex min-h-screen text-slate-900 dark:text-slate-100">
           {!isMobileView && (
             <Sidebar
               isMobile={false}
@@ -241,24 +241,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           )}
 
           {isMobileView && (
-            <Sidebar
-              isOpen={isMobileSidebarOpen}
-              onClose={toggleMobileSidebar}
-              isMobile={true}
-            />
+            <Sidebar isOpen={isMobileSidebarOpen} onClose={toggleMobileSidebar} isMobile={true} />
           )}
 
           <div
             className={`relative flex min-h-screen flex-1 flex-col transition-[margin] duration-300 ease-in-out ${
-              !isMobileView && isDesktopSidebarCollapsed ? 'md:ml-20' : 'md:ml-[17rem]'
+              !isMobileView && isDesktopSidebarCollapsed ? 'md:ml-24' : 'md:ml-[21rem]'
             }`}
           >
             {!isMobileView && (
-              <ProtectedHeader title={getPageTitle(router.pathname)} />
+              <div className="sticky top-0 z-40 px-4 pb-2 pt-4 md:px-6 lg:px-8">
+                <div className="mx-auto w-full max-w-[1600px]">
+                  <DashboardShellHeader title={getPageTitle(router.pathname)} />
+                </div>
+              </div>
             )}
 
             {isMobileView && showMobileHeader && (
-              <MobileHeader
+              <DashboardMobileHeader
                 title={getPageTitle(router.pathname)}
                 onMenuToggle={toggleMobileSidebar}
                 showBackButton={false}
@@ -266,13 +266,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
 
             <main
-              className={`flex-1 overflow-y-auto ${
-                isMobileView ? (showMobileHeader ? 'pt-20 pb-24' : 'pt-4 pb-24') : 'pt-24 md:pt-20'
-              } px-4 md:px-6`}
+              className={`flex-1 ${
+                isMobileView ? (showMobileHeader ? 'pb-24 pt-20' : 'pb-24 pt-6') : 'pb-10 pt-2'
+              } px-4 md:px-6 lg:px-8`}
             >
-              <div className="mx-auto flex w-full max-w-[1520px] flex-col gap-6">
-                {children}
-              </div>
+              <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">{children}</div>
             </main>
           </div>
 

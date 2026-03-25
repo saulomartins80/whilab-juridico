@@ -5,6 +5,9 @@ import type { SupabaseClient, User as SupabaseUser, Subscription, PostgrestError
 
 import { supabase } from '../lib/supabaseClient';
 
+const isProd = process.env.NODE_ENV === 'production';
+const authApiBaseUrl = (process.env.NEXT_PUBLIC_API_URL || (isProd ? 'https://api.whilab.com.br' : 'http://localhost:4000')).replace(/\/$/, '');
+
 // BOVINEXT User Types
 export interface AuthUser {
   id: string;
@@ -240,46 +243,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = useCallback(async (email: string, password: string, nome: string, fazenda?: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: nome,
-            display_name: nome,
-            fazenda: fazenda || '',
-            fazenda_nome: fazenda || '',
-          },
+      const response = await fetch(`${authApiBaseUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Erro ao criar conta. Tente novamente.');
-      }
-
-      const registeredUser = data?.user;
-      if (!registeredUser) {
-        throw new Error('Cadastro nao retornou usuario valido.');
-      }
-
-      // Criar perfil na tabela users (essencial para login e operacao)
-      const timestamp = new Date().toISOString();
-      const { error: profileError } = await supabase
-        .from('users')
-        .upsert({
-          id: registeredUser.id,
-          firebase_uid: registeredUser.id,
-          email: email,
+        body: JSON.stringify({
+          email,
+          password,
           display_name: nome,
           fazenda_nome: fazenda || '',
-          subscription_plan: 'fazendeiro',
-          subscription_status: 'active',
-          created_at: timestamp,
-          updated_at: timestamp,
-        }, { onConflict: 'id' });
+        }),
+      });
 
-      if (profileError) {
-        console.warn('[AuthContext] Erro ao criar perfil (nao bloqueante):', profileError.message);
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok || !payload?.success) {
+        throw new Error(payload?.message || 'Erro ao criar conta. Tente novamente.');
       }
 
       setState(prev => ({ ...prev, loading: false, error: null }));
@@ -298,7 +278,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }));
       throw new Error(errorMessage);
     }
-  }, [router]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {

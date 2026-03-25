@@ -23,6 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { dashboardBranding } from '../../config/branding';
+import { supabaseRuntime } from '../../lib/supabaseClient';
 import OptimizedLogo from '../../components/OptimizedLogo';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
@@ -58,6 +59,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
+  const authUnavailable = !supabaseRuntime.isConfigured;
 
   useEffect(() => {
     const isEmailValid = formData.email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -86,6 +88,12 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
     setSuccess(false);
+
+    if (authUnavailable) {
+      setError('A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const currentEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -117,15 +125,18 @@ export default function RegisterPage() {
       }, 2000);
     } catch (err: unknown) {
       const supabaseError = err as { message?: string };
+      const message = supabaseError.message || '';
 
-      if (supabaseError.message?.includes('User already registered')) {
+      if (/email.*(uso|cadastrado|registered)/i.test(message)) {
         setError('Este e-mail ja esta cadastrado. Tente fazer login.');
-      } else if (supabaseError.message?.includes('Password should be at least 6 characters')) {
+      } else if (message.includes('Password should be at least 6 characters') || /senha/i.test(message)) {
         setError('A senha deve ter pelo menos 6 caracteres.');
-      } else if (supabaseError.message?.includes('Invalid email')) {
+      } else if (message.includes('Invalid email') || /email invalido/i.test(message)) {
         setError('Formato de email invalido.');
+      } else if (message.includes('Supabase auth is unavailable') || message.includes('Supabase environment is not configured')) {
+        setError('A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.');
       } else {
-        setError('Erro ao criar conta. Tente novamente.');
+        setError(message || 'Erro ao criar conta. Tente novamente.');
       }
     } finally {
       setLoading(false);
@@ -206,11 +217,11 @@ export default function RegisterPage() {
 
             <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-slate-900 dark:text-white">
               Crie sua<br />
-              <span className="text-[#0f766e] dark:text-[#22d3ee]">operacao premium.</span>
+              <span className="text-[#0f766e] dark:text-[#22d3ee]">base premium.</span>
             </h1>
 
             <p className="mt-4 max-w-[440px] text-[15px] leading-relaxed text-slate-500 dark:text-[#969696]">
-              Comece a usar o {dashboardBranding.brandName} e tenha acesso a uma plataforma completa para gestao pecuaria, IA aplicada e operacao white-label.
+              Comece a usar o {dashboardBranding.brandName} e tenha acesso a uma base com dashboard, IA assistida e operacao white-label pronta para adaptar.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -271,6 +282,17 @@ export default function RegisterPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {authUnavailable && !error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/[0.08] dark:text-amber-300"
+                >
+                  <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.
+                </motion.div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -411,9 +433,9 @@ export default function RegisterPage() {
 
                 <button
                   type="submit"
-                  disabled={!formValid || loading}
+                  disabled={!formValid || loading || authUnavailable}
                   className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-[14px] font-semibold transition-all duration-300 ${
-                    formValid
+                    formValid && !authUnavailable
                       ? 'bg-slate-900 text-white hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-white/[0.1] dark:text-white/30'
                   }`}

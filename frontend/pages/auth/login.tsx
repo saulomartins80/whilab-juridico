@@ -22,6 +22,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { usePreloadCheck } from '../../src/hooks/usePreloadCheck';
 import { dashboardBranding } from '../../config/branding';
+import { supabaseRuntime } from '../../lib/supabaseClient';
 import OptimizedLogo from '../../components/OptimizedLogo';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
@@ -39,6 +40,7 @@ export default function LoginPage() {
   const router = useRouter();
   const isPreloading = usePreloadCheck();
   const { user, loading, login } = useAuth();
+  const authUnavailable = !supabaseRuntime.isConfigured;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,6 +74,12 @@ export default function LoginPage() {
     event.preventDefault();
     setError('');
     setShowRegistrationSuccess(false);
+
+    if (authUnavailable) {
+      setError('A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -86,6 +94,8 @@ export default function LoginPage() {
         setError('Email ou senha invalidos. Confira os dados e tente novamente.');
       } else if (message.includes('Too many requests')) {
         setError('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
+      } else if (message.includes('Supabase auth is unavailable') || message.includes('Supabase environment is not configured')) {
+        setError('A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.');
       } else {
         setError('Nao foi possivel entrar agora. Tente novamente.');
       }
@@ -152,11 +162,11 @@ export default function LoginPage() {
 
             <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-slate-900 dark:text-white">
               Acesse sua<br />
-              <span className="text-[#0f766e] dark:text-[#22d3ee]">operacao premium.</span>
+              <span className="text-[#0f766e] dark:text-[#22d3ee]">base premium.</span>
             </h1>
 
             <p className="mt-4 max-w-[440px] text-[15px] leading-relaxed text-slate-500 dark:text-[#969696]">
-              Entre no {dashboardBranding.brandName} para acompanhar rebanho, manejo, producao e vendas com uma camada comercial pronta para implantar, operar e revender.
+              Entre no {dashboardBranding.brandName} para acessar dashboard, auth e a estrutura white-label pronta para operar, adaptar e evoluir.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -226,6 +236,17 @@ export default function LoginPage() {
                 </motion.div>
               )}
 
+              {authUnavailable && !error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/[0.08] dark:text-amber-300"
+                >
+                  <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.
+                </motion.div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-5">
                 <label className="block">
                   <span className="mb-2 block text-[13px] font-medium text-slate-700 dark:text-white/80">Email</span>
@@ -277,7 +298,7 @@ export default function LoginPage() {
 
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || authUnavailable}
                   className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white py-3.5 text-[14px] font-semibold transition-all duration-300 hover:bg-[#0f766e] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]"
                 >
                   {isLoading ? (

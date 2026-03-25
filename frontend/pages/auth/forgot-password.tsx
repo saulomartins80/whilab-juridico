@@ -5,7 +5,7 @@ import { Mail, AlertCircle, CheckCircle, ArrowLeft, Loader2, ArrowRight, Lock, M
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 
-import { supabase } from '../../lib/supabaseClient';
+import { supabase, supabaseRuntime } from '../../lib/supabaseClient';
 import { dashboardBranding } from '../../config/branding';
 import OptimizedLogo from '../../components/OptimizedLogo';
 import { useTheme } from '../../context/ThemeContext';
@@ -13,6 +13,7 @@ import { useTheme } from '../../context/ThemeContext';
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const { resolvedTheme, toggleTheme } = useTheme();
+  const authUnavailable = !supabaseRuntime.isConfigured;
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -32,6 +33,11 @@ export default function ForgotPasswordPage() {
 
   const sendResetEmail = async () => {
     setError(null);
+
+    if (authUnavailable) {
+      setError('A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.');
+      return;
+    }
 
     if (!isEmailValid) {
       setError('Digite um e-mail valido.');
@@ -56,6 +62,8 @@ export default function ForgotPasswordPage() {
       setError(
         supabaseError.message?.includes('not found')
           ? 'E-mail nao cadastrado.'
+          : supabaseError.message?.includes('Supabase auth is unavailable') || supabaseError.message?.includes('Supabase environment is not configured')
+            ? 'A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.'
           : 'Erro ao enviar e-mail de redefinicao. Tente novamente.'
       );
     } finally {
@@ -151,6 +159,17 @@ export default function ForgotPasswordPage() {
               </motion.div>
             )}
 
+            {authUnavailable && !error && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/[0.08] dark:text-amber-300"
+              >
+                <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                A autenticacao esta temporariamente indisponivel. Tente novamente em alguns minutos.
+              </motion.div>
+            )}
+
             {!emailSent ? (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <label className="block">
@@ -178,9 +197,9 @@ export default function ForgotPasswordPage() {
 
                 <button
                   type="submit"
-                  disabled={!isEmailValid || isLoading}
+                  disabled={!isEmailValid || isLoading || authUnavailable}
                   className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-[14px] font-semibold transition-all duration-300 ${
-                    isEmailValid && !isLoading
+                    isEmailValid && !isLoading && !authUnavailable
                       ? 'bg-slate-900 text-white hover:bg-[#0f766e] dark:bg-white dark:text-[#121212] dark:hover:bg-[#22d3ee]'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-white/[0.1] dark:text-white/30'
                   }`}
@@ -215,9 +234,9 @@ export default function ForgotPasswordPage() {
                   <button
                     type="button"
                     onClick={handleResendEmail}
-                    disabled={countdown > 0 || isLoading}
+                    disabled={countdown > 0 || isLoading || authUnavailable}
                     className={`font-semibold ${
-                      countdown > 0 || isLoading
+                      countdown > 0 || isLoading || authUnavailable
                         ? 'text-slate-400 cursor-not-allowed dark:text-white/30'
                         : 'text-[#0f766e] hover:text-[#0f766e]/80 dark:text-[#22d3ee] dark:hover:text-[#22d3ee]/80'
                     }`}
