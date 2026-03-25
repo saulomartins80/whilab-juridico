@@ -1,15 +1,15 @@
-// =====================================================
-// BOVINEXT AI SERVICE - IA ESPECIALIZADA EM PECUÁRIA
-// Adaptado para Supabase com conhecimento zootécnico
+﻿// =====================================================
+// WHILAB AI SERVICE - IA ESPECIALIZADA EM PECUÃRIA
+// Adaptado para Supabase com conhecimento zootÃ©cnico
 // =====================================================
 
 import OpenAI from 'openai';
-import { bovinextSupabaseService } from './BovinextSupabaseService';
-import { IUser, IContextoIA, BOVINEXT_AI_KNOWLEDGE, WHATSAPP_COMMANDS } from '../types/bovinext-supabase.types';
+import { whilabSupabaseService } from './WhiLabSupabaseService';
+import { IUser, IContextoIA, WHILAB_AI_KNOWLEDGE, WHATSAPP_COMMANDS } from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 import { AI_BRAND, SYSTEM_PROMPT, AI_MODEL_CONFIG } from '../config/aiPrompts';
 
-export class BovinextAIService {
+export class WhiLabAIService {
   private openai: OpenAI | null = null;
 
   constructor() {
@@ -18,7 +18,7 @@ export class BovinextAIService {
   private getOpenAIClient(): OpenAI {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      throw new Error('OPENAI_API_KEY não configurada');
+      throw new Error('OPENAI_API_KEY nÃ£o configurada');
     }
 
     if (!this.openai) {
@@ -35,10 +35,10 @@ export class BovinextAIService {
   // CONTEXTO ESPECIALIZADO
   // =====================================================
 
-  private async buildBovinextContext(userId: string): Promise<IContextoIA> {
+  private async buildWhiLabContext(userId: string): Promise<IContextoIA> {
     try {
-      const usuario = await bovinextSupabaseService.getUserByFirebaseUid(userId);
-      const animais = await bovinextSupabaseService.getAnimaisByUser(userId);
+      const usuario = await whilabSupabaseService.getUserByFirebaseUid(userId);
+      const animais = await whilabSupabaseService.getAnimaisByUser(userId);
       const resumoRebanho = {
         user_id: userId,
         fazenda_nome: usuario?.fazenda_nome || 'Fazenda',
@@ -54,12 +54,12 @@ export class BovinextAIService {
         custo_total: animais.reduce((sum, a) => sum + (a.valor_compra || 0), 0)
       };
 
-      const ultimasVendas = await bovinextSupabaseService.getVendasByUser(userId);
+      const ultimasVendas = await whilabSupabaseService.getVendasByUser(userId);
 
-      const alertas = await bovinextSupabaseService.getAlertasByUser(userId);
+      const alertas = await whilabSupabaseService.getAlertasByUser(userId);
       const alertasPendentes = alertas.filter(a => !a.lido);
 
-      const precosAtuais = await bovinextSupabaseService.getPrecosMercado();
+      const precosAtuais = await whilabSupabaseService.getPrecosMercado();
 
       return {
         usuario: usuario!,
@@ -78,13 +78,13 @@ export class BovinextAIService {
   // PROMPT ESPECIALIZADO
   // =====================================================
 
-  private getBovinextSystemPrompt(): string {
+  private getWhiLabSystemPrompt(): string {
     return `${SYSTEM_PROMPT}
 
 ## CONHECIMENTO ESPECIALIZADO
-${JSON.stringify(BOVINEXT_AI_KNOWLEDGE, null, 2)}
+${JSON.stringify(WHILAB_AI_KNOWLEDGE, null, 2)}
 
-## COMANDOS DISPONÍVEIS
+## COMANDOS DISPONÃVEIS
 ${JSON.stringify(WHATSAPP_COMMANDS, null, 2)}
 `;
   }
@@ -99,27 +99,27 @@ ${JSON.stringify(WHATSAPP_COMMANDS, null, 2)}
     channel: 'whatsapp' | 'web' | 'mobile' = 'web'
   ): Promise<string> {
     try {
-      // Construir contexto específico do usuário
-      const contexto = await this.buildBovinextContext(userId);
+      // Construir contexto especÃ­fico do usuÃ¡rio
+      const contexto = await this.buildWhiLabContext(userId);
 
       // Preparar prompt com contexto
       const contextPrompt = `
 ## CONTEXTO DA FAZENDA
 **Fazenda:** ${contexto.usuario.fazenda_nome}
-**Área:** ${contexto.usuario.fazenda_area || 'Não informado'} hectares
-**Tipo:** ${contexto.usuario.tipo_criacao || 'Não informado'}
-**Experiência:** ${contexto.usuario.experiencia_anos || 'Não informado'} anos
+**Ãrea:** ${contexto.usuario.fazenda_area || 'NÃ£o informado'} hectares
+**Tipo:** ${contexto.usuario.tipo_criacao || 'NÃ£o informado'}
+**ExperiÃªncia:** ${contexto.usuario.experiencia_anos || 'NÃ£o informado'} anos
 
 ## RESUMO DO REBANHO
 ${contexto.rebanho_resumo ? `
 - Total de animais: ${contexto.rebanho_resumo.total_animais}
-- Machos: ${contexto.rebanho_resumo.machos} | Fêmeas: ${contexto.rebanho_resumo.femeas}
+- Machos: ${contexto.rebanho_resumo.machos} | FÃªmeas: ${contexto.rebanho_resumo.femeas}
 - Ativos: ${contexto.rebanho_resumo.ativos} | Vendidos: ${contexto.rebanho_resumo.vendidos}
-- Peso médio: ${contexto.rebanho_resumo.peso_medio?.toFixed(1)} kg
+- Peso mÃ©dio: ${contexto.rebanho_resumo.peso_medio?.toFixed(1)} kg
 - Custo acumulado: R$ ${contexto.rebanho_resumo.custo_total?.toLocaleString('pt-BR')}
-` : 'Dados do rebanho não disponíveis'}
+` : 'Dados do rebanho nÃ£o disponÃ­veis'}
 
-## VENDAS RECENTES (últimos 30 dias)
+## VENDAS RECENTES (Ãºltimos 30 dias)
 ${contexto.ultimas_vendas.length > 0 ? 
   contexto.ultimas_vendas.map(v => 
     `- ${v.data_venda}: ${v.peso_total}kg para ${v.comprador} - R$ ${v.valor_total.toLocaleString('pt-BR')}`
@@ -131,23 +131,23 @@ ${contexto.alertas_pendentes.length > 0 ?
   contexto.alertas_pendentes.map(a => `- ${a.titulo}: ${a.mensagem}`).join('\n')
   : 'Nenhum alerta pendente'}
 
-## PREÇOS ATUAIS DE MERCADO
+## PREÃ‡OS ATUAIS DE MERCADO
 ${contexto.precos_atuais.length > 0 ? 
   contexto.precos_atuais.map(p => 
     `- ${p.categoria} (${p.regiao}): R$ ${p.preco_arroba}/arroba - ${p.fonte}`
   ).join('\n')
-  : 'Preços não disponíveis'}
+  : 'PreÃ§os nÃ£o disponÃ­veis'}
 
 ---
 
-**PERGUNTA DO USUÁRIO:** ${message}
+**PERGUNTA DO USUÃRIO:** ${message}
 `;
 
       // Chamar OpenAI com contexto especializado
       const completion = await this.getOpenAIClient().chat.completions.create({
         model: 'gpt-4',
         messages: [
-          { role: 'system', content: this.getBovinextSystemPrompt() },
+          { role: 'system', content: this.getWhiLabSystemPrompt() },
           { role: 'user', content: contextPrompt }
         ],
         max_tokens: AI_MODEL_CONFIG.maxTokens,
@@ -155,10 +155,10 @@ ${contexto.precos_atuais.length > 0 ?
       });
 
       const response = completion.choices[0]?.message?.content || 
-        'Desculpe, não consegui processar sua pergunta no momento. Tente novamente.';
+        'Desculpe, nÃ£o consegui processar sua pergunta no momento. Tente novamente.';
 
       // Salvar conversa no Supabase
-      await bovinextSupabaseService.createChatMessage(userId, {
+      await whilabSupabaseService.createChatMessage(userId, {
         message,
         response,
         channel,
@@ -175,7 +175,7 @@ ${contexto.precos_atuais.length > 0 ?
       
       // Salvar mesmo com erro
       try {
-        await bovinextSupabaseService.createChatMessage(userId, {
+        await whilabSupabaseService.createChatMessage(userId, {
           message,
           response: fallbackResponse,
           channel,
@@ -190,67 +190,67 @@ ${contexto.precos_atuais.length > 0 ?
   }
 
   // =====================================================
-  // ANÁLISE DE COMANDOS ESPECÍFICOS
+  // ANÃLISE DE COMANDOS ESPECÃFICOS
   // =====================================================
   
   private getFallbackResponse(message: string): string {
     const messageLower = message.toLowerCase();
     
     // Respostas baseadas em palavras-chave
-    if (messageLower.includes('preço') || messageLower.includes('arroba')) {
-      return `🐂 **Consulta de Preços**
+    if (messageLower.includes('preÃ§o') || messageLower.includes('arroba')) {
+      return `ðŸ‚ **Consulta de PreÃ§os**
       
-Para consultar preços atualizados, preciso acessar os dados de mercado. 
-Atualmente o sistema está em modo de desenvolvimento.
+Para consultar preÃ§os atualizados, preciso acessar os dados de mercado. 
+Atualmente o sistema estÃ¡ em modo de desenvolvimento.
 
-💡 **Dica:** Use comandos como:
+ðŸ’¡ **Dica:** Use comandos como:
 - "${AI_BRAND.assistantName}, preco do boi hoje"
 - "${AI_BRAND.assistantName}, cotacao da arroba"`;
     }
     
     if (messageLower.includes('animal') || messageLower.includes('rebanho')) {
-      return `🐄 **Gestão do Rebanho**
+      return `ðŸ„ **GestÃ£o do Rebanho**
       
-Para consultar informações do seu rebanho, use comandos como:
+Para consultar informaÃ§Ãµes do seu rebanho, use comandos como:
 - "${AI_BRAND.assistantName}, quantos animais tenho?"
 - "${AI_BRAND.assistantName}, meu rebanho"
 - "${AI_BRAND.assistantName}, animais por lote"
 
-📊 Posso ajudar com cadastro, consultas e relatórios do rebanho.`;
+ðŸ“Š Posso ajudar com cadastro, consultas e relatÃ³rios do rebanho.`;
     }
     
     if (messageLower.includes('venda') || messageLower.includes('vender')) {
-      return `💰 **Vendas e Comercialização**
+      return `ðŸ’° **Vendas e ComercializaÃ§Ã£o**
       
 Para registrar ou consultar vendas:
 - "${AI_BRAND.assistantName}, registrar venda"
 - "${AI_BRAND.assistantName}, vendas do mes"
 - "${AI_BRAND.assistantName}, melhor preco para venda"
 
-📈 Posso ajudar com análise de mercado e timing de vendas.`;
+ðŸ“ˆ Posso ajudar com anÃ¡lise de mercado e timing de vendas.`;
     }
     
     if (messageLower.includes('vacina') || messageLower.includes('manejo')) {
-      return `💉 **Manejo Sanitário**
+      return `ðŸ’‰ **Manejo SanitÃ¡rio**
       
-Para questões de manejo:
+Para questÃµes de manejo:
 - "${AI_BRAND.assistantName}, agenda de vacinacao"
 - "${AI_BRAND.assistantName}, proximas vacinas"
 - "${AI_BRAND.assistantName}, registrar manejo"
 
-⚠️ **Importante:** Sempre consulte um veterinário para orientações específicas.`;
+âš ï¸ **Importante:** Sempre consulte um veterinÃ¡rio para orientaÃ§Ãµes especÃ­ficas.`;
     }
     
-    // Resposta genérica
-    return `🐂 **${AI_BRAND.assistantName} - ${AI_BRAND.productDescription}**
+    // Resposta genÃ©rica
+    return `ðŸ‚ **${AI_BRAND.assistantName} - ${AI_BRAND.productDescription}**
     
-Olá! Sou especializado em gestão pecuária. Posso ajudar com:
+OlÃ¡! Sou especializado em gestÃ£o pecuÃ¡ria. Posso ajudar com:
 
-🐄 **Rebanho:** Cadastro, consultas e relatórios
-💰 **Vendas:** Registros e análise de mercado  
-💉 **Manejo:** Calendário sanitário e alertas
-📊 **Relatórios:** Performance e indicadores
-💬 **Comandos:** Use "${AI_BRAND.assistantName}, [sua pergunta]"
+ðŸ„ **Rebanho:** Cadastro, consultas e relatÃ³rios
+ðŸ’° **Vendas:** Registros e anÃ¡lise de mercado  
+ðŸ’‰ **Manejo:** CalendÃ¡rio sanitÃ¡rio e alertas
+ðŸ“Š **RelatÃ³rios:** Performance e indicadores
+ðŸ’¬ **Comandos:** Use "${AI_BRAND.assistantName}, [sua pergunta]"
 
 Como posso ajudar sua fazenda hoje?`;
   }
@@ -270,34 +270,34 @@ Como posso ajudar sua fazenda hoje?`;
     recommendations: string[];
   }> {
     try {
-      // Mock implementation - em produção usaria visão computacional
-      logger.info(`Analisando imagem para usuário ${userId}: ${imageUrl}`);
+      // Mock implementation - em produÃ§Ã£o usaria visÃ£o computacional
+      logger.info(`Analisando imagem para usuÃ¡rio ${userId}: ${imageUrl}`);
       
-      // Simulação de análise
+      // SimulaÃ§Ã£o de anÃ¡lise
       const mockAnalysis = {
         estimatedWeight: Math.floor(Math.random() * 200) + 300, // 300-500kg
         confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
-        healthStatus: 'Aparentemente saudável',
+        healthStatus: 'Aparentemente saudÃ¡vel',
         recommendations: [
           'Continue o manejo atual',
           'Monitore ganho de peso',
-          'Próxima pesagem em 30 dias'
+          'PrÃ³xima pesagem em 30 dias'
         ]
       };
 
-      // Salvar análise como mensagem
-      await bovinextSupabaseService.createChatMessage(userId, {
-        message: `Análise de imagem do animal ${animalId || 'não identificado'}`,
-        response: `🔍 **Analise ${AI_BRAND.assistantName} Vision**
+      // Salvar anÃ¡lise como mensagem
+      await whilabSupabaseService.createChatMessage(userId, {
+        message: `AnÃ¡lise de imagem do animal ${animalId || 'nÃ£o identificado'}`,
+        response: `ðŸ” **Analise ${AI_BRAND.assistantName} Vision**
         
-📏 **Peso estimado:** ${mockAnalysis.estimatedWeight}kg
-🎯 **Confiança:** ${mockAnalysis.confidence}%
-🩺 **Status:** ${mockAnalysis.healthStatus}
+ðŸ“ **Peso estimado:** ${mockAnalysis.estimatedWeight}kg
+ðŸŽ¯ **ConfianÃ§a:** ${mockAnalysis.confidence}%
+ðŸ©º **Status:** ${mockAnalysis.healthStatus}
 
-💡 **Recomendações:**
+ðŸ’¡ **RecomendaÃ§Ãµes:**
 ${mockAnalysis.recommendations.map(r => `- ${r}`).join('\n')}
 
-⚠️ **Disclaimer:** Esta é uma estimativa baseada em IA. Para avaliações precisas, consulte um zootecnista.`,
+âš ï¸ **Disclaimer:** Esta Ã© uma estimativa baseada em IA. Para avaliaÃ§Ãµes precisas, consulte um zootecnista.`,
         channel: 'web',
         // media_url: imageUrl, // Campo removido temporariamente
         context: { analysis: mockAnalysis, animal_id: animalId }
@@ -306,7 +306,7 @@ ${mockAnalysis.recommendations.map(r => `- ${r}`).join('\n')}
       return mockAnalysis;
 
     } catch (error) {
-      logger.error('Erro na análise de imagem:', error);
+      logger.error('Erro na anÃ¡lise de imagem:', error);
       throw error;
     }
   }
@@ -317,10 +317,10 @@ ${mockAnalysis.recommendations.map(r => `- ${r}`).join('\n')}
   
   async generateSmartAlerts(userId: string): Promise<void> {
     try {
-      const contexto = await this.buildBovinextContext(userId);
+      const contexto = await this.buildWhiLabContext(userId);
       
-      // Verificar alertas de vacinação
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, {
+      // Verificar alertas de vacinaÃ§Ã£o
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, {
         tipoManejo: 'vacinacao'
       });
       
@@ -333,29 +333,29 @@ ${mockAnalysis.recommendations.map(r => `- ${r}`).join('\n')}
       });
 
       for (const manejo of proximasVacinas) {
-        await bovinextSupabaseService.createAlerta(userId, {
+        await whilabSupabaseService.createAlerta(userId, {
           tipo_alerta: 'vacinacao',
-          titulo: 'Vacinação Próxima',
+          titulo: 'VacinaÃ§Ã£o PrÃ³xima',
           mensagem: `Vacina ${manejo.produto_usado} vence em breve para o animal ${manejo.animal_id}`,
           data_alerta: new Date().toISOString(),
           animal_id: manejo.animal_id
         });
       }
 
-      // Verificar alertas de mercado (preços favoráveis)
-      const precos = await bovinextSupabaseService.getPrecosMercado();
+      // Verificar alertas de mercado (preÃ§os favorÃ¡veis)
+      const precos = await whilabSupabaseService.getPrecosMercado();
       const precoAtual = precos.find(p => p.categoria === 'boi_gordo')?.preco_arroba;
       
-      if (precoAtual && precoAtual > 300) { // Preço acima de R$ 300/arroba
-        await bovinextSupabaseService.createAlerta(userId, {
+      if (precoAtual && precoAtual > 300) { // PreÃ§o acima de R$ 300/arroba
+        await whilabSupabaseService.createAlerta(userId, {
           tipo_alerta: 'mercado',
-          titulo: 'Preço Favorável para Venda',
-          mensagem: `Boi gordo está cotado a R$ ${precoAtual}/arroba. Considere vender animais prontos.`,
+          titulo: 'PreÃ§o FavorÃ¡vel para Venda',
+          mensagem: `Boi gordo estÃ¡ cotado a R$ ${precoAtual}/arroba. Considere vender animais prontos.`,
           data_alerta: new Date().toISOString()
         });
       }
 
-      logger.info(`Alertas inteligentes gerados para usuário ${userId}`);
+      logger.info(`Alertas inteligentes gerados para usuÃ¡rio ${userId}`);
 
     } catch (error) {
       logger.error('Erro ao gerar alertas inteligentes:', error);
@@ -363,49 +363,49 @@ ${mockAnalysis.recommendations.map(r => `- ${r}`).join('\n')}
   }
 
   // =====================================================
-  // RELATÓRIOS AUTOMATIZADOS
+  // RELATÃ“RIOS AUTOMATIZADOS
   // =====================================================
   
   async generateMonthlyReport(userId: string): Promise<string> {
     try {
-      const contexto = await this.buildBovinextContext(userId);
-      const estatisticas = await bovinextSupabaseService.getEstatisticasDashboard(userId);
+      const contexto = await this.buildWhiLabContext(userId);
+      const estatisticas = await whilabSupabaseService.getEstatisticasDashboard(userId);
       
       const relatorio = `
-🐂 **RELATÓRIO MENSAL - ${contexto.usuario.fazenda_nome}**
+ðŸ‚ **RELATÃ“RIO MENSAL - ${contexto.usuario.fazenda_nome}**
 
-📊 **RESUMO GERAL**
+ðŸ“Š **RESUMO GERAL**
 - Total de animais: ${estatisticas.totalAnimais}
-- Receita do mês: R$ ${estatisticas.receitaMensal.toLocaleString('pt-BR')}
-- GMD médio: ${estatisticas.gmdMedio} kg/dia
+- Receita do mÃªs: R$ ${estatisticas.receitaMensal.toLocaleString('pt-BR')}
+- GMD mÃ©dio: ${estatisticas.gmdMedio} kg/dia
 - Alertas pendentes: ${estatisticas.alertasPendentes}
 
-💰 **PERFORMANCE FINANCEIRA**
+ðŸ’° **PERFORMANCE FINANCEIRA**
 ${contexto.ultimas_vendas.length > 0 ? `
 - Vendas realizadas: ${contexto.ultimas_vendas.length}
 - Peso total vendido: ${contexto.ultimas_vendas.reduce((sum, v) => sum + v.peso_total, 0)} kg
 - Receita total: R$ ${contexto.ultimas_vendas.reduce((sum, v) => sum + v.valor_total, 0).toLocaleString('pt-BR')}
-` : 'Nenhuma venda no período'}
+` : 'Nenhuma venda no perÃ­odo'}
 
-🎯 **METAS**
-- Metas concluídas: ${estatisticas.metasConcluidas}
+ðŸŽ¯ **METAS**
+- Metas concluÃ­das: ${estatisticas.metasConcluidas}
 
-📅 **PRÓXIMAS AÇÕES**
-- Vacinações agendadas: ${estatisticas.proximasVacinacoes}
+ðŸ“… **PRÃ“XIMAS AÃ‡Ã•ES**
+- VacinaÃ§Ãµes agendadas: ${estatisticas.proximasVacinacoes}
 - Alertas para revisar: ${estatisticas.alertasPendentes}
 
-💡 **RECOMENDAÇÕES IA**
+ðŸ’¡ **RECOMENDAÃ‡Ã•ES IA**
 - Continue monitorando o GMD dos animais
-- Considere aproveitar preços favoráveis de mercado
-- Mantenha o calendário sanitário em dia
+- Considere aproveitar preÃ§os favorÃ¡veis de mercado
+- Mantenha o calendÃ¡rio sanitÃ¡rio em dia
 
 ---
 *Relatorio gerado automaticamente pelo ${AI_BRAND.assistantName}*
 `;
 
-      // Salvar relatório como mensagem
-      await bovinextSupabaseService.createChatMessage(userId, {
-        message: 'Relatório mensal automatizado',
+      // Salvar relatÃ³rio como mensagem
+      await whilabSupabaseService.createChatMessage(userId, {
+        message: 'RelatÃ³rio mensal automatizado',
         response: relatorio,
         channel: 'web',
         context: { tipo: 'relatorio_mensal', estatisticas }
@@ -414,10 +414,11 @@ ${contexto.ultimas_vendas.length > 0 ? `
       return relatorio;
 
     } catch (error) {
-      logger.error('Erro ao gerar relatório mensal:', error);
+      logger.error('Erro ao gerar relatÃ³rio mensal:', error);
       throw error;
     }
   }
 }
 
-export const bovinextAIService = new BovinextAIService();
+export const whilabAIService = new WhiLabAIService();
+

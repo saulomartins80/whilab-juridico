@@ -61,7 +61,7 @@ const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 0,
 });
 
-export default function BovinextDashboard() {
+export default function WhiLabDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalAnimais: 0,

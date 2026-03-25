@@ -1,11 +1,11 @@
-// =====================================================
-// BOVINEXT - SERVIÇO DE IA OTIMIZADA
-// Adaptado para contexto pecuário
+﻿// =====================================================
+// WHILAB - SERVIÃ‡O DE IA OTIMIZADA
+// Adaptado para contexto pecuÃ¡rio
 // =====================================================
 
 import { OpenAI } from 'openai';
-import { bovinextSupabaseService } from './BovinextSupabaseService';
-import { IAnimal, IManejo, IProducao, IVenda } from '../types/bovinext-supabase.types';
+import { whilabSupabaseService } from './WhiLabSupabaseService';
+import { IAnimal, IManejo, IProducao, IVenda } from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 import { AI_BRAND, SYSTEM_PROMPT, AI_MODEL_CONFIG } from '../config/aiPrompts';
 
@@ -16,13 +16,13 @@ interface ChatMessage {
   timestamp?: Date;
 }
 
-// ===== CONFIGURAÇÃO OTIMIZADA =====
+// ===== CONFIGURAÃ‡ÃƒO OTIMIZADA =====
 let openai: OpenAI | null = null;
 
 const getOpenAIClient = (): OpenAI => {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY não configurada');
+    throw new Error('OPENAI_API_KEY nÃ£o configurada');
   }
 
   if (!openai) {
@@ -100,42 +100,42 @@ class IntelligentCache {
   }
 }
 
-// ===== SISTEMA DE DETECÇÃO DE INTENÇÕES PARA PECUÁRIA =====
-class BovinextIntentDetector {
+// ===== SISTEMA DE DETECÃ‡ÃƒO DE INTENÃ‡Ã•ES PARA PECUÃRIA =====
+class WhiLabIntentDetector {
   private patterns = {
     // CONSULTA DE DADOS EXISTENTES
     view_animals: [
       /(?:ver|mostrar|consultar|visualizar).*(?:animal|gado|rebanho|boi|vaca)/i,
       /(?:meu|meus).*(?:animal|animais|gado|rebanho)/i,
-      /(?:quantos|quantas).*(?:animal|cabeça|boi|vaca)/i,
+      /(?:quantos|quantas).*(?:animal|cabeÃ§a|boi|vaca)/i,
       /consegue.*ver.*animal/i,
       /tem.*animal/i
     ],
     view_managements: [
-      /(?:ver|mostrar|consultar).*(?:manejo|vacinação|pesagem)/i,
-      /(?:minha|minhas).*(?:vacinação|agenda)/i,
-      /(?:últimas|ultimas).*(?:vacinação|manejo)/i,
-      /histórico.*manejo/i
+      /(?:ver|mostrar|consultar).*(?:manejo|vacinaÃ§Ã£o|pesagem)/i,
+      /(?:minha|minhas).*(?:vacinaÃ§Ã£o|agenda)/i,
+      /(?:Ãºltimas|ultimas).*(?:vacinaÃ§Ã£o|manejo)/i,
+      /histÃ³rico.*manejo/i
     ],
     view_sales: [
       /(?:ver|mostrar|consultar).*(?:venda|vendas|lucro)/i,
       /(?:minha|minhas).*(?:venda|vendas)/i,
-      /vendas.*mês/i
+      /vendas.*mÃªs/i
     ],
     view_production: [
-      /(?:ver|mostrar|consultar).*(?:produção|leite|peso)/i,
-      /produção.*leite/i,
+      /(?:ver|mostrar|consultar).*(?:produÃ§Ã£o|leite|peso)/i,
+      /produÃ§Ã£o.*leite/i,
       /controle.*leiteiro/i
     ],
 
-    // AÇÕES DE CRIAÇÃO
+    // AÃ‡Ã•ES DE CRIAÃ‡ÃƒO
     create_animal: [
       /(?:adicionar|criar|cadastrar|registrar).*(?:animal|boi|vaca|bezerro)/i,
       /novo.*(?:animal|gado)/i,
       /comprei.*(?:animal|boi|vaca)/i
     ],
     create_management: [
-      /(?:registrar|fazer|aplicar).*(?:vacina|vermífugo|manejo)/i,
+      /(?:registrar|fazer|aplicar).*(?:vacina|vermÃ­fugo|manejo)/i,
       /vacinei.*animal/i,
       /apliquei.*vacina/i
     ],
@@ -145,43 +145,43 @@ class BovinextIntentDetector {
       /vendeu.*boi/i
     ],
     create_production: [
-      /(?:registrar|anotar).*(?:produção|leite|peso)/i,
+      /(?:registrar|anotar).*(?:produÃ§Ã£o|leite|peso)/i,
       /pesagem.*animal/i,
       /ordenha.*hoje/i
     ],
 
-    // ANÁLISES E RELATÓRIOS
+    // ANÃLISES E RELATÃ“RIOS
     analysis_financial: [
-      /(?:análise|relatório).*(?:financeiro|lucro|prejuízo)/i,
+      /(?:anÃ¡lise|relatÃ³rio).*(?:financeiro|lucro|prejuÃ­zo)/i,
       /quanto.*ganhei/i,
       /lucro.*fazenda/i
     ],
     analysis_zootechnical: [
-      /(?:análise|relatório).*(?:zootécnico|produtivo|desempenho)/i,
-      /como.*está.*rebanho/i,
+      /(?:anÃ¡lise|relatÃ³rio).*(?:zootÃ©cnico|produtivo|desempenho)/i,
+      /como.*estÃ¡.*rebanho/i,
       /performance.*animal/i
     ],
     analysis_health: [
-      /(?:análise|relatório).*(?:sanitário|saúde|vacina)/i,
-      /situação.*sanitária/i,
-      /calendário.*vacina/i
+      /(?:anÃ¡lise|relatÃ³rio).*(?:sanitÃ¡rio|saÃºde|vacina)/i,
+      /situaÃ§Ã£o.*sanitÃ¡ria/i,
+      /calendÃ¡rio.*vacina/i
     ],
 
-    // ALERTAS E NOTIFICAÇÕES
+    // ALERTAS E NOTIFICAÃ‡Ã•ES
     alerts: [
       /(?:alerta|aviso|lembrete).*(?:vacina|manejo)/i,
       /quando.*vacinar/i,
-      /próxima.*aplicação/i
+      /prÃ³xima.*aplicaÃ§Ã£o/i
     ],
 
-    // AJUDA E ORIENTAÇÕES
+    // AJUDA E ORIENTAÃ‡Ã•ES
     help_general: [
       /(?:ajuda|help|socorro|como)/i,
-      /não.*sei.*como/i,
+      /nÃ£o.*sei.*como/i,
       /me.*ensina/i
     ],
     advice_management: [
-      /(?:dica|conselho|orientação).*(?:manejo|criação)/i,
+      /(?:dica|conselho|orientaÃ§Ã£o).*(?:manejo|criaÃ§Ã£o)/i,
       /como.*melhorar/i,
       /o.*que.*fazer/i
     ]
@@ -203,10 +203,10 @@ class BovinextIntentDetector {
   }
 }
 
-// ===== SERVIÇO PRINCIPAL =====
-export class BovinextOptimizedAIService {
+// ===== SERVIÃ‡O PRINCIPAL =====
+export class WhiLabOptimizedAIService {
   private cache = new IntelligentCache();
-  private intentDetector = new BovinextIntentDetector();
+  private intentDetector = new WhiLabIntentDetector();
   private conversationHistory = new Map<string, ChatMessage[]>();
 
   // =====================================================
@@ -215,14 +215,14 @@ export class BovinextOptimizedAIService {
 
   async processMessage(userId: string, message: string): Promise<string> {
     try {
-      // Detectar intenções
+      // Detectar intenÃ§Ãµes
       const intents = this.intentDetector.detect(message);
-      logger.info(`Intenções detectadas: ${intents.join(', ')}`);
+      logger.info(`IntenÃ§Ãµes detectadas: ${intents.join(', ')}`);
 
-      // Buscar contexto do usuário
+      // Buscar contexto do usuÃ¡rio
       const context = await this.buildUserContext(userId);
       
-      // Processar baseado na intenção principal
+      // Processar baseado na intenÃ§Ã£o principal
       const primaryIntent = intents[0];
       
       switch (primaryIntent) {
@@ -253,7 +253,7 @@ export class BovinextOptimizedAIService {
   }
 
   // =====================================================
-  // CONSTRUÇÃO DE CONTEXTO
+  // CONSTRUÃ‡ÃƒO DE CONTEXTO
   // =====================================================
 
   private async buildUserContext(userId: string): Promise<any> {
@@ -263,10 +263,10 @@ export class BovinextOptimizedAIService {
     if (!context) {
       try {
         const [animais, manejos, vendas, producoes] = await Promise.all([
-          bovinextSupabaseService.getAnimaisByUser(userId, {}),
-          bovinextSupabaseService.getManejosByUser(userId, {}),
-          bovinextSupabaseService.getVendasByUser(userId, {}),
-          bovinextSupabaseService.getProducaoByUser(userId, {})
+          whilabSupabaseService.getAnimaisByUser(userId, {}),
+          whilabSupabaseService.getManejosByUser(userId, {}),
+          whilabSupabaseService.getVendasByUser(userId, {}),
+          whilabSupabaseService.getProducaoByUser(userId, {})
         ]);
 
         context = {
@@ -321,44 +321,44 @@ export class BovinextOptimizedAIService {
 
   private async getAlertasPendentes(userId: string): Promise<any[]> {
     try {
-      const alertas = await bovinextSupabaseService.getAlertasByUser(userId);
+      const alertas = await whilabSupabaseService.getAlertasByUser(userId);
       const alertasPendentes = alertas.filter(a => !a.lido);
-      return alertasPendentes.slice(0, 5); // Últimos 5 alertas
+      return alertasPendentes.slice(0, 5); // Ãšltimos 5 alertas
     } catch (error) {
       return [];
     }
   }
 
   // =====================================================
-  // HANDLERS ESPECÍFICOS
+  // HANDLERS ESPECÃFICOS
   // =====================================================
 
   private async handleViewAnimals(userId: string, message: string, context: any): Promise<string> {
     const { totalAnimais, animaisAtivos, resumoRebanho } = context;
     
-    let response = `🐄 **Seu Rebanho:**\n\n`;
-    response += `• Total de animais: ${totalAnimais}\n`;
-    response += `• Animais ativos: ${animaisAtivos}\n\n`;
+    let response = `ðŸ„ **Seu Rebanho:**\n\n`;
+    response += `â€¢ Total de animais: ${totalAnimais}\n`;
+    response += `â€¢ Animais ativos: ${animaisAtivos}\n\n`;
     
     if (resumoRebanho.porCategoria) {
       response += `**Por categoria:**\n`;
       Object.entries(resumoRebanho.porCategoria).forEach(([cat, count]) => {
-        response += `• ${cat}: ${count}\n`;
+        response += `â€¢ ${cat}: ${count}\n`;
       });
     }
 
     if (context.alertasPendentes?.length > 0) {
-      response += `\n⚠️ **Alertas pendentes:** ${context.alertasPendentes.length}`;
+      response += `\nâš ï¸ **Alertas pendentes:** ${context.alertasPendentes.length}`;
     }
 
     return response;
   }
 
   private async handleViewManagements(userId: string, message: string, context: any): Promise<string> {
-    const manejos = await bovinextSupabaseService.getManejosByUser(userId, {});
+    const manejos = await whilabSupabaseService.getManejosByUser(userId, {});
     const ultimosManejos = manejos.slice(0, 5);
 
-    let response = `💉 **Últimos Manejos:**\n\n`;
+    let response = `ðŸ’‰ **Ãšltimos Manejos:**\n\n`;
     
     if (ultimosManejos.length === 0) {
       response += `Nenhum manejo registrado ainda.`;
@@ -377,16 +377,16 @@ export class BovinextOptimizedAIService {
   }
 
   private async handleViewSales(userId: string, message: string, context: any): Promise<string> {
-    const vendas = await bovinextSupabaseService.getVendasByUser(userId, {});
+    const vendas = await whilabSupabaseService.getVendasByUser(userId, {});
     const ultimasVendas = vendas.slice(0, 5);
     const valorTotal = vendas.reduce((sum, v) => sum + v.valor_total, 0);
 
-    let response = `💰 **Suas Vendas:**\n\n`;
-    response += `• Total de vendas: ${vendas.length}\n`;
-    response += `• Valor total: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n`;
+    let response = `ðŸ’° **Suas Vendas:**\n\n`;
+    response += `â€¢ Total de vendas: ${vendas.length}\n`;
+    response += `â€¢ Valor total: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n`;
 
     if (ultimasVendas.length > 0) {
-      response += `**Últimas vendas:**\n`;
+      response += `**Ãšltimas vendas:**\n`;
       ultimasVendas.forEach((venda, index) => {
         response += `${index + 1}. ${venda.comprador} - ${venda.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
       });
@@ -396,71 +396,71 @@ export class BovinextOptimizedAIService {
   }
 
   private async handleViewProduction(userId: string, message: string, context: any): Promise<string> {
-    const producoes = await bovinextSupabaseService.getProducaoByUser(userId, {});
+    const producoes = await whilabSupabaseService.getProducaoByUser(userId, {});
     const producaoLeite = producoes.filter(p => p.tipo === 'leite');
     const totalLeite = producaoLeite.reduce((sum, p) => sum + (p.valor || 0), 0);
 
-    let response = `📊 **Produção:**\n\n`;
+    let response = `ðŸ“Š **ProduÃ§Ã£o:**\n\n`;
     
     if (producaoLeite.length > 0) {
-      response += `• Total de leite: ${totalLeite} litros\n`;
-      response += `• Média diária: ${(totalLeite / 30).toFixed(1)} litros\n`;
+      response += `â€¢ Total de leite: ${totalLeite} litros\n`;
+      response += `â€¢ MÃ©dia diÃ¡ria: ${(totalLeite / 30).toFixed(1)} litros\n`;
     } else {
-      response += `Nenhuma produção registrada ainda.`;
+      response += `Nenhuma produÃ§Ã£o registrada ainda.`;
     }
 
     return response;
   }
 
   private async handleCreateAnimal(userId: string, message: string, context: any): Promise<string> {
-    return `🐄 Para cadastrar um novo animal, você pode:\n\n` +
-           `1. Usar o formulário no app\n` +
-           `2. Me informar os dados básicos:\n` +
-           `   • Brinco/Identificação\n` +
-           `   • Sexo (macho/fêmea)\n` +
-           `   • Data de nascimento\n` +
-           `   • Categoria (bezerro, novilho, vaca, etc.)\n\n` +
-           `Exemplo: "Cadastrar animal brinco 123, fêmea, nasceu em 15/01/2023, categoria bezerro"`;
+    return `ðŸ„ Para cadastrar um novo animal, vocÃª pode:\n\n` +
+           `1. Usar o formulÃ¡rio no app\n` +
+           `2. Me informar os dados bÃ¡sicos:\n` +
+           `   â€¢ Brinco/IdentificaÃ§Ã£o\n` +
+           `   â€¢ Sexo (macho/fÃªmea)\n` +
+           `   â€¢ Data de nascimento\n` +
+           `   â€¢ Categoria (bezerro, novilho, vaca, etc.)\n\n` +
+           `Exemplo: "Cadastrar animal brinco 123, fÃªmea, nasceu em 15/01/2023, categoria bezerro"`;
   }
 
   private async handleFinancialAnalysis(userId: string, message: string, context: any): Promise<string> {
-    const vendas = await bovinextSupabaseService.getVendasByUser(userId, {});
+    const vendas = await whilabSupabaseService.getVendasByUser(userId, {});
     const valorTotal = vendas.reduce((sum, v) => sum + v.valor_total, 0);
     const mediaVenda = vendas.length > 0 ? valorTotal / vendas.length : 0;
 
-    return `💹 **Análise Financeira:**\n\n` +
-           `• Receita total: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
-           `• Número de vendas: ${vendas.length}\n` +
-           `• Ticket médio: ${mediaVenda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n` +
-           `📈 **Recomendações:**\n` +
-           `• Monitore o peso dos animais para otimizar o preço de venda\n` +
-           `• Mantenha o calendário sanitário em dia\n` +
-           `• Considere a sazonalidade dos preços`;
+    return `ðŸ’¹ **AnÃ¡lise Financeira:**\n\n` +
+           `â€¢ Receita total: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+           `â€¢ NÃºmero de vendas: ${vendas.length}\n` +
+           `â€¢ Ticket mÃ©dio: ${mediaVenda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n` +
+           `ðŸ“ˆ **RecomendaÃ§Ãµes:**\n` +
+           `â€¢ Monitore o peso dos animais para otimizar o preÃ§o de venda\n` +
+           `â€¢ Mantenha o calendÃ¡rio sanitÃ¡rio em dia\n` +
+           `â€¢ Considere a sazonalidade dos preÃ§os`;
   }
 
   private async handleZootechnicalAnalysis(userId: string, message: string, context: any): Promise<string> {
     const { totalAnimais, resumoRebanho } = context;
     
-    return `🔬 **Análise Zootécnica:**\n\n` +
-           `• Rebanho total: ${totalAnimais} cabeças\n` +
-           `• Distribuição por categoria adequada\n` +
-           `• Taxa de lotação: Verificar pastagem\n\n` +
-           `📋 **Recomendações:**\n` +
-           `• Manter controle de peso mensal\n` +
-           `• Acompanhar produção leiteira\n` +
-           `• Verificar índices reprodutivos\n` +
-           `• Monitorar sanidade do rebanho`;
+    return `ðŸ”¬ **AnÃ¡lise ZootÃ©cnica:**\n\n` +
+           `â€¢ Rebanho total: ${totalAnimais} cabeÃ§as\n` +
+           `â€¢ DistribuiÃ§Ã£o por categoria adequada\n` +
+           `â€¢ Taxa de lotaÃ§Ã£o: Verificar pastagem\n\n` +
+           `ðŸ“‹ **RecomendaÃ§Ãµes:**\n` +
+           `â€¢ Manter controle de peso mensal\n` +
+           `â€¢ Acompanhar produÃ§Ã£o leiteira\n` +
+           `â€¢ Verificar Ã­ndices reprodutivos\n` +
+           `â€¢ Monitorar sanidade do rebanho`;
   }
 
   private async handleAlerts(userId: string, message: string, context: any): Promise<string> {
     const { alertasPendentes } = context;
     
     if (!alertasPendentes || alertasPendentes.length === 0) {
-      return `✅ **Parabéns!** Não há alertas pendentes no momento.\n\n` +
-             `Seu rebanho está em dia com os manejos!`;
+      return `âœ… **ParabÃ©ns!** NÃ£o hÃ¡ alertas pendentes no momento.\n\n` +
+             `Seu rebanho estÃ¡ em dia com os manejos!`;
     }
 
-    let response = `🚨 **Alertas Pendentes:**\n\n`;
+    let response = `ðŸš¨ **Alertas Pendentes:**\n\n`;
     alertasPendentes.forEach((alerta, index) => {
       response += `${index + 1}. **${alerta.titulo}**\n`;
       response += `   ${alerta.mensagem}\n\n`;
@@ -474,12 +474,12 @@ export class BovinextOptimizedAIService {
       // Construir prompt com contexto
       const systemPrompt = this.buildSystemPrompt(context);
       
-      // Buscar histórico da conversa
+      // Buscar histÃ³rico da conversa
       const history = this.conversationHistory.get(userId) || [];
       
       const messages = [
         { role: 'system' as const, content: systemPrompt },
-        ...history.slice(-10), // Últimas 10 mensagens
+        ...history.slice(-10), // Ãšltimas 10 mensagens
         { role: 'user' as const, content: message }
       ];
 
@@ -492,9 +492,9 @@ export class BovinextOptimizedAIService {
        temperature: AI_MODEL_CONFIG.temperature
      });
 
-      const response = completion.choices[0]?.message?.content || 'Desculpe, não consegui processar sua mensagem.';
+      const response = completion.choices[0]?.message?.content || 'Desculpe, nÃ£o consegui processar sua mensagem.';
       
-      // Salvar no histórico
+      // Salvar no histÃ³rico
       this.updateConversationHistory(userId, message, response);
       
       return response;
@@ -502,7 +502,7 @@ export class BovinextOptimizedAIService {
     } catch (error) {
      logger.error('Erro no chat geral:', error);
      if (error instanceof Error && error.message.includes('OPENAI_API_KEY')) {
-       return 'A funcionalidade de IA não está configurada no servidor. Defina OPENAI_API_KEY no arquivo .env do backend e reinicie o servidor.';
+       return 'A funcionalidade de IA nÃ£o estÃ¡ configurada no servidor. Defina OPENAI_API_KEY no arquivo .env do backend e reinicie o servidor.';
      }
      return 'Desculpe, ocorreu um erro. Como posso ajudar com seu rebanho?';
    }
@@ -511,7 +511,7 @@ export class BovinextOptimizedAIService {
   private buildSystemPrompt(context: any): string {
     return `${SYSTEM_PROMPT}
 
-CONTEXTO DO USUÁRIO:
+CONTEXTO DO USUÃRIO:
 - Total de animais: ${context.totalAnimais || 0}
 - Animais ativos: ${context.animaisAtivos || 0}
 - Alertas pendentes: ${context.alertasPendentes?.length || 0}`;
@@ -525,7 +525,7 @@ CONTEXTO DO USUÁRIO:
       { role: 'assistant', content: assistantResponse, timestamp: new Date() }
     );
 
-    // Manter apenas últimas 20 mensagens
+    // Manter apenas Ãºltimas 20 mensagens
     if (history.length > 20) {
       history.splice(0, history.length - 20);
     }
@@ -534,7 +534,7 @@ CONTEXTO DO USUÁRIO:
   }
 
   // =====================================================
-  // MÉTODOS AUXILIARES
+  // MÃ‰TODOS AUXILIARES
   // =====================================================
 
   async generateSmartAlerts(userId: string): Promise<any[]> {
@@ -543,14 +543,14 @@ CONTEXTO DO USUÁRIO:
       const alerts = [];
 
       // Verificar animais sem manejo recente
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, {});
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, {});
       const animaisSemManejo = await this.findAnimalsWithoutRecentManagement(userId, manejos);
 
       if (animaisSemManejo.length > 0) {
         alerts.push({
           tipo: 'sanitario',
           titulo: 'Animais sem manejo recente',
-          mensagem: `${animaisSemManejo.length} animais precisam de atenção sanitária`,
+          mensagem: `${animaisSemManejo.length} animais precisam de atenÃ§Ã£o sanitÃ¡ria`,
           prioridade: 'media'
         });
       }
@@ -563,22 +563,22 @@ CONTEXTO DO USUÁRIO:
   }
 
   private async findAnimalsWithoutRecentManagement(userId: string, manejos: IManejo[]): Promise<IAnimal[]> {
-    const contextData = await bovinextSupabaseService.getAnimaisByUser(userId, {});
+    const contextData = await whilabSupabaseService.getAnimaisByUser(userId, {});
     const animaisComManejo = new Set(manejos.map(m => m.animal_id));
     
     return contextData.filter(animal => !animaisComManejo.has(animal.id));
   }
 
   // =====================================================
-  // ANÁLISES ESPECIALIZADAS
+  // ANÃLISES ESPECIALIZADAS
   // =====================================================
 
   async analyzeHerdPerformance(userId: string): Promise<any> {
     try {
       const [animais, producoes, vendas] = await Promise.all([
-        bovinextSupabaseService.getAnimaisByUser(userId, {}),
-        bovinextSupabaseService.getProducaoByUser(userId, {}),
-        bovinextSupabaseService.getVendasByUser(userId, {})
+        whilabSupabaseService.getAnimaisByUser(userId, {}),
+        whilabSupabaseService.getProducaoByUser(userId, {}),
+        whilabSupabaseService.getVendasByUser(userId, {})
       ]);
 
       return {
@@ -597,7 +597,7 @@ CONTEXTO DO USUÁRIO:
         recomendacoes: this.generateRecommendations(animais, producoes, vendas)
       };
     } catch (error) {
-      logger.error('Erro na análise de desempenho:', error);
+      logger.error('Erro na anÃ¡lise de desempenho:', error);
       throw error;
     }
   }
@@ -612,22 +612,22 @@ CONTEXTO DO USUÁRIO:
     const recommendations = [];
 
     if (animais.length < 10) {
-      recommendations.push('Considere expandir o rebanho para otimizar a produção');
+      recommendations.push('Considere expandir o rebanho para otimizar a produÃ§Ã£o');
     }
 
     if (producoes.length === 0) {
-      recommendations.push('Inicie o controle de produção para monitorar desempenho');
+      recommendations.push('Inicie o controle de produÃ§Ã£o para monitorar desempenho');
     }
 
     if (vendas.length === 0) {
-      recommendations.push('Registre suas vendas para análise financeira');
+      recommendations.push('Registre suas vendas para anÃ¡lise financeira');
     }
 
     return recommendations;
   }
 
   // =====================================================
-  // LIMPEZA E MANUTENÇÃO
+  // LIMPEZA E MANUTENÃ‡ÃƒO
   // =====================================================
 
   clearCache(): void {
@@ -646,4 +646,5 @@ CONTEXTO DO USUÁRIO:
   }
 }
 
-export const bovinextOptimizedAIService = new BovinextOptimizedAIService();
+export const whilabOptimizedAIService = new WhiLabOptimizedAIService();
+

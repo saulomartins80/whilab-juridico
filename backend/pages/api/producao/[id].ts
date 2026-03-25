@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
-import { Producao } from '../../../src/types/bovinext.types';
+import { Producao } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'ID da produção é obrigatório' });
+    return res.status(400).json({ error: 'ID da produÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   try {
@@ -31,7 +31,7 @@ async function getProducao(id: string, res: NextApiResponse) {
   const producao = await supabaseService.getProducaoById(id);
   
   if (!producao) {
-    return res.status(404).json({ error: 'Produção não encontrada' });
+    return res.status(404).json({ error: 'ProduÃ§Ã£o nÃ£o encontrada' });
   }
 
   return res.status(200).json({
@@ -47,7 +47,7 @@ async function updateProducao(id: string, req: NextApiRequest, res: NextApiRespo
   return res.status(200).json({
     success: true,
     data: producaoAtualizada,
-    message: 'Produção atualizada com sucesso'
+    message: 'ProduÃ§Ã£o atualizada com sucesso'
   });
 }
 
@@ -56,6 +56,7 @@ async function deleteProducao(id: string, res: NextApiResponse) {
 
   return res.status(200).json({
     success: true,
-    message: 'Produção removida com sucesso'
+    message: 'ProduÃ§Ã£o removida com sucesso'
   });
 }
+

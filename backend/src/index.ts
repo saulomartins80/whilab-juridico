@@ -27,7 +27,7 @@ interface HealthCheckResponse {
   };
   scope?: {
     platformCore: number;
-    pecuariaDomain: number;
+    whilabDomain: number;
     legacyPagesApi: number;
   };
 }

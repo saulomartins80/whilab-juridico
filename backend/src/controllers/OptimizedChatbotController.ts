@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+﻿import { Request, Response } from 'express';
 import { OptimizedAIService } from '../services/OptimizedAIService';
 import { ChatHistoryService } from '../services/chatHistoryService';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,7 +8,7 @@ import { Transacao } from '../models/Transacao';
 import { Investimento } from '../models/Investimento';
 import { User } from '../models/User';
 import { contextManager } from '../services/ContextManager';
-import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
+import { whilabSupabaseService } from '../services/WhiLabSupabaseService';
 import { AI_BRAND, BRAND_TEXT } from '../config/aiPrompts';
 
 // ===== SISTEMA DE STREAMING PARA SSE =====
@@ -27,7 +27,7 @@ class StreamingController extends EventEmitter {
 
     this.activeStreams.set(streamId, res);
 
-    // Heartbeat para manter conexão viva
+    // Heartbeat para manter conexÃ£o viva
     const heartbeat = setInterval(() => {
       if (this.activeStreams.has(streamId)) {
         res.write('event: heartbeat\ndata: {}\n\n');
@@ -72,7 +72,7 @@ class StreamingController extends EventEmitter {
   }
 }
 
-// ===== SISTEMA DE AUTOMAÇÃO INTELIGENTE ADAPTADO PARA BOVINEXT =====
+// ===== SISTEMA DE AUTOMAÃ‡ÃƒO INTELIGENTE ADAPTADO PARA WHILAB =====
 class AutomationEngine {
   private actionHandlers = new Map<string, Function>();
 
@@ -88,7 +88,7 @@ class AutomationEngine {
     this.actionHandlers.set('create_investment', this.handleCreateInvestment.bind(this));
     this.actionHandlers.set('CREATE_INVESTMENT', this.handleCreateInvestment.bind(this));
     this.actionHandlers.set('ANALYZE_DATA', this.handleAnalyzeData.bind(this));
-    // Novas ações operacionais do BOVINEXT
+    // Novas aÃ§Ãµes operacionais do WHILAB
     this.actionHandlers.set('create_animal', this.handleCreateAnimal.bind(this));
     this.actionHandlers.set('CREATE_ANIMAL', this.handleCreateAnimal.bind(this));
     this.actionHandlers.set('create_manejo', this.handleCreateManejo.bind(this));
@@ -102,31 +102,31 @@ class AutomationEngine {
     message: string;
     data?: any;
   }> {
-    console.log(`[AutomationEngine] 🚀 Executando ação: ${intent}`);
-    console.log(`[AutomationEngine] 📊 Entidades recebidas:`, JSON.stringify(entities, null, 2));
-    console.log(`[AutomationEngine] 👤 UserId:`, userId);
+    console.log(`[AutomationEngine] ðŸš€ Executando aÃ§Ã£o: ${intent}`);
+    console.log(`[AutomationEngine] ðŸ“Š Entidades recebidas:`, JSON.stringify(entities, null, 2));
+    console.log(`[AutomationEngine] ðŸ‘¤ UserId:`, userId);
     
     const handler = this.actionHandlers.get(intent);
-    console.log(`[AutomationEngine] 🔍 Handler encontrado:`, !!handler);
+    console.log(`[AutomationEngine] ðŸ” Handler encontrado:`, !!handler);
     
     if (!handler) {
-      console.log(`[AutomationEngine] ❌ Handler não encontrado para intent: ${intent}`);
+      console.log(`[AutomationEngine] âŒ Handler nÃ£o encontrado para intent: ${intent}`);
       return {
         success: false,
-        message: 'Ação não reconhecida. Como posso ajudar com sua fazenda?'
+        message: 'AÃ§Ã£o nÃ£o reconhecida. Como posso ajudar com sua fazenda?'
       };
     }
 
     try {
-      console.log(`[AutomationEngine] ⚡ Chamando handler para: ${intent}`);
+      console.log(`[AutomationEngine] âš¡ Chamando handler para: ${intent}`);
       const result = await handler(entities, userId);
-      console.log(`[AutomationEngine] ✅ Resultado do handler:`, JSON.stringify(result, null, 2));
+      console.log(`[AutomationEngine] âœ… Resultado do handler:`, JSON.stringify(result, null, 2));
       return result;
     } catch (error: any) {
-      console.error(`[AutomationEngine] ❌ Error executing ${intent}:`, error);
+      console.error(`[AutomationEngine] âŒ Error executing ${intent}:`, error);
       return {
         success: false,
-        message: 'Ops! Tive um problema ao executar essa ação. Pode tentar novamente?'
+        message: 'Ops! Tive um problema ao executar essa aÃ§Ã£o. Pode tentar novamente?'
       };
     }
   }
@@ -138,7 +138,7 @@ class AutomationEngine {
     if (!valor) {
       return {
         success: false,
-        message: `Para registrar a transação da fazenda, preciso do valor. Qual foi o valor?`,
+        message: `Para registrar a transaÃ§Ã£o da fazenda, preciso do valor. Qual foi o valor?`,
         requiresInput: true,
         missingFields: ['valor']
       };
@@ -147,24 +147,24 @@ class AutomationEngine {
     if (!descricao) {
       return {
         success: false,
-        message: `Para registrar a transação, preciso saber o que foi comprado. O que você comprou?`,
+        message: `Para registrar a transaÃ§Ã£o, preciso saber o que foi comprado. O que vocÃª comprou?`,
         requiresInput: true,
         missingFields: ['descricao']
       };
     }
 
     try {
-      // Buscar usuário pelo firebaseUid - ADAPTADO PARA SUPABASE
+      // Buscar usuÃ¡rio pelo firebaseUid - ADAPTADO PARA SUPABASE
       const user = await User.findByFirebaseUid(userId);
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error('UsuÃ¡rio nÃ£o encontrado');
       }
 
-      // CRIAR TRANSAÇÃO REAL NO SUPABASE
+      // CRIAR TRANSAÃ‡ÃƒO REAL NO SUPABASE
       const transactionData = {
         user_id: user.id!, // Usar ID do Supabase
         valor: parseFloat(entities.valor),
-        descricao: entities.descricao || 'Transação da fazenda',
+        descricao: entities.descricao || 'TransaÃ§Ã£o da fazenda',
         tipo: entities.tipo || 'despesa',
         categoria: entities.categoria || 'Manejo',
         conta: entities.conta || 'Principal',
@@ -177,26 +177,26 @@ class AutomationEngine {
 
       return {
         success: true,
-        message: `✅ Transação de R$ ${entities.valor} criada com sucesso! Já está no histórico da fazenda.`,
+        message: `âœ… TransaÃ§Ã£o de R$ ${entities.valor} criada com sucesso! JÃ¡ estÃ¡ no histÃ³rico da fazenda.`,
         data: savedTransaction
       };
     } catch (error: any) {
       console.error('[AutomationEngine] Error saving transaction:', error);
       return {
         success: false,
-        message: 'Erro ao criar a transação. Tente novamente.',
+        message: 'Erro ao criar a transaÃ§Ã£o. Tente novamente.',
         error: error.message
       };
     }
   }
 
   private async handleCreateGoal(entities: any, userId: string): Promise<any> {
-    console.log('[AutomationEngine] 🎯 Processando criação de META');
-    console.log('[AutomationEngine] 📊 Entidades para meta:', JSON.stringify(entities, null, 2));
+    console.log('[AutomationEngine] ðŸŽ¯ Processando criaÃ§Ã£o de META');
+    console.log('[AutomationEngine] ðŸ“Š Entidades para meta:', JSON.stringify(entities, null, 2));
     
     const valor = entities.valor_total || entities.valor;
     if (!valor || valor <= 0) {
-      console.log('[AutomationEngine] ❌ Valor da meta não encontrado ou inválido');
+      console.log('[AutomationEngine] âŒ Valor da meta nÃ£o encontrado ou invÃ¡lido');
       return {
         success: false,
         requiresInput: true,
@@ -206,13 +206,13 @@ class AutomationEngine {
     }
 
     try {
-      // Buscar usuário no Supabase
+      // Buscar usuÃ¡rio no Supabase
       const user = await User.findByFirebaseUid(userId);
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error('UsuÃ¡rio nÃ£o encontrado');
       }
 
-      console.log('[AutomationEngine] 👤 Usuário encontrado:', user.id);
+      console.log('[AutomationEngine] ðŸ‘¤ UsuÃ¡rio encontrado:', user.id);
 
       const goalData = {
         user_id: user.id!, // Usar ID do Supabase
@@ -225,17 +225,17 @@ class AutomationEngine {
         prioridade: entities.prioridade || 'media'
       };
 
-      console.log('[AutomationEngine] 💾 Salvando meta no Supabase:', goalData);
+      console.log('[AutomationEngine] ðŸ’¾ Salvando meta no Supabase:', goalData);
       const savedGoal = await Meta.create(goalData);
-      console.log('[AutomationEngine] ✅ Meta salva com sucesso:', savedGoal.id);
+      console.log('[AutomationEngine] âœ… Meta salva com sucesso:', savedGoal.id);
 
       return {
         success: true,
-        message: `🎯 Meta de R$ ${valor.toFixed(2)} criada com sucesso! Já está no planejamento da fazenda.`,
+        message: `ðŸŽ¯ Meta de R$ ${valor.toFixed(2)} criada com sucesso! JÃ¡ estÃ¡ no planejamento da fazenda.`,
         data: savedGoal
       };
     } catch (error: any) {
-      console.error('[AutomationEngine] ❌ Erro ao salvar meta:', error);
+      console.error('[AutomationEngine] âŒ Erro ao salvar meta:', error);
       return {
         success: false,
         message: 'Erro ao criar a meta. Tente novamente.',
@@ -245,11 +245,11 @@ class AutomationEngine {
   }
 
   private async handleCreateInvestment(entities: any, userId: string): Promise<any> {
-    console.log('[AutomationEngine] 📈 Processando criação de INVESTIMENTO');
-    console.log('[AutomationEngine] 📊 Entidades para investimento:', JSON.stringify(entities, null, 2));
+    console.log('[AutomationEngine] ðŸ“ˆ Processando criaÃ§Ã£o de INVESTIMENTO');
+    console.log('[AutomationEngine] ðŸ“Š Entidades para investimento:', JSON.stringify(entities, null, 2));
     
     if (!entities.valor || entities.valor <= 0) {
-      console.log('[AutomationEngine] ❌ Valor do investimento não encontrado ou inválido');
+      console.log('[AutomationEngine] âŒ Valor do investimento nÃ£o encontrado ou invÃ¡lido');
       return {
         success: false,
         requiresInput: true,
@@ -259,13 +259,13 @@ class AutomationEngine {
     }
 
     try {
-      // Buscar usuário no Supabase
+      // Buscar usuÃ¡rio no Supabase
       const user = await User.findByFirebaseUid(userId);
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error('UsuÃ¡rio nÃ£o encontrado');
       }
 
-      console.log('[AutomationEngine] 👤 Usuário encontrado:', user.id);
+      console.log('[AutomationEngine] ðŸ‘¤ UsuÃ¡rio encontrado:', user.id);
 
       const investmentData = {
         user_id: user.id!,
@@ -276,17 +276,17 @@ class AutomationEngine {
         instituicao: entities.instituicao || entities.corretora || 'Fazenda'
       };
 
-      console.log('[AutomationEngine] 💾 Salvando investimento no Supabase:', investmentData);
+      console.log('[AutomationEngine] ðŸ’¾ Salvando investimento no Supabase:', investmentData);
       const savedInvestment = await Investimento.create(investmentData);
-      console.log('[AutomationEngine] ✅ Investimento salvo com sucesso:', savedInvestment.id);
+      console.log('[AutomationEngine] âœ… Investimento salvo com sucesso:', savedInvestment.id);
 
       return {
         success: true,
-        message: `📈 Investimento de R$ ${entities.valor.toFixed(2)} em ${entities.tipo} registrado com sucesso! Já está no patrimônio da fazenda.`,
+        message: `ðŸ“ˆ Investimento de R$ ${entities.valor.toFixed(2)} em ${entities.tipo} registrado com sucesso! JÃ¡ estÃ¡ no patrimÃ´nio da fazenda.`,
         data: savedInvestment
       };
     } catch (error: any) {
-      console.error('[AutomationEngine] ❌ Erro ao salvar investimento:', error);
+      console.error('[AutomationEngine] âŒ Erro ao salvar investimento:', error);
       return {
         success: false,
         message: 'Erro ao registrar o investimento. Tente novamente.',
@@ -299,7 +299,7 @@ class AutomationEngine {
     try {
       const user = await User.findByFirebaseUid(userId);
       if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw new Error('UsuÃ¡rio nÃ£o encontrado');
       }
 
       const [transacoes, investimentos, metas] = await Promise.all([
@@ -308,19 +308,19 @@ class AutomationEngine {
         Meta.findByUserId(user.id!)
       ]);
 
-      // Análise específica para fazenda
+      // AnÃ¡lise especÃ­fica para fazenda
       const analysisData = {
         totalCustos: transacoes.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + t.valor, 0),
         totalReceitas: transacoes.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + t.valor, 0),
         saldo: 0,
-        categoriaMaisCusto: 'Alimentação',
-        tendencia: 'estável',
+        categoriaMaisCusto: 'AlimentaÃ§Ã£o',
+        tendencia: 'estÃ¡vel',
         investimentoTotal: investimentos.reduce((sum, inv) => sum + inv.valor, 0),
         metasTotal: metas.reduce((sum, meta) => sum + meta.valor_total, 0),
         recomendacoes: [
-          'Continue monitorando os custos com ração',
+          'Continue monitorando os custos com raÃ§Ã£o',
           'Considere investir em melhoramento de pastagem',
-          'Sua fazenda está com boa performance!'
+          'Sua fazenda estÃ¡ com boa performance!'
         ]
       };
 
@@ -328,7 +328,7 @@ class AutomationEngine {
 
       return {
         success: true,
-        message: `📊 Análise da fazenda concluída!\n\n💰 Receitas: R$ ${analysisData.totalReceitas.toLocaleString()}\n💸 Custos: R$ ${analysisData.totalCustos.toLocaleString()}\n📈 Saldo: R$ ${analysisData.saldo.toLocaleString()}\n\n🎯 Investimentos: R$ ${analysisData.investimentoTotal.toLocaleString()}\n\n✨ Recomendações:\n${analysisData.recomendacoes.map(r => `• ${r}`).join('\n')}`,
+        message: `ðŸ“Š AnÃ¡lise da fazenda concluÃ­da!\n\nðŸ’° Receitas: R$ ${analysisData.totalReceitas.toLocaleString()}\nðŸ’¸ Custos: R$ ${analysisData.totalCustos.toLocaleString()}\nðŸ“ˆ Saldo: R$ ${analysisData.saldo.toLocaleString()}\n\nðŸŽ¯ Investimentos: R$ ${analysisData.investimentoTotal.toLocaleString()}\n\nâœ¨ RecomendaÃ§Ãµes:\n${analysisData.recomendacoes.map(r => `â€¢ ${r}`).join('\n')}`,
         data: analysisData
       };
     } catch (error: any) {
@@ -355,7 +355,7 @@ class AutomationEngine {
       }
 
       const user = await User.findByFirebaseUid(userId);
-      if (!user) throw new Error('Usuário não encontrado');
+      if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
       const animalPayload = {
         brinco: String(entities.brinco),
@@ -367,14 +367,14 @@ class AutomationEngine {
         pasto: entities.pasto
       } as any;
 
-      const created = await bovinextSupabaseService.createAnimal(user.id!, animalPayload);
+      const created = await whilabSupabaseService.createAnimal(user.id!, animalPayload);
       return {
         success: true,
-        message: `🐮 Animal ${animalPayload.brinco} cadastrado com sucesso!`,
+        message: `ðŸ® Animal ${animalPayload.brinco} cadastrado com sucesso!`,
         data: created
       };
     } catch (error: any) {
-      console.error('[AutomationEngine] ❌ Erro ao criar animal:', error);
+      console.error('[AutomationEngine] âŒ Erro ao criar animal:', error);
       return {
         success: false,
         message: 'Erro ao cadastrar animal. Tente novamente.',
@@ -397,7 +397,7 @@ class AutomationEngine {
       }
 
       const user = await User.findByFirebaseUid(userId);
-      if (!user) throw new Error('Usuário não encontrado');
+      if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
       const manejoPayload = {
         animal_id: String(entities.animal_id),
@@ -409,14 +409,14 @@ class AutomationEngine {
         custo: entities.custo ? Number(entities.custo) : undefined
       } as any;
 
-      const created = await bovinextSupabaseService.createManejo(user.id!, manejoPayload);
+      const created = await whilabSupabaseService.createManejo(user.id!, manejoPayload);
       return {
         success: true,
-        message: `🧪 Manejo (${manejoPayload.tipo_manejo}) registrado com sucesso!`,
+        message: `ðŸ§ª Manejo (${manejoPayload.tipo_manejo}) registrado com sucesso!`,
         data: created
       };
     } catch (error: any) {
-      console.error('[AutomationEngine] ❌ Erro ao registrar manejo:', error);
+      console.error('[AutomationEngine] âŒ Erro ao registrar manejo:', error);
       return {
         success: false,
         message: 'Erro ao registrar manejo. Tente novamente.',
@@ -439,7 +439,7 @@ class AutomationEngine {
       }
 
       const user = await User.findByFirebaseUid(userId);
-      if (!user) throw new Error('Usuário não encontrado');
+      if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
       const vendaPayload = {
         valor: Number(entities.valor),
@@ -449,14 +449,14 @@ class AutomationEngine {
       } as any;
       const animaisIds: string[] = Array.isArray(entities.animais_ids) ? entities.animais_ids : [];
 
-      const created = await bovinextSupabaseService.createVenda(user.id!, vendaPayload, animaisIds);
+      const created = await whilabSupabaseService.createVenda(user.id!, vendaPayload, animaisIds);
       return {
         success: true,
-        message: `💸 Venda registrada com sucesso (R$ ${vendaPayload.valor.toFixed(2)}).`,
+        message: `ðŸ’¸ Venda registrada com sucesso (R$ ${vendaPayload.valor.toFixed(2)}).`,
         data: created
       };
     } catch (error: any) {
-      console.error('[AutomationEngine] ❌ Erro ao registrar venda:', error);
+      console.error('[AutomationEngine] âŒ Erro ao registrar venda:', error);
       return {
         success: false,
         message: 'Erro ao registrar venda. Tente novamente.',
@@ -466,7 +466,7 @@ class AutomationEngine {
   }
 }
 
-// ===== CONTROLADOR PRINCIPAL OTIMIZADO ADAPTADO PARA BOVINEXT =====
+// ===== CONTROLADOR PRINCIPAL OTIMIZADO ADAPTADO PARA WHILAB =====
 export class OptimizedChatbotController {
   private static instance: OptimizedChatbotController;
   private aiService: OptimizedAIService;
@@ -489,7 +489,7 @@ export class OptimizedChatbotController {
     return OptimizedChatbotController.instance;
   }
 
-  // ===== MÉTODO PRINCIPAL OTIMIZADO =====
+  // ===== MÃ‰TODO PRINCIPAL OTIMIZADO =====
   async processMessage(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
     
@@ -499,16 +499,16 @@ export class OptimizedChatbotController {
       
       console.log(`[OptimizedChatbot] ${AI_BRAND.logTag} processing: "${message}" from user: ${userId}`);
       
-      // Validação rápida
+      // ValidaÃ§Ã£o rÃ¡pida
       if (!message?.trim()) {
         res.status(400).json({
           success: false,
-          message: 'Mensagem não pode estar vazia'
+          message: 'Mensagem nÃ£o pode estar vazia'
         });
         return;
       }
 
-      // Obter contexto do usuário (paralelo)
+      // Obter contexto do usuÃ¡rio (paralelo)
       const [userContext, conversationHistory] = await Promise.all([
         this.getUserContext(userId),
         this.getConversationHistory(chatId, userId)
@@ -521,12 +521,12 @@ export class OptimizedChatbotController {
         if (contextState) {
           console.log(`[OptimizedChatbot] Active context: ${contextState.currentAction} for ${chatId}`);
           
-          // Verificar se é uma confirmação (sim/não)
+          // Verificar se Ã© uma confirmaÃ§Ã£o (sim/nÃ£o)
           const isConfirmation = /^(sim|yes|confirmar|confirmo|ok|pode|vai)$/i.test(message.trim());
-          const isCancellation = /^(não|no|nao|cancelar|cancelo|para)$/i.test(message.trim());
+          const isCancellation = /^(nÃ£o|no|nao|cancelar|cancelo|para)$/i.test(message.trim());
           
           if (isConfirmation && contextState.awaitingConfirmation) {
-            console.log(`[OptimizedChatbot] 🎯 CONFIRMAÇÃO RECEBIDA - Executando ação: ${contextState.currentAction}`);
+            console.log(`[OptimizedChatbot] ðŸŽ¯ CONFIRMAÃ‡ÃƒO RECEBIDA - Executando aÃ§Ã£o: ${contextState.currentAction}`);
             
             const automationResult = await this.automationEngine.executeAction(
               contextState.currentAction,
@@ -549,10 +549,10 @@ export class OptimizedChatbotController {
               return;
             }
           } else if (isCancellation && contextState.awaitingConfirmation) {
-            console.log(`[OptimizedChatbot] ❌ AÇÃO CANCELADA pelo usuário`);
+            console.log(`[OptimizedChatbot] âŒ AÃ‡ÃƒO CANCELADA pelo usuÃ¡rio`);
             contextManager.clearConversationState(chatId);
             
-            const cancelMessage = 'Ação cancelada. Como posso ajudar com sua fazenda?';
+            const cancelMessage = 'AÃ§Ã£o cancelada. Como posso ajudar com sua fazenda?';
             this.saveMessageToHistory(chatId, userId, message, cancelMessage)
               .catch((error: any) => console.error('[OptimizedChatbot] Error saving to history:', error));
             
@@ -574,15 +574,15 @@ export class OptimizedChatbotController {
         userContext
       );
 
-      // Verificar se precisa executar automação
+      // Verificar se precisa executar automaÃ§Ã£o
       let automationResult = null;
       let needsConfirmation = false;
       
       if (aiResult.intent && aiResult.confidence && aiResult.confidence > 0.5) {
-        console.log(`[OptimizedChatbot] 🎯 Intent detectado: ${aiResult.intent} (confiança: ${aiResult.confidence})`);
+        console.log(`[OptimizedChatbot] ðŸŽ¯ Intent detectado: ${aiResult.intent} (confianÃ§a: ${aiResult.confidence})`);
         
-        // Executar automaticamente (sistema de confirmação desabilitado)
-        console.log(`[OptimizedChatbot] 🚀 EXECUTANDO AÇÃO AUTOMATICAMENTE: ${aiResult.intent}`);
+        // Executar automaticamente (sistema de confirmaÃ§Ã£o desabilitado)
+        console.log(`[OptimizedChatbot] ðŸš€ EXECUTANDO AÃ‡ÃƒO AUTOMATICAMENTE: ${aiResult.intent}`);
         
         automationResult = await this.automationEngine.executeAction(
           aiResult.intent,
@@ -590,7 +590,7 @@ export class OptimizedChatbotController {
           userId
         );
         
-        console.log(`[OptimizedChatbot] ✅ Resultado da automação:`, JSON.stringify(automationResult, null, 2));
+        console.log(`[OptimizedChatbot] âœ… Resultado da automaÃ§Ã£o:`, JSON.stringify(automationResult, null, 2));
         
         if (automationResult?.success && chatId) {
           contextManager.clearConversationState(chatId);
@@ -608,7 +608,7 @@ export class OptimizedChatbotController {
         finalResponse = automationResult.message;
       }
 
-      // Salvar no histórico
+      // Salvar no histÃ³rico
       this.saveMessageToHistory(chatId, userId, message, finalResponse)
         .catch((error: any) => console.error('[OptimizedChatbot] Error saving to history:', error));
 
@@ -643,7 +643,7 @@ export class OptimizedChatbotController {
       
       res.status(500).json({
         success: false,
-        message: 'Não consegui processar isso agora. Tente novamente em instantes ou reformule a pergunta.',
+        message: 'NÃ£o consegui processar isso agora. Tente novamente em instantes ou reformule a pergunta.',
         metadata: {
           responseTime: Date.now() - startTime,
           error: true
@@ -652,7 +652,7 @@ export class OptimizedChatbotController {
     }
   }
 
-  // ===== MÉTODOS DE UTILIDADE =====
+  // ===== MÃ‰TODOS DE UTILIDADE =====
   private async getUserContext(userId: string): Promise<any> {
     try {
       const cacheKey = `user_context_${userId}`;
@@ -662,7 +662,7 @@ export class OptimizedChatbotController {
         return cached.data;
       }
 
-      // Buscar dados reais do usuário - ADAPTADO PARA SUPABASE
+      // Buscar dados reais do usuÃ¡rio - ADAPTADO PARA SUPABASE
       const user = await User.findByFirebaseUid(userId);
       
       // Buscar dados da fazenda em paralelo
@@ -675,11 +675,11 @@ export class OptimizedChatbotController {
       if (user?.id) {
         try {
           const [animaisData, manejosData, vendasData, producaoData, metasData] = await Promise.all([
-            bovinextSupabaseService.getAnimaisByUser(user.id).catch(() => []),
-            bovinextSupabaseService.getManejosByUser(user.id).catch(() => []),
-            bovinextSupabaseService.getVendasByUser(user.id).catch(() => []),
-            bovinextSupabaseService.getProducaoByUser(user.id).catch(() => []),
-            bovinextSupabaseService.getMetasByUser(user.id).catch(() => [])
+            whilabSupabaseService.getAnimaisByUser(user.id).catch(() => []),
+            whilabSupabaseService.getManejosByUser(user.id).catch(() => []),
+            whilabSupabaseService.getVendasByUser(user.id).catch(() => []),
+            whilabSupabaseService.getProducaoByUser(user.id).catch(() => []),
+            whilabSupabaseService.getMetasByUser(user.id).catch(() => [])
           ]);
           animais = animaisData || [];
           manejos = manejosData || [];
@@ -716,20 +716,20 @@ export class OptimizedChatbotController {
         totalVendas,
         valorTotalVendas,
         vendasResumo: totalVendas > 0 ? `${totalVendas} vendas (R$ ${valorTotalVendas.toFixed(2)} total)` : 'Nenhuma venda registrada',
-        // Dados de produção
+        // Dados de produÃ§Ã£o
         totalProducao,
         producaoLeite,
-        producaoResumo: totalProducao > 0 ? `${totalProducao} registros de produção` : 'Nenhuma produção registrada',
+        producaoResumo: totalProducao > 0 ? `${totalProducao} registros de produÃ§Ã£o` : 'Nenhuma produÃ§Ã£o registrada',
         // Metas
         totalMetas: metas.length,
         metasResumo: metas.length > 0 ? `${metas.length} metas cadastradas` : 'Nenhuma meta cadastrada',
         // Contexto completo para IA
         dadosFazenda: {
-          animais: animais.slice(0, 10), // Últimos 10 animais
-          manejos: manejos.slice(0, 5),  // Últimos 5 manejos
-          vendas: vendas.slice(0, 5),    // Últimas 5 vendas
-          producao: producao.slice(0, 5), // Últimas 5 produções
-          metas: metas.slice(0, 5)       // Últimas 5 metas
+          animais: animais.slice(0, 10), // Ãšltimos 10 animais
+          manejos: manejos.slice(0, 5),  // Ãšltimos 5 manejos
+          vendas: vendas.slice(0, 5),    // Ãšltimas 5 vendas
+          producao: producao.slice(0, 5), // Ãšltimas 5 produÃ§Ãµes
+          metas: metas.slice(0, 5)       // Ãšltimas 5 metas
         },
         ultimaAtividade: new Date().toISOString()
       };
@@ -740,7 +740,7 @@ export class OptimizedChatbotController {
         timestamp: Date.now()
       });
 
-      console.log(`[OptimizedChatbot] 📊 Contexto carregado: ${totalAnimais} animais, ${totalManejos} manejos, ${totalVendas} vendas, ${totalProducao} produções`);
+      console.log(`[OptimizedChatbot] ðŸ“Š Contexto carregado: ${totalAnimais} animais, ${totalManejos} manejos, ${totalVendas} vendas, ${totalProducao} produÃ§Ãµes`);
 
       return userContext;
     } catch (error: any) {
@@ -793,7 +793,7 @@ export class OptimizedChatbotController {
     }
   }
 
-  // ===== MÉTODOS PARA COMPATIBILIDADE =====
+  // ===== MÃ‰TODOS PARA COMPATIBILIDADE =====
   async createSession(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.uid || 'anonymous';
@@ -802,13 +802,13 @@ export class OptimizedChatbotController {
       res.status(200).json({
         success: true,
         chatId: conversation.chatId,
-        message: 'Nova sessão criada com sucesso!'
+        message: 'Nova sessÃ£o criada com sucesso!'
       });
     } catch (error: any) {
       console.error('[OptimizedChatbot] Error creating session:', error);
       res.status(500).json({
         success: false,
-        message: 'Erro ao criar nova sessão'
+        message: 'Erro ao criar nova sessÃ£o'
       });
     }
   }
@@ -826,7 +826,7 @@ export class OptimizedChatbotController {
       console.error('[OptimizedChatbot] Error getting sessions:', error);
       res.status(500).json({
         success: false,
-        message: 'Erro ao buscar sessões',
+        message: 'Erro ao buscar sessÃµes',
         error: error.message
       });
     }
@@ -836,20 +836,20 @@ export class OptimizedChatbotController {
     try {
       const { chatId } = req.params as { chatId?: string };
       if (!chatId) {
-        res.status(400).json({ success: false, message: 'chatId é obrigatório' });
+        res.status(400).json({ success: false, message: 'chatId Ã© obrigatÃ³rio' });
         return;
       }
 
       const deleted = await this.chatHistoryService.deleteConversation(chatId);
       if (!deleted) {
-        res.status(404).json({ success: false, message: 'Sessão não encontrada' });
+        res.status(404).json({ success: false, message: 'SessÃ£o nÃ£o encontrada' });
         return;
       }
 
-      res.status(200).json({ success: true, message: 'Sessão deletada com sucesso', chatId });
+      res.status(200).json({ success: true, message: 'SessÃ£o deletada com sucesso', chatId });
     } catch (error: any) {
       console.error('[OptimizedChatbot] Error deleting session:', error);
-      res.status(500).json({ success: false, message: 'Erro ao deletar sessão' });
+      res.status(500).json({ success: false, message: 'Erro ao deletar sessÃ£o' });
     }
   }
 
@@ -859,12 +859,12 @@ export class OptimizedChatbotController {
       const result = await this.chatHistoryService.deleteAllUserConversations(userId);
       res.status(200).json({
         success: true,
-        message: 'Todas as sessões do usuário foram deletadas',
+        message: 'Todas as sessÃµes do usuÃ¡rio foram deletadas',
         deletedCount: result
       });
     } catch (error: any) {
       console.error('[OptimizedChatbot] Error deleting all sessions:', error);
-      res.status(500).json({ success: false, message: 'Erro ao deletar todas as sessões' });
+      res.status(500).json({ success: false, message: 'Erro ao deletar todas as sessÃµes' });
     }
   }
 
@@ -878,7 +878,7 @@ export class OptimizedChatbotController {
     } catch (error: any) {
       res.status(500).json({
         success: false,
-        message: 'Erro ao obter estatísticas'
+        message: 'Erro ao obter estatÃ­sticas'
       });
     }
   }
@@ -901,20 +901,20 @@ export class OptimizedChatbotController {
   }
 
   async streamResponse(req: Request, res: Response): Promise<void> {
-    console.log(`[StreamResponse] 🚀 INICIANDO ${AI_BRAND.logTag} STREAM RESPONSE`);
+    console.log(`[StreamResponse] ðŸš€ INICIANDO ${AI_BRAND.logTag} STREAM RESPONSE`);
     
     try {
       const { message, chatId } = req.method === 'GET' ? req.query : req.body;
       const userId = (req as any).user?.uid || 'anonymous';
 
-      console.log(`[StreamResponse] 📝 Message: "${message}"`);
-      console.log(`[StreamResponse] 👤 UserId: ${userId}`);
-      console.log(`[StreamResponse] 💬 ChatId: ${chatId}`);
+      console.log(`[StreamResponse] ðŸ“ Message: "${message}"`);
+      console.log(`[StreamResponse] ðŸ‘¤ UserId: ${userId}`);
+      console.log(`[StreamResponse] ðŸ’¬ ChatId: ${chatId}`);
 
       if (!message) {
         res.status(400).json({
           success: false,
-          message: 'Mensagem é obrigatória'
+          message: 'Mensagem Ã© obrigatÃ³ria'
         });
         return;
       }
@@ -929,7 +929,7 @@ export class OptimizedChatbotController {
 
       res.flushHeaders?.();
 
-      // Função para enviar dados via SSE
+      // FunÃ§Ã£o para enviar dados via SSE
       const sendSSE = (event: string, data: any) => {
         try {
           const eventData = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
@@ -945,7 +945,7 @@ export class OptimizedChatbotController {
         }
       };
 
-      // Enviar evento de conexão inicial
+      // Enviar evento de conexÃ£o inicial
       sendSSE('connected', { message: BRAND_TEXT.streamStartedMessage });
 
       const abortController = new AbortController();
@@ -962,7 +962,7 @@ export class OptimizedChatbotController {
       res.on('close', handleClose);
 
       try {
-        // Obter contexto e histórico reais
+        // Obter contexto e histÃ³rico reais
         const realChatId = (chatId as string) || this.generateChatId();
         const [userContext, conversationHistory] = await Promise.all([
           this.getUserContext(userId),
@@ -971,10 +971,10 @@ export class OptimizedChatbotController {
 
         const intentResult = this.aiService.analyzeIntent(message as string);
 
-        // Executar automação se necessário
+        // Executar automaÃ§Ã£o se necessÃ¡rio
         let automationResult = null;
         if (intentResult.intent && intentResult.confidence && intentResult.confidence > 0.5) {
-          console.log(`[OptimizedChatbot] 🚀 EXECUTANDO AÇÃO NO STREAMING: ${intentResult.intent} com confiança: ${intentResult.confidence}`);
+          console.log(`[OptimizedChatbot] ðŸš€ EXECUTANDO AÃ‡ÃƒO NO STREAMING: ${intentResult.intent} com confianÃ§a: ${intentResult.confidence}`);
 
           if (realChatId) {
             contextManager.updateConversationState(
@@ -1041,7 +1041,7 @@ export class OptimizedChatbotController {
           totalChunks
         });
 
-        // Salvar no histórico
+        // Salvar no histÃ³rico
         await this.saveMessageToHistory(realChatId, userId, message as string, finalText);
 
       } catch (error: any) {
@@ -1067,18 +1067,18 @@ export class OptimizedChatbotController {
     return `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Método para executar ações confirmadas pelo usuário
+  // MÃ©todo para executar aÃ§Ãµes confirmadas pelo usuÃ¡rio
   async executeConfirmedAction(req: Request, res: Response): Promise<void> {
     try {
       const { actionData, action } = req.body;
       const userId = (req as any).user?.uid;
 
       if (!userId || !actionData || action !== 'confirm') {
-        res.status(400).json({ success: false, message: 'Dados inválidos' });
+        res.status(400).json({ success: false, message: 'Dados invÃ¡lidos' });
         return;
       }
 
-      console.log(`[ACTION] Executando ação confirmada:`, { type: actionData.type, userId });
+      console.log(`[ACTION] Executando aÃ§Ã£o confirmada:`, { type: actionData.type, userId });
 
       let result = null;
 
@@ -1093,20 +1093,20 @@ export class OptimizedChatbotController {
           result = await this.createInvestment(actionData.entities, userId);
           break;
         default:
-          throw new Error(`Tipo de ação não suportado: ${actionData.type}`);
+          throw new Error(`Tipo de aÃ§Ã£o nÃ£o suportado: ${actionData.type}`);
       }
 
       res.json({
         success: true,
-        message: 'Ação executada com sucesso!',
+        message: 'AÃ§Ã£o executada com sucesso!',
         data: result
       });
 
     } catch (error: any) {
-      console.error('[ACTION] ❌ Erro ao executar ação:', error);
+      console.error('[ACTION] âŒ Erro ao executar aÃ§Ã£o:', error);
       res.status(500).json({
         success: false,
-        message: 'Erro ao executar ação',
+        message: 'Erro ao executar aÃ§Ã£o',
         error: error.message
       });
     }
@@ -1114,7 +1114,7 @@ export class OptimizedChatbotController {
 
   private async createGoal(entities: any, userId: string) {
     const user = await User.findByFirebaseUid(userId);
-    if (!user) throw new Error('Usuário não encontrado');
+    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
     const goalData = {
       user_id: user.id!,
@@ -1134,11 +1134,11 @@ export class OptimizedChatbotController {
 
   private async createTransaction(entities: any, userId: string) {
     const user = await User.findByFirebaseUid(userId);
-    if (!user) throw new Error('Usuário não encontrado');
+    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
     const transactionData = {
       user_id: user.id!,
-      descricao: entities.descricao || 'Transação da fazenda',
+      descricao: entities.descricao || 'TransaÃ§Ã£o da fazenda',
       valor: entities.valor || 0,
       data: entities.data || new Date().toISOString().split('T')[0],
       categoria: entities.categoria || 'Manejo',
@@ -1147,13 +1147,13 @@ export class OptimizedChatbotController {
     };
 
     const savedTransaction = await Transacao.create(transactionData);
-    console.log(`[DB] Transação salva no Supabase:`, savedTransaction.id);
+    console.log(`[DB] TransaÃ§Ã£o salva no Supabase:`, savedTransaction.id);
     return savedTransaction;
   }
 
   private async createInvestment(entities: any, userId: string) {
     const user = await User.findByFirebaseUid(userId);
-    if (!user) throw new Error('Usuário não encontrado');
+    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
 
     const investmentData = {
       user_id: user.id!,
@@ -1170,7 +1170,7 @@ export class OptimizedChatbotController {
   }
 }
 
-// Instância singleton
+// InstÃ¢ncia singleton
 const optimizedChatbotController = OptimizedChatbotController.getInstance();
 
 // Exports para compatibilidade com rotas existentes
@@ -1185,3 +1185,4 @@ export const executeConfirmedAction = optimizedChatbotController.executeConfirme
 export const deleteAllSessions = optimizedChatbotController.deleteAllSessions.bind(optimizedChatbotController);
 
 export default optimizedChatbotController;
+

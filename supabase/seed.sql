@@ -1,2 +1,3 @@
--- Seed placeholder for ForgeCore / BoviNext white-label base.
+﻿-- Seed placeholder for WhiLab white-label base.
 -- Intentionally empty for now.
+

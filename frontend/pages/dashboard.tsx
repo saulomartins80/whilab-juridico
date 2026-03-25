@@ -6,7 +6,7 @@ import { ArrowRight, Check, Shield, X, Brain, BarChart2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { dashboardBranding } from '../config/branding';
 import LoadingSpinner from '../components/LoadingSpinner';
-import BovinextDashboardContent from '../components/BovinextDashboardContent';
+import WhiLabDashboardContent from '../components/WhiLabDashboardContent';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -127,7 +127,7 @@ export default function DashboardPage() {
       </AnimatePresence>
 
       <div className="relative">
-        <BovinextDashboardContent />
+        <WhiLabDashboardContent />
       </div>
     </>
   );

@@ -18,7 +18,7 @@ export interface FileMetadata {
 }
 
 class StorageService {
-  // Firebase removido — serviço indisponível no BOVINEXT
+  // Firebase removido — serviço indisponível neste ambiente
   private storage: null = null;
 
   isAvailable(): boolean { return false; }

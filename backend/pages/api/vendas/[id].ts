@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
-import { Venda } from '../../../src/types/bovinext.types';
+import { Venda } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'ID da venda é obrigatório' });
+    return res.status(400).json({ error: 'ID da venda Ã© obrigatÃ³rio' });
   }
 
   try {
@@ -31,7 +31,7 @@ async function getVenda(id: string, res: NextApiResponse) {
   const venda = await supabaseService.getVendaById(id);
   
   if (!venda) {
-    return res.status(404).json({ error: 'Venda não encontrada' });
+    return res.status(404).json({ error: 'Venda nÃ£o encontrada' });
   }
 
   return res.status(200).json({
@@ -43,7 +43,7 @@ async function getVenda(id: string, res: NextApiResponse) {
 async function updateVenda(id: string, req: NextApiRequest, res: NextApiResponse) {
   const updateData: Partial<Venda> = req.body;
 
-  // Recalcular valores se necessário
+  // Recalcular valores se necessÃ¡rio
   if (updateData.pesoTotal || updateData.precoArroba || updateData.impostos) {
     const vendaAtual = await supabaseService.getVendaById(id);
     if (vendaAtual) {
@@ -77,3 +77,4 @@ async function deleteVenda(id: string, res: NextApiResponse) {
     message: 'Venda removida com sucesso'
   });
 }
+

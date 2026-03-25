@@ -83,6 +83,8 @@ const DEFAULT_SETTINGS: Settings = {
   farmName: ''
 };
 
+const SETTINGS_STORAGE_KEY = 'whilab_user_settings';
+
 const LANGUAGE_OPTIONS = [
   { value: 'pt-BR', label: 'Português (Brasil)' },
   { value: 'en-US', label: 'English (US)' },
@@ -140,7 +142,7 @@ export default function ConfiguracoesPage() {
   const loadInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const saved = typeof window !== 'undefined' ? localStorage.getItem('bovinext_user_settings') : null;
+      const saved = typeof window !== 'undefined' ? localStorage.getItem(SETTINGS_STORAGE_KEY) : null;
       if (saved) {
         const parsed = JSON.parse(saved) as Settings;
         const userSettings = { ...DEFAULT_SETTINGS, ...parsed };
@@ -179,7 +181,7 @@ export default function ConfiguracoesPage() {
     setIsSaving(true);
     try {
       if (typeof window !== 'undefined') {
-        localStorage.setItem('bovinext_user_settings', JSON.stringify(settings));
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
       }
       setOriginalSettings(settings);
       setHasUnsavedChanges(false);
@@ -274,9 +276,9 @@ export default function ConfiguracoesPage() {
             await updateProfile({ fazenda: newName });
             toast.success('Nome da fazenda atualizado');
             if (typeof window !== 'undefined') {
-              const saved = localStorage.getItem('bovinext_user_settings');
+              const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
               const parsed = saved ? JSON.parse(saved) : {};
-              localStorage.setItem('bovinext_user_settings', JSON.stringify({ ...parsed, farmName: newName }));
+              localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify({ ...parsed, farmName: newName }));
             }
           } catch (_e) {
             toast.error('Não foi possível salvar no servidor, mas salvamos localmente.');

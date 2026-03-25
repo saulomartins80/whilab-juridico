@@ -17,8 +17,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
-  // ✅ CORREÇÃO: Removido output: 'export' para permitir API routes e middleware
-  trailingSlash: true,
+  // Mantem o modo server padrao do Next para evitar o fluxo hibrido de export no build.
   
   // Environment variables para produção
   env: {

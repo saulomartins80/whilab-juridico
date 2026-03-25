@@ -1,7 +1,7 @@
-import winston from 'winston';
+﻿import winston from 'winston';
 import path from 'path';
 
-// Formatação personalizada
+// FormataÃ§Ã£o personalizada
 const customFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
@@ -20,14 +20,14 @@ const customFormat = winston.format.combine(
   })
 );
 
-// Configuração de logs baseada no ambiente
+// ConfiguraÃ§Ã£o de logs baseada no ambiente
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Configuração dos transports
+// ConfiguraÃ§Ã£o dos transports
 const transports: winston.transport[] = [];
 
-// Console - sempre ativo, mas diferente para produção
+// Console - sempre ativo, mas diferente para produÃ§Ã£o
 if (isDevelopment) {
   transports.push(
     new winston.transports.Console({
@@ -64,7 +64,7 @@ transports.push(
   })
 );
 
-// Arquivo geral - apenas em produção
+// Arquivo geral - apenas em produÃ§Ã£o
 if (isProduction) {
   transports.push(
     new winston.transports.File({
@@ -91,7 +91,7 @@ const logger = winston.createLogger({
   exitOnError: false,
 });
 
-// Funções de log convenientes
+// FunÃ§Ãµes de log convenientes
 export const logError = (message: string, error: Error | any, meta?: any): void => {
   logger.error(message, {
     error: error instanceof Error ? error.message : error,
@@ -121,7 +121,7 @@ export const logSubscriptionEvent = (event: string, data: any): void => {
   });
 };
 
-// Logs específicos para BOVINEXT
+// Logs especÃ­ficos para WHILAB
 export const logDatabaseOperation = (operation: string, table: string, meta?: any): void => {
   logger.info(`Database Operation: ${operation}`, {
     operation,

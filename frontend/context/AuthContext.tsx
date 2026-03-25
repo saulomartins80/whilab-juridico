@@ -1,4 +1,4 @@
-// context/AuthContext.tsx - BOVINEXT Mock Authentication
+// context/AuthContext.tsx - WhiLab Mock Authentication
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import type { SupabaseClient, User as SupabaseUser, Subscription, PostgrestError } from '@supabase/supabase-js';
@@ -8,7 +8,7 @@ import { supabase } from '../lib/supabaseClient';
 const isProd = process.env.NODE_ENV === 'production';
 const authApiBaseUrl = (process.env.NEXT_PUBLIC_API_URL || (isProd ? 'https://api.whilab.com.br' : 'http://localhost:4000')).replace(/\/$/, '');
 
-// BOVINEXT User Types
+// Tipos de usuário do frontend WhiLab
 export interface AuthUser {
   id: string;
   email: string;
@@ -72,7 +72,7 @@ interface UserProfileRow {
   updated_at?: string;
 }
 
-// Helper functions for BOVINEXT Supabase auth
+// Helper functions for auth Supabase do frontend WhiLab
 const normalizeUser = (supabaseUser: SupabaseUser | null, profile: UserProfileRow | null): AuthUser | null => {
   if (!supabaseUser) return null;
   

@@ -1,4 +1,4 @@
-// ===== TIPOS PARA SISTEMA DE CHAT BOVINEXT =====
+﻿// ===== TIPOS PARA SISTEMA DE CHAT WHILAB =====
 
 export interface ChatMessage {
   chatId: string;

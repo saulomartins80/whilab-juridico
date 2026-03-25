@@ -1,12 +1,12 @@
-const { Client } = require('pg');
+﻿const { Client } = require('pg');
 
-// Configuração do Supabase Database
-// Você pode encontrar essas credenciais em: Supabase Dashboard > Settings > Database
+// ConfiguraÃ§Ã£o do Supabase Database
+// VocÃª pode encontrar essas credenciais em: Supabase Dashboard > Settings > Database
 const SUPABASE_PROJECT_REF = 'jygspicbqnbriafmcufc';
 
-// Tentar diferentes métodos de conexão
+// Tentar diferentes mÃ©todos de conexÃ£o
 async function createTables() {
-  console.log('🚀 Criando tabelas no Supabase BOVINEXT...\n');
+  console.log('ðŸš€ Criando tabelas no Supabase WHILAB...\n');
 
   // SQL para criar as tabelas
   const createUsersTable = `
@@ -45,18 +45,18 @@ async function createTables() {
   `;
 
   // Tentar conectar usando a connection string do pooler
-  // A senha do banco está disponível no Dashboard > Settings > Database > Connection string
+  // A senha do banco estÃ¡ disponÃ­vel no Dashboard > Settings > Database > Connection string
   
-  // Usar variável de ambiente ou pedir ao usuário
+  // Usar variÃ¡vel de ambiente ou pedir ao usuÃ¡rio
   const dbPassword = process.env.SUPABASE_DB_PASSWORD || process.argv[2];
   
   if (!dbPassword) {
-    console.log('❌ Senha do banco de dados não fornecida.\n');
-    console.log('📋 Para obter a senha do banco:');
+    console.log('âŒ Senha do banco de dados nÃ£o fornecida.\n');
+    console.log('ðŸ“‹ Para obter a senha do banco:');
     console.log('   1. Acesse: https://supabase.com/dashboard/project/jygspicbqnbriafmcufc/settings/database');
     console.log('   2. Copie a senha do banco (Database password)');
     console.log('   3. Execute: node scripts/create-tables.js SUA_SENHA_AQUI\n');
-    console.log('Ou defina a variável: $env:SUPABASE_DB_PASSWORD = "230689Scm@saulo"');
+    console.log('Ou defina a variÃ¡vel: $env:SUPABASE_DB_PASSWORD = "230689Scm@saulo"');
     return;
   }
 
@@ -69,27 +69,27 @@ async function createTables() {
   });
 
   try {
-    console.log('📡 Conectando ao Supabase...');
+    console.log('ðŸ“¡ Conectando ao Supabase...');
     await client.connect();
-    console.log('✅ Conectado!\n');
+    console.log('âœ… Conectado!\n');
 
     // Criar tabela users
-    console.log('📦 Criando tabela users...');
+    console.log('ðŸ“¦ Criando tabela users...');
     await client.query(createUsersTable);
-    console.log('✅ Tabela users criada!\n');
+    console.log('âœ… Tabela users criada!\n');
 
     // Criar tabela chat_messages
-    console.log('📦 Criando tabela chat_messages...');
+    console.log('ðŸ“¦ Criando tabela chat_messages...');
     await client.query(createChatMessagesTable);
-    console.log('✅ Tabela chat_messages criada!\n');
+    console.log('âœ… Tabela chat_messages criada!\n');
 
-    // Criar índices
-    console.log('📦 Criando índices...');
+    // Criar Ã­ndices
+    console.log('ðŸ“¦ Criando Ã­ndices...');
     const indexCommands = createIndexes.split(';').filter(cmd => cmd.trim());
     for (const cmd of indexCommands) {
       await client.query(cmd);
     }
-    console.log('✅ Índices criados!\n');
+    console.log('âœ… Ãndices criados!\n');
 
     // Verificar tabelas
     const result = await client.query(`
@@ -99,20 +99,20 @@ async function createTables() {
       AND table_name IN ('users', 'chat_messages')
     `);
     
-    console.log('📋 Tabelas criadas:');
+    console.log('ðŸ“‹ Tabelas criadas:');
     result.rows.forEach(row => {
-      console.log(`   ✅ ${row.table_name}`);
+      console.log(`   âœ… ${row.table_name}`);
     });
 
-    console.log('\n🎉 Banco de dados configurado com sucesso!');
+    console.log('\nðŸŽ‰ Banco de dados configurado com sucesso!');
 
   } catch (err) {
-    console.error('❌ Erro:', err.message);
+    console.error('âŒ Erro:', err.message);
     
     if (err.message.includes('password authentication failed')) {
-      console.log('\n⚠️  Senha incorreta. Verifique a senha no Dashboard do Supabase.');
+      console.log('\nâš ï¸  Senha incorreta. Verifique a senha no Dashboard do Supabase.');
     } else if (err.message.includes('ENOTFOUND') || err.message.includes('getaddrinfo')) {
-      console.log('\n⚠️  Não foi possível conectar ao servidor. Verifique sua conexão de internet.');
+      console.log('\nâš ï¸  NÃ£o foi possÃ­vel conectar ao servidor. Verifique sua conexÃ£o de internet.');
     }
   } finally {
     await client.end();
@@ -120,3 +120,4 @@ async function createTables() {
 }
 
 createTables().catch(console.error);
+

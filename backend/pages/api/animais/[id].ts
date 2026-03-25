@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
-import { Animal } from '../../../src/types/bovinext.types';
+import { Animal } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'ID do animal é obrigatório' });
+    return res.status(400).json({ error: 'ID do animal Ã© obrigatÃ³rio' });
   }
 
   try {
@@ -31,7 +31,7 @@ async function getAnimal(id: string, res: NextApiResponse) {
   const animal = await supabaseService.getAnimalById(id);
   
   if (!animal) {
-    return res.status(404).json({ error: 'Animal não encontrado' });
+    return res.status(404).json({ error: 'Animal nÃ£o encontrado' });
   }
 
   return res.status(200).json({
@@ -60,3 +60,4 @@ async function deleteAnimal(id: string, res: NextApiResponse) {
     message: 'Animal removido com sucesso'
   });
 }
+

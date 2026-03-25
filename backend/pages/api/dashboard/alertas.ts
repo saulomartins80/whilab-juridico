@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
 import { resolveRequestUserId } from '../../../src/utils/requestContext';
-import { Alerta } from '../../../src/types/bovinext.types';
+import { Alerta } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function generateAlertas(req: NextApiRequest): Promise<Alerta[]> {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    throw new Error('user_id ou token de autenticação é obrigatório');
+    throw new Error('user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio');
   }
 
   const alertas: Alerta[] = [];
@@ -40,9 +40,10 @@ async function generateAlertas(req: NextApiRequest): Promise<Alerta[]> {
       descricao: alerta.mensagem,
       dataVencimento: alerta.data_alerta,
       status: alerta.lido ? 'LIDO' : 'ATIVO',
-      acoes: alerta.lido ? ['Marcar como não lido'] : ['Marcar como lido']
+      acoes: alerta.lido ? ['Marcar como nÃ£o lido'] : ['Marcar como lido']
     });
   }
 
   return alertas;
 }
+

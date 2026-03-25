@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
-import { Manejo } from '../../../src/types/bovinext.types';
+import { Manejo } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'ID do manejo é obrigatório' });
+    return res.status(400).json({ error: 'ID do manejo Ã© obrigatÃ³rio' });
   }
 
   try {
@@ -31,7 +31,7 @@ async function getManejo(id: string, res: NextApiResponse) {
   const manejo = await supabaseService.getManejoById(id);
   
   if (!manejo) {
-    return res.status(404).json({ error: 'Manejo não encontrado' });
+    return res.status(404).json({ error: 'Manejo nÃ£o encontrado' });
   }
 
   return res.status(200).json({
@@ -60,3 +60,4 @@ async function deleteManejo(id: string, res: NextApiResponse) {
     message: 'Manejo removido com sucesso'
   });
 }
+

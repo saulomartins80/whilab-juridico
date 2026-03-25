@@ -1,4 +1,4 @@
-// Tipos TypeScript para o sistema BOVINEXT - Frontend
+// Tipos TypeScript para o frontend WhiLab
 // Alinhado com a especificação completa do projeto
 
 export interface Animal {

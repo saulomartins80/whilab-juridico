@@ -1,12 +1,12 @@
-// Arquivo de tipos específicos para BOVINEXT conforme documento de especificação
-// BOVINEXT_PROJETO_COMPLETO.md - Interfaces oficiais
+﻿// Arquivo de tipos especÃ­ficos para WHILAB conforme documento de especificaÃ§Ã£o
+// WHILAB_PROJETO_COMPLETO.md - Interfaces oficiais
 
-// ===== ESTRUTURA DE DADOS BÁSICA =====
+// ===== ESTRUTURA DE DADOS BÃSICA =====
 
-// 1. REBANHO (substitui Transações)
+// 1. REBANHO (substitui TransaÃ§Ãµes)
 export interface Animal {
   id: string;
-  brinco: string;           // Identificação única
+  brinco: string;           // IdentificaÃ§Ã£o Ãºnica
   categoria: 'BEZERRO' | 'NOVILHO' | 'BOI' | 'BEZERRA' | 'NOVILHA' | 'VACA';
   peso: number;
   idade: number;            // meses
@@ -18,7 +18,7 @@ export interface Animal {
   pasto: string;
   dataEntrada: Date;
   valorCompra?: number;
-  custoAcumulado: number;   // Ração, vacinas, etc
+  custoAcumulado: number;   // RaÃ§Ã£o, vacinas, etc
   previsaoVenda?: Date;
   observacoes?: string;
 }
@@ -29,15 +29,15 @@ export interface Manejo {
   tipo: 'VACINACAO' | 'VERMIFUGACAO' | 'PESAGEM' | 'REPRODUCAO' | 'TRATAMENTO';
   animais: string[];        // IDs dos animais
   data: Date;
-  produto?: string;         // Vacina, remédio usado
+  produto?: string;         // Vacina, remÃ©dio usado
   dosagem?: string;
   custo: number;
   responsavel: string;
   observacoes?: string;
-  proximaAplicacao?: Date;  // Para vacinas/vermífugos
+  proximaAplicacao?: Date;  // Para vacinas/vermÃ­fugos
 }
 
-// 3. PRODUÇÃO (substitui Investimentos)
+// 3. PRODUÃ‡ÃƒO (substitui Investimentos)
 export interface Producao {
   id: string;
   tipo: 'NASCIMENTO' | 'DESMAME' | 'ENGORDA' | 'REPRODUCAO';
@@ -55,7 +55,7 @@ export interface Producao {
 export interface Venda {
   id: string;
   animais: string[];
-  comprador: string;        // Frigorífico, outro produtor
+  comprador: string;        // FrigorÃ­fico, outro produtor
   tipoVenda: 'FRIGORIFICO' | 'LEILAO' | 'DIRETO';
   pesoTotal: number;
   precoArroba: number;
@@ -73,7 +73,7 @@ export interface Venda {
 
 // ===== IA ESPECIALIZADA - FINN BOVINO =====
 
-// Conhecimento específico da IA
+// Conhecimento especÃ­fico da IA
 export interface BovinoAIKnowledge {
   zootecnia: {
     racas: string[];
@@ -133,9 +133,9 @@ export interface PredictiveAnalysis {
   recommendations: string[];
 }
 
-// ===== INTEGRAÇÕES =====
+// ===== INTEGRAÃ‡Ã•ES =====
 
-// Frigoríficos
+// FrigorÃ­ficos
 export interface FrigorificoIntegration {
   jbs: any;
   marfrig: any;
@@ -154,7 +154,7 @@ export interface MarketDataService {
   getRegionalPrices(): Promise<any[]>;
 }
 
-// Órgãos Oficiais
+// Ã“rgÃ£os Oficiais
 export interface OfficialIntegration {
   sisbov: any;
   incra: any;
@@ -185,7 +185,7 @@ export interface IntelligentAlert {
 }
 
 // Tema Visual
-export interface BOVINEXTTheme {
+export interface WHILABTheme {
   name: string;
   primary: string;
   secondary: string;
@@ -193,9 +193,9 @@ export interface BOVINEXTTheme {
   description: string;
 }
 
-// ===== CONFIGURAÇÕES =====
+// ===== CONFIGURAÃ‡Ã•ES =====
 
-// Configurações do Sistema
+// ConfiguraÃ§Ãµes do Sistema
 export interface SystemConfig {
   fazenda: {
     nome: string;
@@ -220,9 +220,9 @@ export interface SystemConfig {
   };
 }
 
-// ===== ESTATÍSTICAS E RELATÓRIOS =====
+// ===== ESTATÃSTICAS E RELATÃ“RIOS =====
 
-// Estatísticas do Dashboard
+// EstatÃ­sticas do Dashboard
 export interface DashboardStats {
   totalAnimais: number;
   receitaMensal: number;
@@ -231,7 +231,7 @@ export interface DashboardStats {
   alertasAtivos: number;
 }
 
-// Relatório de Produção
+// RelatÃ³rio de ProduÃ§Ã£o
 export interface ProductionReport {
   periodo: string;
   gmdMedio: number;
@@ -243,7 +243,7 @@ export interface ProductionReport {
 
 // ===== WHATSAPP BUSINESS =====
 
-// Status da Conexão WhatsApp
+// Status da ConexÃ£o WhatsApp
 export interface WhatsAppStatus {
   connected: boolean;
   number: string;
@@ -261,9 +261,9 @@ export interface ProcessedCommand {
   confidence: number;
 }
 
-// ===== SEGURANÇA E CONFORMIDADE =====
+// ===== SEGURANÃ‡A E CONFORMIDADE =====
 
-// Configurações de Segurança
+// ConfiguraÃ§Ãµes de SeguranÃ§a
 export interface SecurityConfig {
   twoFactor: boolean;
   biometricLogin: boolean;
@@ -285,3 +285,4 @@ export interface AuditLog {
 // ===== EXPORT =====
 
 // Export all interfaces - removed duplicate exports to fix conflicts
+

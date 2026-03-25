@@ -1,17 +1,17 @@
-# SUPABASE NOVO PROJETO - BOVINEXT
+# SUPABASE NOVO PROJETO - WHILAB
 
 Data: 2026-03-19
 Responsavel: Caio
 
 ## Decisao
 
-O BoviNext deve usar um projeto Supabase novo e exclusivo.
+O WhiLab deve usar um projeto Supabase novo e exclusivo.
 
 Nao vamos reaproveitar projeto antigo nem misturar credenciais com outro ativo.
 
 ## Objetivo Do Ambiente
 
-O ambiente Supabase existe para sustentar a versao white-label media do BoviNext com isolamento de marca, seguranca e previsibilidade de entrega.
+O ambiente Supabase existe para sustentar a versao white-label media do WhiLab com isolamento de marca, seguranca e previsibilidade de entrega.
 
 ## Contrato De Variaveis
 
@@ -79,7 +79,7 @@ Antes de entregar a base:
 
 ## Nota De Operacao
 
-O retorno comercial do BoviNext depende de o Supabase parecer parte do produto, nao um bloqueio silencioso.
+O retorno comercial do WhiLab depende de o Supabase parecer parte do produto, nao um bloqueio silencioso.
 
 Por isso, a documentacao precisa deixar muito claro:
 

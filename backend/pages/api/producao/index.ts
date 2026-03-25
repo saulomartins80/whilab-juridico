@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
 import { resolveRequestUserId } from '../../../src/utils/requestContext';
-import { Producao } from '../../../src/types/bovinext.types';
+import { Producao } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function getProducoes(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const { 
@@ -62,7 +62,7 @@ async function getProducoes(req: NextApiRequest, res: NextApiResponse) {
 async function createProducao(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const producaoData: Omit<Producao, 'id'> = req.body;
@@ -70,10 +70,10 @@ async function createProducao(req: NextApiRequest, res: NextApiResponse) {
   const animal = (producaoData as any).animal || (producaoData as any).animal_id;
   const data = (producaoData as any).data || (producaoData as any).data_producao;
 
-  // Validação básica
+  // ValidaÃ§Ã£o bÃ¡sica
   if (!tipo || !animal || !data) {
     return res.status(400).json({
-      error: 'Campos obrigatórios: tipo, animal, data (ou tipo_producao, animal_id, data_producao)'
+      error: 'Campos obrigatÃ³rios: tipo, animal, data (ou tipo_producao, animal_id, data_producao)'
     });
   }
 
@@ -85,6 +85,7 @@ async function createProducao(req: NextApiRequest, res: NextApiResponse) {
   return res.status(201).json({
     success: true,
     data: novaProducao,
-    message: 'Produção criada com sucesso'
+    message: 'ProduÃ§Ã£o criada com sucesso'
   });
 }
+

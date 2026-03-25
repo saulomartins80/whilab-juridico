@@ -660,27 +660,27 @@ html.dark .Toastify__toast--info {
     transform: translateY(-1px);
   }
 
-  .bovinext-shell {
+  .whilab-shell {
     @apply rounded-3xl border backdrop-blur-xl;
     background: var(--shell-card);
     border-color: var(--shell-border);
     box-shadow: var(--shell-shadow);
   }
 
-  .bovinext-shell-soft {
+  .whilab-shell-soft {
     @apply rounded-2xl border backdrop-blur-md;
     background: var(--shell-card);
     border-color: var(--shell-border);
   }
 
-  .bovinext-pill {
+  .whilab-pill {
     @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em];
     border-color: var(--shell-border);
     background: rgba(255, 255, 255, 0.62);
     color: var(--text-muted);
   }
 
-  html.dark .bovinext-pill {
+  html.dark .whilab-pill {
     background: rgba(6, 12, 22, 0.74);
     color: var(--text-muted-dark);
   }

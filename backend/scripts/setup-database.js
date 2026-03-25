@@ -1,4 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
+﻿const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -10,7 +10,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function setupDatabase() {
-  console.log('🚀 Iniciando configuração do banco de dados BOVINEXT...\n');
+  console.log('ðŸš€ Iniciando configuraÃ§Ã£o do banco de dados WHILAB...\n');
 
   // SQL para criar as tabelas essenciais
   const tables = [
@@ -54,8 +54,8 @@ async function setupDatabase() {
     }
   ];
 
-  // Testar conexão primeiro
-  console.log('📡 Testando conexão com Supabase...');
+  // Testar conexÃ£o primeiro
+  console.log('ðŸ“¡ Testando conexÃ£o com Supabase...');
   
   try {
     // Tentar listar tabelas existentes
@@ -65,11 +65,11 @@ async function setupDatabase() {
       .limit(1);
     
     if (listError && listError.code === '42P01') {
-      console.log('⚠️  Tabela users não existe. Criando...\n');
+      console.log('âš ï¸  Tabela users nÃ£o existe. Criando...\n');
     } else if (listError) {
-      console.log('⚠️  Erro ao verificar tabelas:', listError.message);
+      console.log('âš ï¸  Erro ao verificar tabelas:', listError.message);
     } else {
-      console.log('✅ Tabela users já existe!\n');
+      console.log('âœ… Tabela users jÃ¡ existe!\n');
     }
 
     // Verificar chat_messages
@@ -79,21 +79,21 @@ async function setupDatabase() {
       .limit(1);
     
     if (chatError && chatError.code === '42P01') {
-      console.log('⚠️  Tabela chat_messages não existe.\n');
+      console.log('âš ï¸  Tabela chat_messages nÃ£o existe.\n');
     } else if (!chatError) {
-      console.log('✅ Tabela chat_messages já existe!\n');
+      console.log('âœ… Tabela chat_messages jÃ¡ existe!\n');
     }
 
   } catch (err) {
-    console.log('Erro de conexão:', err.message);
+    console.log('Erro de conexÃ£o:', err.message);
   }
 
-  console.log('\n📋 Status das tabelas:');
+  console.log('\nðŸ“‹ Status das tabelas:');
   console.log('   Para criar as tabelas, execute o SQL em:');
     console.log(`   ${process.env.SUPABASE_SQL_EDITOR_URL || 'https://supabase.com/dashboard/project/<seu-projeto>/sql'}\n`);
   
-  // Testar se podemos inserir um usuário de teste
-  console.log('🧪 Tentando verificar estrutura da tabela users...');
+  // Testar se podemos inserir um usuÃ¡rio de teste
+  console.log('ðŸ§ª Tentando verificar estrutura da tabela users...');
   
   const { data: usersCheck, error: usersError } = await supabase
     .from('users')
@@ -101,10 +101,10 @@ async function setupDatabase() {
     .limit(0);
 
   if (usersError) {
-    console.log('❌ Tabela users precisa ser criada.');
-    console.log('   Código do erro:', usersError.code);
+    console.log('âŒ Tabela users precisa ser criada.');
+    console.log('   CÃ³digo do erro:', usersError.code);
     console.log('   Mensagem:', usersError.message);
-    console.log('\n📝 Execute o seguinte SQL no Supabase Dashboard:\n');
+    console.log('\nðŸ“ Execute o seguinte SQL no Supabase Dashboard:\n');
     console.log('------ COPIE ABAIXO ------\n');
     console.log(`
 CREATE TABLE IF NOT EXISTS users (
@@ -138,22 +138,23 @@ CREATE INDEX IF NOT EXISTS idx_chat_chat_id ON chat_messages(chat_id);
     `);
     console.log('\n------ FIM DO SQL ------\n');
   } else {
-    console.log('✅ Tabela users está acessível!');
+    console.log('âœ… Tabela users estÃ¡ acessÃ­vel!');
   }
 
-  // Verificar chat_messages também
+  // Verificar chat_messages tambÃ©m
   const { data: chatCheck, error: chatCheckError } = await supabase
     .from('chat_messages')
     .select('*')
     .limit(0);
 
   if (chatCheckError) {
-    console.log('❌ Tabela chat_messages precisa ser criada.');
+    console.log('âŒ Tabela chat_messages precisa ser criada.');
   } else {
-    console.log('✅ Tabela chat_messages está acessível!');
+    console.log('âœ… Tabela chat_messages estÃ¡ acessÃ­vel!');
   }
 
-  console.log('\n🏁 Verificação concluída.');
+  console.log('\nðŸ VerificaÃ§Ã£o concluÃ­da.');
 }
 
 setupDatabase().catch(console.error);
+

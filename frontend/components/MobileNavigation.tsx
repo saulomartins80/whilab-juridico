@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
+  ClipboardList,
   CreditCard,
   Download,
   DollarSign,
   Menu,
+  Package,
   Plus,
   Target,
   TrendingUp,
@@ -46,9 +48,59 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
   const isActive = (path: string) => router.pathname === path;
+  const isEncomendasRoute =
+    router.pathname === '/encomendas' || router.pathname.startsWith('/encomendas/');
 
   const getCurrentPageActions = (): PageAction[] => {
     switch (router.pathname) {
+      case '/encomendas':
+        return [
+          {
+            type: 'add',
+            icon: <Plus size={18} />,
+            label: 'Novo pedido',
+            action: () => {
+              onAddItem?.();
+              setIsActionMenuOpen(false);
+            },
+          },
+        ];
+      case '/encomendas/clientes':
+        return [
+          {
+            type: 'add',
+            icon: <Plus size={18} />,
+            label: 'Novo cliente',
+            action: () => {
+              onAddItem?.();
+              setIsActionMenuOpen(false);
+            },
+          },
+        ];
+      case '/encomendas/catalogo':
+        return [
+          {
+            type: 'add',
+            icon: <Plus size={18} />,
+            label: 'Novo produto',
+            action: () => {
+              onAddItem?.();
+              setIsActionMenuOpen(false);
+            },
+          },
+        ];
+      case '/encomendas/cobrancas':
+        return [
+          {
+            type: 'add',
+            icon: <Plus size={18} />,
+            label: 'Novo pedido',
+            action: () => {
+              router.push('/encomendas?action=new-order');
+              setIsActionMenuOpen(false);
+            },
+          },
+        ];
       case '/transacoes':
         return [
           {
@@ -154,30 +206,55 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
     setIsActionMenuOpen(false);
   }, [router.pathname]);
 
-  const navigationItems: NavigationItem[] = [
-    {
-      path: '/dashboard',
-      icon: <BarChart3 size={18} />,
-      label: 'Resumo',
-    },
-    {
-      path: '',
-      type: 'add-button',
-      icon: <Plus size={20} />,
-      label: '+',
-      action: handleCenterButtonClick,
-    },
-    {
-      path: '/investimentos',
-      icon: <DollarSign size={18} />,
-      label: 'Capital',
-    },
-    {
-      path: '/metas',
-      icon: <Target size={18} />,
-      label: 'Metas',
-    },
-  ];
+  const navigationItems: NavigationItem[] = isEncomendasRoute
+    ? [
+        {
+          path: '/encomendas',
+          icon: <ClipboardList size={18} />,
+          label: 'Pedidos',
+        },
+        {
+          path: '',
+          type: 'add-button',
+          icon: <Plus size={20} />,
+          label: '+',
+          action: handleCenterButtonClick,
+        },
+        {
+          path: '/encomendas/catalogo',
+          icon: <Package size={18} />,
+          label: 'Catalogo',
+        },
+        {
+          path: '/encomendas/cobrancas',
+          icon: <CreditCard size={18} />,
+          label: 'Cobrancas',
+        },
+      ]
+    : [
+        {
+          path: '/dashboard',
+          icon: <BarChart3 size={18} />,
+          label: 'Resumo',
+        },
+        {
+          path: '',
+          type: 'add-button',
+          icon: <Plus size={20} />,
+          label: '+',
+          action: handleCenterButtonClick,
+        },
+        {
+          path: '/investimentos',
+          icon: <DollarSign size={18} />,
+          label: 'Capital',
+        },
+        {
+          path: '/metas',
+          icon: <Target size={18} />,
+          label: 'Metas',
+        },
+      ];
 
   return (
     <>

@@ -1,6 +1,6 @@
-// =====================================================
-// BOVINEXT - TIPOS COMPLETOS PARA SUPABASE
-// Plataforma de Gestão Pecuária com IA Especializada
+﻿// =====================================================
+// WHILAB - TIPOS COMPLETOS PARA SUPABASE
+// Plataforma de GestÃ£o PecuÃ¡ria com IA Especializada
 // =====================================================
 
 import { Database } from './database.types';
@@ -11,7 +11,7 @@ export type TablesInsert<T extends keyof Database['public']['Tables']> = Databas
 export type TablesUpdate<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
 
 // =====================================================
-// 1. USUÁRIOS E FAZENDAS
+// 1. USUÃRIOS E FAZENDAS
 // =====================================================
 
 export interface IUser {
@@ -154,7 +154,7 @@ export interface IVendaAnimal {
 }
 
 // =====================================================
-// 5. PRODUÇÃO
+// 5. PRODUÃ‡ÃƒO
 // =====================================================
 
 export interface IProducao {
@@ -249,7 +249,7 @@ export interface IChatMessageCreate {
 }
 
 // =====================================================
-// 8. PREÇOS DE MERCADO
+// 8. PREÃ‡OS DE MERCADO
 // =====================================================
 
 export interface IPrecoMercado {
@@ -263,7 +263,7 @@ export interface IPrecoMercado {
 }
 
 // =====================================================
-// 9. ALERTAS E NOTIFICAÇÕES
+// 9. ALERTAS E NOTIFICAÃ‡Ã•ES
 // =====================================================
 
 export interface IAlerta {
@@ -288,7 +288,7 @@ export interface IAlertaCreate {
 }
 
 // =====================================================
-// TIPOS PARA RELATÓRIOS E DASHBOARDS
+// TIPOS PARA RELATÃ“RIOS E DASHBOARDS
 // =====================================================
 
 export interface IResumoRebanho {
@@ -343,7 +343,7 @@ export interface IComandoVoz {
 }
 
 // =====================================================
-// TIPOS PARA INTEGRAÇÃO WHATSAPP
+// TIPOS PARA INTEGRAÃ‡ÃƒO WHATSAPP
 // =====================================================
 
 export interface IWhatsAppMessage {
@@ -360,7 +360,7 @@ export interface IWhatsAppResponse {
 }
 
 // =====================================================
-// TIPOS PARA ANÁLISE ZOOTÉCNICA
+// TIPOS PARA ANÃLISE ZOOTÃ‰CNICA
 // =====================================================
 
 export interface IAnaliseZootecnica {
@@ -427,22 +427,22 @@ export enum PlanoSubscricao {
 }
 
 // =====================================================
-// CONHECIMENTO ESPECIALIZADO IA BOVINEXT
+// CONHECIMENTO ESPECIALIZADO IA WHILAB
 // =====================================================
 
-export const BOVINEXT_AI_KNOWLEDGE = {
+export const WHILAB_AI_KNOWLEDGE = {
   zootecnia: {
-    racas: ['Nelore', 'Angus', 'Brahman', 'Canchim', 'Senepol', 'Tabapuã', 'Gir', 'Guzerá'],
+    racas: ['Nelore', 'Angus', 'Brahman', 'Canchim', 'Senepol', 'TabapuÃ£', 'Gir', 'GuzerÃ¡'],
     categorias: ['Bezerro', 'Novilho', 'Boi', 'Bezerra', 'Novilha', 'Vaca'],
-    manejo: ['Vacinação', 'Vermifugação', 'Castração', 'Descorna', 'Pesagem'],
-    reproducao: ['Inseminação', 'Monta Natural', 'IATF', 'Diagnóstico Gestação'],
-    nutricao: ['Pasto', 'Ração', 'Sal Mineral', 'Suplementação', 'Silagem']
+    manejo: ['VacinaÃ§Ã£o', 'VermifugaÃ§Ã£o', 'CastraÃ§Ã£o', 'Descorna', 'Pesagem'],
+    reproducao: ['InseminaÃ§Ã£o', 'Monta Natural', 'IATF', 'DiagnÃ³stico GestaÃ§Ã£o'],
+    nutricao: ['Pasto', 'RaÃ§Ã£o', 'Sal Mineral', 'SuplementaÃ§Ã£o', 'Silagem']
   },
   mercado: {
-    precos_arroba: 'Preços atualizados CEPEA/B3',
+    precos_arroba: 'PreÃ§os atualizados CEPEA/B3',
     frigorificos: ['JBS', 'Marfrig', 'Minerva', 'BRF'],
-    indices: ['Boi Gordo CEPEA', 'Bezerro CEPEA', 'Reposição CEPEA'],
-    sazonalidade: 'Análise sazonal de preços e demanda'
+    indices: ['Boi Gordo CEPEA', 'Bezerro CEPEA', 'ReposiÃ§Ã£o CEPEA'],
+    sazonalidade: 'AnÃ¡lise sazonal de preÃ§os e demanda'
   },
   fiscal: {
     impostos: ['FUNRURAL', 'ICMS', 'PIS/COFINS'],
@@ -454,20 +454,21 @@ export const BOVINEXT_AI_KNOWLEDGE = {
 export const WHATSAPP_COMMANDS = {
   consultas: [
     'Bovino, quantos animais tenho?',
-    'Bovino, preço do boi hoje',
+    'Bovino, preÃ§o do boi hoje',
     'Bovino, meu rebanho',
-    'Bovino, vendas do mês'
+    'Bovino, vendas do mÃªs'
   ],
   acoes: [
     'Bovino, cadastrar animal',
-    'Bovino, agendar vacinação',
+    'Bovino, agendar vacinaÃ§Ã£o',
     'Bovino, registrar pesagem',
     'Bovino, criar venda'
   ],
   relatorios: [
-    'Bovino, relatório mensal',
+    'Bovino, relatÃ³rio mensal',
     'Bovino, GMD do lote',
-    'Bovino, análise financeira',
+    'Bovino, anÃ¡lise financeira',
     'Bovino, alertas pendentes'
   ]
 };
+

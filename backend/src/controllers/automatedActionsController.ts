@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+﻿import { Request, Response } from 'express';
 import { User } from '../models/User';
 import { Transacao } from '../models/Transacao';
 import { Investimento } from '../models/Investimento';
@@ -10,7 +10,7 @@ import { AI_BRAND, BRAND_TEXT } from '../config/aiPrompts';
 
 const aiService = new EnterpriseAIEngine();
 
-// Interfaces para tipos de payload - ADAPTADO PARA BOVINEXT
+// Interfaces para tipos de payload - ADAPTADO PARA WHILAB
 interface TransactionPayload {
   valor: number;
   descricao: string;
@@ -58,7 +58,7 @@ interface DetectedAction {
 // Cache para intents detectados
 const intentCache = new Map<string, DetectedAction>();
 
-// Função para detectar intenção do usuário (OTIMIZADA) - ADAPTADO PARA BOVINEXT
+// FunÃ§Ã£o para detectar intenÃ§Ã£o do usuÃ¡rio (OTIMIZADA) - ADAPTADO PARA WHILAB
 interface UserContext {
   name: string;
   subscriptionPlan: string;
@@ -68,28 +68,28 @@ interface UserContext {
 
 export async function detectUserIntent(message: string, userContext: UserContext, conversationHistory?: any[]): Promise<DetectedAction | null> {
   try {
-    // 1. ⚡ Verificar cache primeiro (0.1ms)
+    // 1. âš¡ Verificar cache primeiro (0.1ms)
     const cacheKey = `${message}_${userContext.name}_${userContext.subscriptionPlan}`;
     const cachedIntent = intentCache.get(cacheKey);
     if (cachedIntent) {
       return cachedIntent;
     }
 
-    // 2. 🆕 VERIFICAR CONTEXTO ATIVO DA CONVERSA (OTIMIZADO)
+    // 2. ðŸ†• VERIFICAR CONTEXTO ATIVO DA CONVERSA (OTIMIZADO)
     const chatId = conversationHistory?.[0]?.chatId;
     let contextIntent = null;
     
     if (chatId) {
-      // ⚡ OTIMIZAÇÃO: ContextManager lookup mais rápido
+      // âš¡ OTIMIZAÃ‡ÃƒO: ContextManager lookup mais rÃ¡pido
       const activeState = contextManager.getConversationState(chatId);
       if (activeState?.currentAction) {
         console.log(`[ContextManager] Active context found: ${activeState.currentAction} for ${chatId}`);
         
-        // ⚡ OTIMIZAÇÃO: Análise local mais rápida
+        // âš¡ OTIMIZAÃ‡ÃƒO: AnÃ¡lise local mais rÃ¡pida
         contextIntent = tryCompleteFromContext(message, activeState);
         if (contextIntent) {
           console.log(`[ContextManager] Completed action from context: ${contextIntent.type}`);
-          // ⚡ OTIMIZAÇÃO: Atualizar contexto assincronamente
+          // âš¡ OTIMIZAÃ‡ÃƒO: Atualizar contexto assincronamente
           setImmediate(() => {
             contextManager.updateConversationState(
               chatId,
@@ -104,10 +104,10 @@ export async function detectUserIntent(message: string, userContext: UserContext
       }
     }
 
-    // 3. ⚡ Detecção rápida por palavras-chave (0.2ms) - ADAPTADO PARA PECUÁRIA
+    // 3. âš¡ DetecÃ§Ã£o rÃ¡pida por palavras-chave (0.2ms) - ADAPTADO PARA PECUÃRIA
     const quickIntent = detectQuickIntent(message);
     if (quickIntent && quickIntent.confidence > 0.8) {
-      // 🆕 ATUALIZAR CONTEXTO se nova ação detectada (ASSÍNCRONO)
+      // ðŸ†• ATUALIZAR CONTEXTO se nova aÃ§Ã£o detectada (ASSÃNCRONO)
       if (chatId) {
         setImmediate(() => {
           contextManager.updateConversationState(
@@ -124,10 +124,10 @@ export async function detectUserIntent(message: string, userContext: UserContext
       return quickIntent;
     }
 
-    // 4. ⚡ Análise de contexto da conversa (0.3ms)
+    // 4. âš¡ AnÃ¡lise de contexto da conversa (0.3ms)
     const contextIntent2 = analyzeConversationContext(message, conversationHistory);
     if (contextIntent2 && contextIntent2.confidence > 0.7) {
-      // 🆕 ATUALIZAR CONTEXTO se ação detectada do contexto (ASSÍNCRONO)
+      // ðŸ†• ATUALIZAR CONTEXTO se aÃ§Ã£o detectada do contexto (ASSÃNCRONO)
       if (chatId) {
         setImmediate(() => {
           contextManager.updateConversationState(
@@ -144,10 +144,10 @@ export async function detectUserIntent(message: string, userContext: UserContext
       return contextIntent2;
     }
 
-    // 5. ⚡ Análise completa com IA (0.5ms)
+    // 5. âš¡ AnÃ¡lise completa com IA (0.5ms)
     const fullIntent = await detectFullIntent(message, userContext, conversationHistory);
     if (fullIntent) {
-      // 🆕 ATUALIZAR CONTEXTO se ação detectada pela IA (ASSÍNCRONO)
+      // ðŸ†• ATUALIZAR CONTEXTO se aÃ§Ã£o detectada pela IA (ASSÃNCRONO)
       if (chatId) {
         setImmediate(() => {
           contextManager.updateConversationState(
@@ -164,7 +164,7 @@ export async function detectUserIntent(message: string, userContext: UserContext
       return fullIntent;
     }
 
-    // 6. ⚡ Resposta padrão - ADAPTADO PARA BOVINEXT
+    // 6. âš¡ Resposta padrÃ£o - ADAPTADO PARA WHILAB
     const defaultIntent: DetectedAction = {
       type: 'UNKNOWN',
       payload: {},
@@ -177,18 +177,18 @@ export async function detectUserIntent(message: string, userContext: UserContext
     intentCache.set(cacheKey, defaultIntent);
     return defaultIntent;
   } catch (error) {
-    console.error('Erro ao detectar intenção:', error);
+    console.error('Erro ao detectar intenÃ§Ã£o:', error);
     return null;
   }
 }
 
-// ⚡ DETECÇÃO RÁPIDA POR PALAVRAS-CHAVE - ADAPTADO PARA PECUÁRIA
+// âš¡ DETECÃ‡ÃƒO RÃPIDA POR PALAVRAS-CHAVE - ADAPTADO PARA PECUÃRIA
 function detectQuickIntent(message: string): DetectedAction | null {
   const lowerMessage = message.toLowerCase();
 
-  // Detectar criação de transação (mantém lógica financeira para custos da fazenda)
-  if (lowerMessage.includes('criar transação') || lowerMessage.includes('nova transação') || 
-      lowerMessage.includes('registrar transação') || lowerMessage.includes('add transação') ||
+  // Detectar criaÃ§Ã£o de transaÃ§Ã£o (mantÃ©m lÃ³gica financeira para custos da fazenda)
+  if (lowerMessage.includes('criar transaÃ§Ã£o') || lowerMessage.includes('nova transaÃ§Ã£o') || 
+      lowerMessage.includes('registrar transaÃ§Ã£o') || lowerMessage.includes('add transaÃ§Ã£o') ||
       lowerMessage.includes('gastei') || lowerMessage.includes('recebi') || lowerMessage.includes('paguei') ||
       lowerMessage.includes('comprei') || lowerMessage.includes('custo') || lowerMessage.includes('despesa')) {
     
@@ -196,13 +196,13 @@ function detectQuickIntent(message: string): DetectedAction | null {
     const valorMatch = lowerMessage.match(/r?\$?\s*(\d+(?:[.,]\d+)?)/i);
     const valor = valorMatch ? parseFloat(valorMatch[1].replace(',', '.')) : null;
     
-    // Extrair descrição se mencionado - ADAPTADO PARA PECUÁRIA
+    // Extrair descriÃ§Ã£o se mencionado - ADAPTADO PARA PECUÃRIA
     let descricao = 'Despesa da fazenda';
-    if (lowerMessage.includes('ração') || lowerMessage.includes('racao')) descricao = 'Ração';
-    if (lowerMessage.includes('vacina') || lowerMessage.includes('vacinação')) descricao = 'Vacinação';
-    if (lowerMessage.includes('vermífugo') || lowerMessage.includes('vermifugo')) descricao = 'Vermífugo';
+    if (lowerMessage.includes('raÃ§Ã£o') || lowerMessage.includes('racao')) descricao = 'RaÃ§Ã£o';
+    if (lowerMessage.includes('vacina') || lowerMessage.includes('vacinaÃ§Ã£o')) descricao = 'VacinaÃ§Ã£o';
+    if (lowerMessage.includes('vermÃ­fugo') || lowerMessage.includes('vermifugo')) descricao = 'VermÃ­fugo';
     if (lowerMessage.includes('sal mineral')) descricao = 'Sal mineral';
-    if (lowerMessage.includes('veterinário') || lowerMessage.includes('veterinario')) descricao = 'Veterinário';
+    if (lowerMessage.includes('veterinÃ¡rio') || lowerMessage.includes('veterinario')) descricao = 'VeterinÃ¡rio';
     if (lowerMessage.includes('venda') || lowerMessage.includes('vendeu')) descricao = 'Venda de animais';
 
     return {
@@ -211,8 +211,8 @@ function detectQuickIntent(message: string): DetectedAction | null {
         valor: valor || 0,
         descricao: descricao,
         tipo: lowerMessage.includes('recebi') || lowerMessage.includes('venda') ? 'receita' : 'despesa',
-        categoria: lowerMessage.includes('ração') ? 'Alimentação' : 
-                  lowerMessage.includes('vacina') || lowerMessage.includes('veterinário') ? 'Saúde Animal' :
+        categoria: lowerMessage.includes('raÃ§Ã£o') ? 'AlimentaÃ§Ã£o' : 
+                  lowerMessage.includes('vacina') || lowerMessage.includes('veterinÃ¡rio') ? 'SaÃºde Animal' :
                   lowerMessage.includes('venda') ? 'Vendas' : 'Manejo',
         conta: 'Principal',
         data: new Date().toISOString().split('T')[0]
@@ -220,16 +220,16 @@ function detectQuickIntent(message: string): DetectedAction | null {
       confidence: valor ? 0.95 : 0.8,
       requiresConfirmation: !valor,
       successMessage: valor ? 
-        `✅ Transação de R$ ${valor.toFixed(2)} criada com sucesso!` : 
-        'Qual o valor da transação?',
-      errorMessage: 'Erro ao criar transação',
+        `âœ… TransaÃ§Ã£o de R$ ${valor.toFixed(2)} criada com sucesso!` : 
+        'Qual o valor da transaÃ§Ã£o?',
+      errorMessage: 'Erro ao criar transaÃ§Ã£o',
       response: valor ? 
-        `Perfeito! Transação de R$ ${valor.toFixed(2)} registrada.` : 
-        'Qual o valor da transação?'
+        `Perfeito! TransaÃ§Ã£o de R$ ${valor.toFixed(2)} registrada.` : 
+        'Qual o valor da transaÃ§Ã£o?'
     };
   }
 
-  // Detectar criação de meta - ADAPTADO PARA METAS PECUÁRIAS
+  // Detectar criaÃ§Ã£o de meta - ADAPTADO PARA METAS PECUÃRIAS
   if (lowerMessage.includes('criar meta') || lowerMessage.includes('nova meta') || 
       lowerMessage.includes('quero criar uma meta') || lowerMessage.includes('juntar dinheiro') ||
       lowerMessage.includes('economizar para') || lowerMessage.includes('meta de') ||
@@ -239,13 +239,13 @@ function detectQuickIntent(message: string): DetectedAction | null {
     const valorMatch = lowerMessage.match(/r?\$?\s*(\d+(?:[.,]\d+)?)/i);
     let valor = valorMatch ? parseFloat(valorMatch[1].replace(',', '.')) : null;
     
-    // Extrair meta se mencionado - ADAPTADO PARA PECUÁRIA
+    // Extrair meta se mencionado - ADAPTADO PARA PECUÃRIA
     let meta = 'Meta da fazenda';
-    if (lowerMessage.includes('trator') || lowerMessage.includes('máquina')) meta = 'Equipamento agrícola';
+    if (lowerMessage.includes('trator') || lowerMessage.includes('mÃ¡quina')) meta = 'Equipamento agrÃ­cola';
     if (lowerMessage.includes('pasto') || lowerMessage.includes('pastagem')) meta = 'Melhoria de pastagem';
-    if (lowerMessage.includes('curral') || lowerMessage.includes('instalação')) meta = 'Infraestrutura';
-    if (lowerMessage.includes('reprodutor') || lowerMessage.includes('touro')) meta = 'Melhoramento genético';
-    if (lowerMessage.includes('expansão') || lowerMessage.includes('crescimento')) meta = 'Expansão do rebanho';
+    if (lowerMessage.includes('curral') || lowerMessage.includes('instalaÃ§Ã£o')) meta = 'Infraestrutura';
+    if (lowerMessage.includes('reprodutor') || lowerMessage.includes('touro')) meta = 'Melhoramento genÃ©tico';
+    if (lowerMessage.includes('expansÃ£o') || lowerMessage.includes('crescimento')) meta = 'ExpansÃ£o do rebanho';
 
     return {
       type: 'CREATE_GOAL',
@@ -259,16 +259,16 @@ function detectQuickIntent(message: string): DetectedAction | null {
       confidence: valor ? 0.95 : 0.8,
       requiresConfirmation: !valor,
       successMessage: valor ? 
-        `🎯 Meta "${meta}" de R$ ${valor.toFixed(2)} criada com sucesso!` : 
-        'Qual valor você quer investir nessa meta?',
+        `ðŸŽ¯ Meta "${meta}" de R$ ${valor.toFixed(2)} criada com sucesso!` : 
+        'Qual valor vocÃª quer investir nessa meta?',
       errorMessage: 'Erro ao criar meta',
       response: valor ? 
         `Perfeito! Meta "${meta}" de R$ ${valor.toFixed(2)} criada.` : 
-        'Qual valor você quer investir nessa meta?'
+        'Qual valor vocÃª quer investir nessa meta?'
     };
   }
 
-  // Detectar criação de investimento - ADAPTADO PARA INVESTIMENTOS RURAIS
+  // Detectar criaÃ§Ã£o de investimento - ADAPTADO PARA INVESTIMENTOS RURAIS
   if (lowerMessage.includes('criar investimento') || lowerMessage.includes('novo investimento') || 
       lowerMessage.includes('quero investir') || lowerMessage.includes('aplicar dinheiro') ||
       lowerMessage.includes('investi') || lowerMessage.includes('investimento de') ||
@@ -278,12 +278,12 @@ function detectQuickIntent(message: string): DetectedAction | null {
     const valorMatch = lowerMessage.match(/r?\$?\s*(\d+(?:[.,]\d+)?)/i);
     const valor = valorMatch ? parseFloat(valorMatch[1].replace(',', '.')) : null;
     
-    // Extrair nome se mencionado - ADAPTADO PARA PECUÁRIA
+    // Extrair nome se mencionado - ADAPTADO PARA PECUÃRIA
     let nome = 'Investimento rural';
-    if (lowerMessage.includes('gado') || lowerMessage.includes('animal')) nome = 'Aquisição de gado';
-    if (lowerMessage.includes('terra') || lowerMessage.includes('hectare')) nome = 'Aquisição de terra';
+    if (lowerMessage.includes('gado') || lowerMessage.includes('animal')) nome = 'AquisiÃ§Ã£o de gado';
+    if (lowerMessage.includes('terra') || lowerMessage.includes('hectare')) nome = 'AquisiÃ§Ã£o de terra';
     if (lowerMessage.includes('trator') || lowerMessage.includes('equipamento')) nome = 'Equipamentos';
-    if (lowerMessage.includes('semente') || lowerMessage.includes('insumo')) nome = 'Insumos agrícolas';
+    if (lowerMessage.includes('semente') || lowerMessage.includes('insumo')) nome = 'Insumos agrÃ­colas';
     if (lowerMessage.includes('cerca') || lowerMessage.includes('infraestrutura')) nome = 'Infraestrutura';
 
     return {
@@ -292,7 +292,7 @@ function detectQuickIntent(message: string): DetectedAction | null {
         nome: nome,
         valor: valor || 0,
         tipo: lowerMessage.includes('gado') ? 'Rebanho' : 
-              lowerMessage.includes('terra') ? 'Imóvel Rural' : 
+              lowerMessage.includes('terra') ? 'ImÃ³vel Rural' : 
               lowerMessage.includes('trator') ? 'Equipamentos' : 
               lowerMessage.includes('insumo') ? 'Insumos' : 'Infraestrutura',
         data: new Date().toISOString().split('T')[0],
@@ -301,29 +301,29 @@ function detectQuickIntent(message: string): DetectedAction | null {
       confidence: valor ? 0.95 : 0.8,
       requiresConfirmation: !valor,
       successMessage: valor ? 
-        `📈 Investimento "${nome}" de R$ ${valor.toFixed(2)} criado com sucesso!` : 
-        'Qual valor você investiu?',
+        `ðŸ“ˆ Investimento "${nome}" de R$ ${valor.toFixed(2)} criado com sucesso!` : 
+        'Qual valor vocÃª investiu?',
       errorMessage: 'Erro ao criar investimento',
       response: valor ? 
         `Perfeito! Investimento "${nome}" de R$ ${valor.toFixed(2)} registrado.` : 
-        'Qual valor você investiu?'
+        'Qual valor vocÃª investiu?'
     };
   }
 
   return null;
 }
 
-// ⚡ ANÁLISE DE CONTEXTO DA CONVERSA
+// âš¡ ANÃLISE DE CONTEXTO DA CONVERSA
 function analyzeConversationContext(message: string, conversationHistory?: any[]): DetectedAction | null {
   if (!conversationHistory || conversationHistory.length === 0) return null;
   
   const lowerMessage = message.toLowerCase();
   const recentMessages = conversationHistory.slice(-3);
   
-  // Verificar se é continuação de uma transação
-  if (lowerMessage.includes('valor') || lowerMessage.includes('reais') || lowerMessage.includes('é uma despesa')) {
+  // Verificar se Ã© continuaÃ§Ã£o de uma transaÃ§Ã£o
+  if (lowerMessage.includes('valor') || lowerMessage.includes('reais') || lowerMessage.includes('Ã© uma despesa')) {
     const transactionContext = recentMessages.find((msg: any) => 
-      msg.content.toLowerCase().includes('transação') || 
+      msg.content.toLowerCase().includes('transaÃ§Ã£o') || 
       msg.content.toLowerCase().includes('gastei') || 
       msg.content.toLowerCase().includes('recebi')
     );
@@ -336,7 +336,7 @@ function analyzeConversationContext(message: string, conversationHistory?: any[]
         type: 'CREATE_TRANSACTION',
         payload: {
           valor: valor || 0,
-          descricao: 'Transação da fazenda',
+          descricao: 'TransaÃ§Ã£o da fazenda',
           tipo: lowerMessage.includes('despesa') ? 'despesa' : 'receita',
           categoria: 'Manejo',
           conta: 'Principal',
@@ -344,11 +344,11 @@ function analyzeConversationContext(message: string, conversationHistory?: any[]
         },
         confidence: valor ? 0.8 : 0.6,
         requiresConfirmation: !valor,
-        successMessage: 'Transação criada com sucesso!',
-        errorMessage: 'Erro ao criar transação',
+        successMessage: 'TransaÃ§Ã£o criada com sucesso!',
+        errorMessage: 'Erro ao criar transaÃ§Ã£o',
         response: valor ? 
-          `Perfeito! Transação de R$ ${valor.toFixed(2)} registrada. O que foi essa transação?` : 
-          'Qual o valor da transação?'
+          `Perfeito! TransaÃ§Ã£o de R$ ${valor.toFixed(2)} registrada. O que foi essa transaÃ§Ã£o?` : 
+          'Qual o valor da transaÃ§Ã£o?'
       };
     }
   }
@@ -356,7 +356,7 @@ function analyzeConversationContext(message: string, conversationHistory?: any[]
   return null;
 }
 
-// ⚡ ANÁLISE COMPLETA COM IA - ADAPTADO PARA BOVINEXT
+// âš¡ ANÃLISE COMPLETA COM IA - ADAPTADO PARA WHILAB
 async function detectFullIntent(message: string, userContext: UserContext, conversationHistory?: any[]): Promise<DetectedAction | null> {
   try {
     // Analisar contexto da conversa para entender melhor
@@ -364,31 +364,31 @@ async function detectFullIntent(message: string, userContext: UserContext, conve
     if (conversationHistory && conversationHistory.length > 0) {
       const recentMessages = conversationHistory.slice(-3);
       conversationContext = `\n\nContexto da conversa recente:\n${recentMessages.map((msg: any, index: number) => 
-        `${index + 1}. ${msg.sender === 'user' ? 'Usuário' : AI_BRAND.assistantName}: ${msg.content}`
+        `${index + 1}. ${msg.sender === 'user' ? 'UsuÃ¡rio' : AI_BRAND.assistantName}: ${msg.content}`
       ).join('\n')}`;
     }
 
-    const prompt = `Contexto do usuário pecuarista:
+    const prompt = `Contexto do usuÃ¡rio pecuarista:
 - Nome: ${userContext.name}
 - Plano: ${userContext.subscriptionPlan}
-- Transações: ${userContext.totalTransacoes}
+- TransaÃ§Ãµes: ${userContext.totalTransacoes}
 - Investimentos: ${userContext.totalInvestimentos}
 - Metas: ${userContext.totalMetas}${conversationContext}
-Mensagem do usuário: "${message}"
+Mensagem do usuÃ¡rio: "${message}"
 
-IMPORTANTE: Você é ${AI_BRAND.assistantName}, assistente especializado em pecuária. Analise se o usuário quer:
-- Registrar custos da fazenda (ração, vacinas, veterinário, etc.)
-- Criar metas para a fazenda (equipamentos, expansão, melhoramento)
+IMPORTANTE: VocÃª Ã© ${AI_BRAND.assistantName}, assistente especializado em pecuÃ¡ria. Analise se o usuÃ¡rio quer:
+- Registrar custos da fazenda (raÃ§Ã£o, vacinas, veterinÃ¡rio, etc.)
+- Criar metas para a fazenda (equipamentos, expansÃ£o, melhoramento)
 - Registrar investimentos rurais (gado, terra, equipamentos)
 - Analisar dados da propriedade
-- Gerar relatórios
+- Gerar relatÃ³rios
 
 Analise a mensagem e retorne um JSON com:
-- intent: tipo de ação (CREATE_TRANSACTION, CREATE_INVESTMENT, CREATE_GOAL, ANALYZE_DATA, GENERATE_REPORT, UNKNOWN)
-- entities: dados extraídos (valor, descrição, categoria, prazo, etc.)
-- confidence: confiança da detecção (0.0 a 1.0)
+- intent: tipo de aÃ§Ã£o (CREATE_TRANSACTION, CREATE_INVESTMENT, CREATE_GOAL, ANALYZE_DATA, GENERATE_REPORT, UNKNOWN)
+- entities: dados extraÃ­dos (valor, descriÃ§Ã£o, categoria, prazo, etc.)
+- confidence: confianÃ§a da detecÃ§Ã£o (0.0 a 1.0)
 - response: resposta natural como ${AI_BRAND.assistantName}
-- requiresConfirmation: se precisa confirmação
+- requiresConfirmation: se precisa confirmaÃ§Ã£o
 JSON:`;
 
     const actionResult = await aiService.processEnterpriseRequest('automated_user', message, { type: 'automation_detection' });
@@ -418,15 +418,15 @@ JSON:`;
       requiresConfirmation: requiresConfirmation,
       successMessage: '',
       errorMessage: '',
-      response: actionResult.response || 'Entendi sua solicitação. Como posso ajudar?'
+      response: actionResult.response || 'Entendi sua solicitaÃ§Ã£o. Como posso ajudar?'
     };
   } catch (error) {
-    console.error('Erro na análise com IA:', error);
+    console.error('Erro na anÃ¡lise com IA:', error);
     return null;
   }
 }
 
-// Função auxiliar para verificar se os dados necessários para a ação foram completos
+// FunÃ§Ã£o auxiliar para verificar se os dados necessÃ¡rios para a aÃ§Ã£o foram completos
 function hasCompleteData(action: DetectedAction): boolean {
   const payload = action.payload as any;
   switch (action.type) {
@@ -468,22 +468,22 @@ function isValidReportData(action: DetectedAction): action is DetectedAction & {
   return action.type === 'GENERATE_REPORT';
 }
 
-// ===== FUNÇÃO PARA COMPLETAR AÇÃO DO CONTEXTO =====
+// ===== FUNÃ‡ÃƒO PARA COMPLETAR AÃ‡ÃƒO DO CONTEXTO =====
 function tryCompleteFromContext(message: string, activeState: ConversationState): DetectedAction | null {
   const lowerMessage = message.toLowerCase();
   
-  // Se não há ação ativa, não pode completar
+  // Se nÃ£o hÃ¡ aÃ§Ã£o ativa, nÃ£o pode completar
   if (!activeState.currentAction) return null;
   
   // Tentar extrair entidades da mensagem atual
   const extractedEntities = extractEntitiesFromMessage(message, activeState.currentAction);
   
-  // Se extraiu algo útil, completar a ação
+  // Se extraiu algo Ãºtil, completar a aÃ§Ã£o
   if (Object.keys(extractedEntities).length > 0) {
     // Mesclar com entidades existentes
     const mergedEntities = { ...activeState.pendingEntities, ...extractedEntities };
     
-    // Verificar se ação está completa
+    // Verificar se aÃ§Ã£o estÃ¡ completa
     const isComplete = isActionComplete(activeState.currentAction, mergedEntities);
     
     return {
@@ -492,7 +492,7 @@ function tryCompleteFromContext(message: string, activeState: ConversationState)
       confidence: isComplete ? 0.95 : 0.8,
       requiresConfirmation: !isComplete,
       successMessage: generateSuccessMessage(activeState.currentAction, mergedEntities),
-      errorMessage: 'Erro ao completar ação',
+      errorMessage: 'Erro ao completar aÃ§Ã£o',
       response: generateContextResponse(activeState.currentAction, mergedEntities, isComplete)
     };
   }
@@ -504,32 +504,32 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
   const entities: any = {};
   const lowerMessage = message.toLowerCase();
 
-  // Padrões de data mais robustos
+  // PadrÃµes de data mais robustos
   const datePatterns = [
     /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/g,
     /(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/g,
-    /(hoje|amanhã|ontem)/gi,
-    /(próxim[ao]|próxim[ao]s?)\s+(semana|mês|ano)/gi,
-    /(janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/gi
+    /(hoje|amanhÃ£|ontem)/gi,
+    /(prÃ³xim[ao]|prÃ³xim[ao]s?)\s+(semana|mÃªs|ano)/gi,
+    /(janeiro|fevereiro|marÃ§o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/gi
   ];
 
-  // Padrões de valor mais robustos
+  // PadrÃµes de valor mais robustos
   const valorPatterns = [
     /r?\$?\s*(\d{1,3}(?:\.\d{3})*(?:,\d{2})?)/gi,
     /(\d+(?:[.,]\d+)?)\s*(?:reais?|mil|k)/gi,
-    /(\d+(?:[.,]\d+)?)\s*(?:milhões?|mi)/gi
+    /(\d+(?:[.,]\d+)?)\s*(?:milhÃµes?|mi)/gi
   ];
 
   switch (actionType) {
     case 'CREATE_GOAL':
-      // Extrair valor com padrões mais robustos
+      // Extrair valor com padrÃµes mais robustos
       for (const pattern of valorPatterns) {
         const match = pattern.exec(lowerMessage);
         if (match) {
           let valor = match[1].replace(/\./g, '').replace(',', '.');
           if (lowerMessage.includes('mil') || lowerMessage.includes('k')) {
             valor = (parseFloat(valor) * 1000).toString();
-          } else if (lowerMessage.includes('milhões') || lowerMessage.includes('mi')) {
+          } else if (lowerMessage.includes('milhÃµes') || lowerMessage.includes('mi')) {
             valor = (parseFloat(valor) * 1000000).toString();
           }
           entities.valor_total = parseFloat(valor);
@@ -537,14 +537,14 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
         }
       }
       
-      // Extrair metas com mais categorias - ADAPTADO PARA PECUÁRIA
+      // Extrair metas com mais categorias - ADAPTADO PARA PECUÃRIA
       const goalKeywords = {
-        'equipamento': ['trator', 'máquina', 'equipamento', 'implemento'],
-        'infraestrutura': ['curral', 'cerca', 'instalação', 'galpão', 'bebedouro'],
+        'equipamento': ['trator', 'mÃ¡quina', 'equipamento', 'implemento'],
+        'infraestrutura': ['curral', 'cerca', 'instalaÃ§Ã£o', 'galpÃ£o', 'bebedouro'],
         'pastagem': ['pasto', 'pastagem', 'capim', 'forragem'],
-        'genética': ['reprodutor', 'touro', 'matriz', 'melhoramento', 'genética'],
-        'expansão': ['expansão', 'crescimento', 'aumento', 'ampliar'],
-        'tecnologia': ['software', 'sistema', 'tecnologia', 'automação']
+        'genÃ©tica': ['reprodutor', 'touro', 'matriz', 'melhoramento', 'genÃ©tica'],
+        'expansÃ£o': ['expansÃ£o', 'crescimento', 'aumento', 'ampliar'],
+        'tecnologia': ['software', 'sistema', 'tecnologia', 'automaÃ§Ã£o']
       };
 
       for (const [category, keywords] of Object.entries(goalKeywords)) {
@@ -555,7 +555,7 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
         }
       }
 
-      // Extrair data de conclusão
+      // Extrair data de conclusÃ£o
       for (const pattern of datePatterns) {
         const match = pattern.exec(lowerMessage);
         if (match) {
@@ -566,7 +566,7 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
       break;
       
     case 'CREATE_INVESTMENT':
-      // Extrair valor com padrões mais robustos
+      // Extrair valor com padrÃµes mais robustos
       for (const pattern of valorPatterns) {
         const match = pattern.exec(lowerMessage);
         if (match) {
@@ -576,14 +576,14 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
         }
       }
       
-      // Tipos de investimento expandidos - ADAPTADO PARA PECUÁRIA
+      // Tipos de investimento expandidos - ADAPTADO PARA PECUÃRIA
       const investmentTypes = {
         'Rebanho': ['gado', 'animal', 'boi', 'vaca', 'bezerro', 'novilho'],
-        'Imóvel Rural': ['terra', 'hectare', 'propriedade', 'fazenda', 'sítio'],
-        'Equipamentos': ['trator', 'máquina', 'equipamento', 'implemento'],
-        'Infraestrutura': ['curral', 'cerca', 'galpão', 'instalação'],
-        'Insumos': ['ração', 'vacina', 'vermífugo', 'sal', 'semente'],
-        'Tecnologia': ['software', 'sistema', 'sensor', 'automação']
+        'ImÃ³vel Rural': ['terra', 'hectare', 'propriedade', 'fazenda', 'sÃ­tio'],
+        'Equipamentos': ['trator', 'mÃ¡quina', 'equipamento', 'implemento'],
+        'Infraestrutura': ['curral', 'cerca', 'galpÃ£o', 'instalaÃ§Ã£o'],
+        'Insumos': ['raÃ§Ã£o', 'vacina', 'vermÃ­fugo', 'sal', 'semente'],
+        'Tecnologia': ['software', 'sistema', 'sensor', 'automaÃ§Ã£o']
       };
 
       for (const [type, keywords] of Object.entries(investmentTypes)) {
@@ -614,15 +614,15 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
         }
       }
 
-      // Categorias de transação - ADAPTADO PARA PECUÁRIA
+      // Categorias de transaÃ§Ã£o - ADAPTADO PARA PECUÃRIA
       const categories = {
-        'Alimentação': ['ração', 'racao', 'sal', 'mineral', 'suplemento', 'milho', 'soja'],
-        'Saúde Animal': ['vacina', 'vacinação', 'vermífugo', 'medicamento', 'veterinário'],
-        'Manejo': ['manejo', 'castração', 'marcação', 'pesagem', 'separação'],
+        'AlimentaÃ§Ã£o': ['raÃ§Ã£o', 'racao', 'sal', 'mineral', 'suplemento', 'milho', 'soja'],
+        'SaÃºde Animal': ['vacina', 'vacinaÃ§Ã£o', 'vermÃ­fugo', 'medicamento', 'veterinÃ¡rio'],
+        'Manejo': ['manejo', 'castraÃ§Ã£o', 'marcaÃ§Ã£o', 'pesagem', 'separaÃ§Ã£o'],
         'Infraestrutura': ['cerca', 'curral', 'bebedouro', 'cocho', 'porteira'],
-        'Equipamentos': ['trator', 'máquina', 'implemento', 'ferramenta'],
-        'Vendas': ['venda', 'vendeu', 'frigorífico', 'leilão', 'comercialização'],
-        'Combustível': ['diesel', 'gasolina', 'combustível', 'óleo']
+        'Equipamentos': ['trator', 'mÃ¡quina', 'implemento', 'ferramenta'],
+        'Vendas': ['venda', 'vendeu', 'frigorÃ­fico', 'leilÃ£o', 'comercializaÃ§Ã£o'],
+        'CombustÃ­vel': ['diesel', 'gasolina', 'combustÃ­vel', 'Ã³leo']
       };
 
       for (const [category, keywords] of Object.entries(categories)) {
@@ -632,7 +632,7 @@ function extractEntitiesFromMessage(message: string, actionType: string): any {
         }
       }
 
-      // Tipo de transação
+      // Tipo de transaÃ§Ã£o
       const expenseKeywords = ['gastei', 'paguei', 'comprei', 'despesa', 'custo'];
       const incomeKeywords = ['recebi', 'ganhei', 'venda', 'vendeu', 'renda'];
       
@@ -674,11 +674,11 @@ function getRequiredFieldsForAction(actionType: string): string[] {
 function generateSuccessMessage(actionType: string, entities: any): string {
   switch (actionType) {
     case 'CREATE_GOAL':
-      return `🎯 Meta "${entities.nome_da_meta}" de R$ ${entities.valor_total} criada com sucesso!`;
+      return `ðŸŽ¯ Meta "${entities.nome_da_meta}" de R$ ${entities.valor_total} criada com sucesso!`;
     case 'CREATE_INVESTMENT':
-      return `📈 Investimento de R$ ${entities.valor} criado com sucesso!`;
+      return `ðŸ“ˆ Investimento de R$ ${entities.valor} criado com sucesso!`;
     default:
-      return 'Ação executada com sucesso!';
+      return 'AÃ§Ã£o executada com sucesso!';
   }
 }
 
@@ -692,42 +692,42 @@ function generateContextResponse(actionType: string, entities: any, isComplete: 
   
   switch (actionType) {
     case 'CREATE_GOAL':
-      if (!entities.nome_da_meta) return 'Qual é o objetivo da sua meta? (ex: comprar trator, melhorar pasto)';
-      if (!entities.valor_total) return 'Qual o valor total que você quer investir?';
+      if (!entities.nome_da_meta) return 'Qual Ã© o objetivo da sua meta? (ex: comprar trator, melhorar pasto)';
+      if (!entities.valor_total) return 'Qual o valor total que vocÃª quer investir?';
       break;
     case 'CREATE_INVESTMENT':
       if (!entities.valor) return 'Qual o valor do investimento?';
-      if (!entities.nome) return 'Em que você investiu? (ex: gado, equipamento)';
+      if (!entities.nome) return 'Em que vocÃª investiu? (ex: gado, equipamento)';
       break;
   }
   
-  return 'Preciso de mais informações para completar essa ação.';
+  return 'Preciso de mais informaÃ§Ãµes para completar essa aÃ§Ã£o.';
 }
 
-// ⚡ Controller principal para ações automatizadas - ADAPTADO PARA SUPABASE
+// âš¡ Controller principal para aÃ§Ãµes automatizadas - ADAPTADO PARA SUPABASE
 export const processAutomatedAction = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user?.uid;
     const { message, chatId, context } = req.body;
 
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Usuário não autenticado' });
+      res.status(401).json({ success: false, message: 'UsuÃ¡rio nÃ£o autenticado' });
       return;
     }
 
     if (!message) {
-      res.status(400).json({ success: false, message: 'Mensagem é obrigatória' });
+      res.status(400).json({ success: false, message: 'Mensagem Ã© obrigatÃ³ria' });
       return;
     }
 
-    // Buscar dados do usuário - ADAPTADO PARA SUPABASE
+    // Buscar dados do usuÃ¡rio - ADAPTADO PARA SUPABASE
     const user = await User.findByFirebaseUid(userId);
     if (!user) {
-      res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+      res.status(404).json({ success: false, message: 'UsuÃ¡rio nÃ£o encontrado' });
       return;
     }
 
-    // Buscar dados financeiros do usuário - ADAPTADO PARA SUPABASE
+    // Buscar dados financeiros do usuÃ¡rio - ADAPTADO PARA SUPABASE
     const [transacoes, investimentos, metas] = await Promise.all([
       Transacao.findByUserId(user.id!),
       Investimento.findByUserId(user.id!),
@@ -747,7 +747,7 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
       totalMetas: metas.length
     };
 
-    // Detectar ação automatizada
+    // Detectar aÃ§Ã£o automatizada
     const detectedAction = await detectUserIntent(message, userContext);
 
     if (detectedAction && detectedAction.confidence && detectedAction.confidence > 0.1) {
@@ -773,7 +773,7 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
         return;
       }
 
-      // Executar ação automaticamente
+      // Executar aÃ§Ã£o automaticamente
       try {
         let result;
         switch (detectedAction.type) {
@@ -803,23 +803,23 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
             }
             break;
           default:
-            throw new Error('Ação não suportada');
+            throw new Error('AÃ§Ã£o nÃ£o suportada');
         }
 
         res.status(200).json({
           success: true,
           type: 'ACTION_EXECUTED',
-          text: detectedAction.successMessage || 'Ação executada com sucesso!',
+          text: detectedAction.successMessage || 'AÃ§Ã£o executada com sucesso!',
           data: result,
           messageId: uuidv4()
         });
         return;
       } catch (error) {
-        console.error('Erro ao executar ação:', error);
+        console.error('Erro ao executar aÃ§Ã£o:', error);
         res.status(200).json({
           success: true,
           type: 'TEXT_RESPONSE',
-          text: detectedAction.errorMessage || 'Desculpe, não consegui executar essa ação. Pode tentar novamente?',
+          text: detectedAction.errorMessage || 'Desculpe, nÃ£o consegui executar essa aÃ§Ã£o. Pode tentar novamente?',
           messageId: uuidv4()
         });
         return;
@@ -835,50 +835,50 @@ export const processAutomatedAction = async (req: Request, res: Response): Promi
       return;
     }
   } catch (error) {
-    console.error('Erro ao processar ação automatizada:', error);
+    console.error('Erro ao processar aÃ§Ã£o automatizada:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Erro ao processar solicitação' 
+      message: 'Erro ao processar solicitaÃ§Ã£o' 
     });
     return;
   }
 };
 
-// Funções auxiliares para executar ações - ADAPTADAS PARA SUPABASE
+// FunÃ§Ãµes auxiliares para executar aÃ§Ãµes - ADAPTADAS PARA SUPABASE
 export async function createTransaction(userId: string, payload: TransactionPayload): Promise<any> {
   try {
-    // Buscar usuário pelo firebaseUid - ADAPTADO PARA SUPABASE
+    // Buscar usuÃ¡rio pelo firebaseUid - ADAPTADO PARA SUPABASE
     const user = await User.findByFirebaseUid(userId);
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      throw new Error('UsuÃ¡rio nÃ£o encontrado');
     }
 
       const transactionData = {
         user_id: user.id!, // Usar ID do Supabase
         valor: payload.valor || 0,
-        descricao: payload.descricao || 'Transação da fazenda',
+        descricao: payload.descricao || 'TransaÃ§Ã£o da fazenda',
         tipo: (payload.tipo as 'receita' | 'despesa' | 'transferencia') || 'despesa',
         categoria: payload.categoria || 'Manejo',
         conta: payload.conta || 'Principal',
         data: payload.data || new Date().toISOString().split('T')[0]
       };
 
-    console.log('[CreateTransaction] Criando transação:', transactionData);
+    console.log('[CreateTransaction] Criando transaÃ§Ã£o:', transactionData);
     const result = await Transacao.create(transactionData);
-    console.log('[CreateTransaction] Transação criada rapidamente:', result.id);
+    console.log('[CreateTransaction] TransaÃ§Ã£o criada rapidamente:', result.id);
     return result;
   } catch (error) {
-    console.error('[CreateTransaction] Erro ao criar transação:', error);
+    console.error('[CreateTransaction] Erro ao criar transaÃ§Ã£o:', error);
     throw error;
   }
 }
 
 export async function createInvestment(userId: string, payload: InvestmentPayload): Promise<any> {
   try {
-    // Buscar usuário pelo firebaseUid - ADAPTADO PARA SUPABASE
+    // Buscar usuÃ¡rio pelo firebaseUid - ADAPTADO PARA SUPABASE
     const user = await User.findByFirebaseUid(userId);
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      throw new Error('UsuÃ¡rio nÃ£o encontrado');
     }
 
     const investmentData = {
@@ -902,10 +902,10 @@ export async function createInvestment(userId: string, payload: InvestmentPayloa
 
 export async function createGoal(userId: string, payload: GoalPayload): Promise<any> {
   try {
-    // Buscar usuário pelo firebaseUid - ADAPTADO PARA SUPABASE
+    // Buscar usuÃ¡rio pelo firebaseUid - ADAPTADO PARA SUPABASE
     const user = await User.findByFirebaseUid(userId);
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      throw new Error('UsuÃ¡rio nÃ£o encontrado');
     }
 
     const goalData = {
@@ -933,7 +933,7 @@ export async function analyzeData(userId: string, payload: AnalysisPayload): Pro
   try {
     const user = await User.findByFirebaseUid(userId);
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      throw new Error('UsuÃ¡rio nÃ£o encontrado');
     }
 
     const [transacoes, investimentos, metas] = await Promise.all([
@@ -980,3 +980,4 @@ export async function generateReport(userId: string, payload: ReportPayload): Pr
 // Additional exports for routes
 export const handleAutomatedActions = processAutomatedAction;
 export const executeAction = processAutomatedAction;
+

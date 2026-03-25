@@ -1,11 +1,11 @@
-# AUDITORIA WHITE-LABEL KIWIFY - BOVINEXT
+# AUDITORIA WHITE-LABEL KIWIFY - WHILAB
 
 Data: 2026-03-19
 Responsavel: Caio
 
 ## Objetivo
 
-Avaliar se o BoviNext pode ser posicionado na Kiwify como base SaaS white-label media.
+Avaliar se o WhiLab pode ser posicionado na Kiwify como base SaaS white-label media.
 
 ## Veredito Executivo
 
@@ -32,7 +32,7 @@ O ativo tem valor real e ja sustenta uma oferta comercial honesta, mas ainda pre
 
 O detalhamento pratico do escopo, da embalagem e da oferta esta em:
 
-- [docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_BOVINEXT_2026-03-19.md](docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_BOVINEXT_2026-03-19.md)
+- [docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md](docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md)
 - [docs/WHITE_LABEL_KIWIFY_PACKAGE.md](docs/WHITE_LABEL_KIWIFY_PACKAGE.md)
 
 ## Proximo Passo

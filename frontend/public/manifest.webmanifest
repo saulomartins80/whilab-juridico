@@ -1,21 +1,24 @@
 {
-  "name": "WHILAB - Base SaaS White-label Premium",
-  "short_name": "WHILAB",
-  "description": "Base SaaS white-label com dashboard, auth, IA assistida e estrutura pronta para rebrand.",
-  "start_url": "/",
+  "id": "/encomendas",
+  "name": "WHILAB Encomendas",
+  "short_name": "Encomendas",
+  "description": "Vertical de encomendas com pedidos, clientes, catalogo e cobrancas em um app instalavel.",
+  "start_url": "/encomendas?source=pwa",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "display_override": ["standalone", "browser"],
+  "background_color": "#020617",
+  "theme_color": "#020617",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "pt-BR",
-  "categories": ["business", "productivity", "software"],
+  "categories": ["business", "productivity", "shopping"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/favicon.ico",
-      "type": "image/x-icon",
-      "sizes": "32x32 48x48 64x64",
-      "purpose": "any"
+      "src": "/whilab-mark.png",
+      "type": "image/png",
+      "sizes": "1365x1365",
+      "purpose": "any maskable"
     },
     {
       "src": "/favicon-simple.svg",
@@ -26,25 +29,39 @@
   ],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Painel executivo da operacao",
-      "url": "/dashboard",
-      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+      "name": "Pedidos do dia",
+      "short_name": "Pedidos",
+      "description": "Abrir a visao principal do App de Encomendas",
+      "url": "/encomendas",
+      "icons": [{ "src": "/whilab-mark.png", "sizes": "1365x1365" }]
     },
     {
-      "name": "Nova Operacao",
-      "short_name": "Operacao",
-      "description": "Registrar nova movimentacao",
-      "url": "/transacoes?action=new",
-      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+      "name": "Novo cliente",
+      "short_name": "Cliente",
+      "description": "Cadastrar um novo cliente operacional",
+      "url": "/encomendas/clientes?action=new-customer",
+      "icons": [{ "src": "/whilab-mark.png", "sizes": "1365x1365" }]
     },
     {
-      "name": "Nova Meta",
-      "short_name": "Meta",
-      "description": "Criar nova meta",
-      "url": "/metas?action=new",
-      "icons": [{ "src": "/favicon-simple.svg", "sizes": "any" }]
+      "name": "Novo produto",
+      "short_name": "Produto",
+      "description": "Adicionar um item ao catalogo",
+      "url": "/encomendas/catalogo?action=new-product",
+      "icons": [{ "src": "/whilab-mark.png", "sizes": "1365x1365" }]
+    },
+    {
+      "name": "Novo pedido",
+      "short_name": "Pedido",
+      "description": "Criar um pedido com cobranca opcional",
+      "url": "/encomendas?action=new-order",
+      "icons": [{ "src": "/whilab-mark.png", "sizes": "1365x1365" }]
+    },
+    {
+      "name": "Cobrancas",
+      "short_name": "Cobrancas",
+      "description": "Abrir a carteira financeira do vertical",
+      "url": "/encomendas/cobrancas",
+      "icons": [{ "src": "/whilab-mark.png", "sizes": "1365x1365" }]
     }
   ]
 }

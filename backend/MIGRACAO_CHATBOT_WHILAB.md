@@ -1,53 +1,53 @@
-# Migração do Chatbot (Finnextho -> Bovinext) — DeepSeek + SSE + Supabase
+﻿# MigraÃ§Ã£o do Chatbot (Finnextho -> WhiLab) â€” DeepSeek + SSE + Supabase
 
 ## 1) Objetivo
 
-Portar a integração do chatbot do projeto **Finnextho** para o **Bovinext**, mantendo:
+Portar a integraÃ§Ã£o do chatbot do projeto **Finnextho** para o **WhiLab**, mantendo:
 
 - DeepSeek via SDK `openai` (OpenAI-compatible) com `baseURL = https://api.deepseek.com/v1`
 - Endpoint de **streaming** via **SSE** (`text/event-stream`)
-- Persistência/histórico via **Supabase** (tabela `chat_messages` + models/services do Bovinext)
+- PersistÃªncia/histÃ³rico via **Supabase** (tabela `chat_messages` + models/services do WhiLab)
 
-E preparar o caminho para o chatbot ser **100% autônomo** (executar ações no Supabase antes/durante a resposta).
+E preparar o caminho para o chatbot ser **100% autÃ´nomo** (executar aÃ§Ãµes no Supabase antes/durante a resposta).
 
 ---
 
-## 2) Arquitetura e arquivos (referência)
+## 2) Arquitetura e arquivos (referÃªncia)
 
 ### Finnextho (origem)
 
 - **Controller SSE**:
   - `finnextho/backend/src/controllers/OptimizedChatbotController.ts`
   - SSE events: `connected`, `progress`, `chunk`, `metadata`, `complete`, `error` + `websearch:*`
-- **Serviço de IA (DeepSeek)**:
+- **ServiÃ§o de IA (DeepSeek)**:
   - `finnextho/backend/src/services/OptimizedAIService.ts`
   - Streaming real via `stream: true` e `for await (...)`
 
-### Bovinext (destino)
+### WhiLab (destino)
 
 - **Rotas**:
-  - `bovinext/backend/src/routes/optimizedChatbotRoutes.ts`
-  - Mount: `bovinext/backend/src/routes/index.ts` em `/api/chatbot`
+  - `whilab/backend/src/routes/optimizedChatbotRoutes.ts`
+  - Mount: `whilab/backend/src/routes/index.ts` em `/api/chatbot`
 - **Controller**:
-  - `bovinext/backend/src/controllers/OptimizedChatbotController.ts`
+  - `whilab/backend/src/controllers/OptimizedChatbotController.ts`
 - **IA (DeepSeek)**:
-  - `bovinext/backend/src/services/OptimizedAIService.ts`
-- **Histórico/Sessões**:
-  - `bovinext/backend/src/services/chatHistoryService.ts`
-  - `bovinext/backend/src/models/ChatMessage.ts`
+  - `whilab/backend/src/services/OptimizedAIService.ts`
+- **HistÃ³rico/SessÃµes**:
+  - `whilab/backend/src/services/chatHistoryService.ts`
+  - `whilab/backend/src/models/ChatMessage.ts`
 
 ---
 
-## 3) Variáveis de ambiente
+## 3) VariÃ¡veis de ambiente
 
 ### DeepSeek
 
-- `DEEPSEEK_API_KEY` (obrigatória para chamar a API)
+- `DEEPSEEK_API_KEY` (obrigatÃ³ria para chamar a API)
 
-### Supabase (Bovinext)
+### Supabase (WhiLab)
 
 - `SUPABASE_URL`
-- `SUPABASE_ANON_KEY` (quando aplicável)
+- `SUPABASE_ANON_KEY` (quando aplicÃ¡vel)
 - `SUPABASE_SERVICE_ROLE_KEY` (admin/servidor)
 
 ### CORS / Frontend
@@ -57,14 +57,14 @@ E preparar o caminho para o chatbot ser **100% autônomo** (executar ações no 
 
 ---
 
-## 4) Endpoints do Chatbot (Bovinext)
+## 4) Endpoints do Chatbot (WhiLab)
 
 Base: `/api/chatbot`
 
 - `GET /health`
 - `POST /query`
   - body: `{ "message": string, "chatId"?: string }`
-  - retorna JSON (não streaming)
+  - retorna JSON (nÃ£o streaming)
 - `GET /stream`
   - query: `?message=...&chatId=...`
   - retorna SSE
@@ -87,7 +87,7 @@ Base: `/api/chatbot`
 - `X-Accel-Buffering: no`
 - CORS:
   - se houver `Origin`, responder `Access-Control-Allow-Origin: <origin>` e `Access-Control-Allow-Credentials: true`
-  - caso contrário, `Access-Control-Allow-Origin: *`
+  - caso contrÃ¡rio, `Access-Control-Allow-Origin: *`
 
 ### Formato de evento
 
@@ -125,7 +125,7 @@ Cada evento enviado como:
 - `baseURL`: `https://api.deepseek.com/v1`
 - `model`: `deepseek-chat`
 
-### Streaming (padrão Finnextho)
+### Streaming (padrÃ£o Finnextho)
 
 - `openai.chat.completions.create({ stream: true })`
 - Consumo via `for await (const chunk of stream)`
@@ -133,38 +133,38 @@ Cada evento enviado como:
 
 ---
 
-## 7) Supabase (diferenças importantes)
+## 7) Supabase (diferenÃ§as importantes)
 
-No Bovinext, ações (criar transação/meta/investimento etc.) devem ser executadas nos Models/Services que usam Supabase, por exemplo:
+No WhiLab, aÃ§Ãµes (criar transaÃ§Ã£o/meta/investimento etc.) devem ser executadas nos Models/Services que usam Supabase, por exemplo:
 
 - `src/models/User.ts` (`findByFirebaseUid`)
 - `src/models/Transacao.ts`, `src/models/Meta.ts`, `src/models/Investimento.ts`
 - `src/services/chatHistoryService.ts` (persiste conversa em `chat_messages`)
 
-Isso muda o fluxo em relação ao Finnextho, onde parte do contexto/dados vinha de models/serviços diferentes.
+Isso muda o fluxo em relaÃ§Ã£o ao Finnextho, onde parte do contexto/dados vinha de models/serviÃ§os diferentes.
 
 ---
 
-## 8) Status da migração
+## 8) Status da migraÃ§Ã£o
 
 - Streaming SSE no Finnextho: implementado e validado.
-- Bovinext:
-  - Antes: streaming “simulado” (quebrando texto final em pedaços).
-  - Agora (após esta migração): streaming real via DeepSeek (`stream: true`) + SSE.
+- WhiLab:
+  - Antes: streaming â€œsimuladoâ€ (quebrando texto final em pedaÃ§os).
+  - Agora (apÃ³s esta migraÃ§Ã£o): streaming real via DeepSeek (`stream: true`) + SSE.
 
 ---
 
-## 9) Próximo passo: tornar 100% autônomo
+## 9) PrÃ³ximo passo: tornar 100% autÃ´nomo
 
 Checklist sugerido:
 
-- Detectar intent localmente (regex/heurística) antes do streaming.
-- Se intent for ação e tiver campos suficientes:
+- Detectar intent localmente (regex/heurÃ­stica) antes do streaming.
+- Se intent for aÃ§Ã£o e tiver campos suficientes:
   - executar no Supabase (AutomationEngine)
-  - responder com mensagem da automação (sem chamar IA quando não precisar)
+  - responder com mensagem da automaÃ§Ã£o (sem chamar IA quando nÃ£o precisar)
 - Se faltar campos:
   - responder pedindo os campos e manter estado no `contextManager`.
-- Enviar `metadata` sempre que houver intent/confiança.
+- Enviar `metadata` sempre que houver intent/confianÃ§a.
 
 ---
 
@@ -172,6 +172,6 @@ Checklist sugerido:
 
 - Rodar o backend e chamar:
   - `POST /api/chatbot/stream` com `{ "message": "..." }`
-  - verificar se os eventos chegam em tempo real (não “bufferizado” no final)
+  - verificar se os eventos chegam em tempo real (nÃ£o â€œbufferizadoâ€ no final)
 
 abri no vs code e estou salvando 

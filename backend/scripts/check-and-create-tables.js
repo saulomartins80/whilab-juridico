@@ -1,4 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
+﻿const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -9,21 +9,21 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Tabelas necessárias para o BOVINEXT
+// Tabelas necessÃ¡rias para o WHILAB
 const requiredTables = [
   'users',
   'chat_messages',
   'animais',      // Rebanho
-  'manejos',      // Manejo sanitário
+  'manejos',      // Manejo sanitÃ¡rio
   'vendas',       // Vendas de gado
-  'producao',     // Produção
-  'transacoes',   // Transações financeiras
+  'producao',     // ProduÃ§Ã£o
+  'transacoes',   // TransaÃ§Ãµes financeiras
   'metas',        // Metas
   'investimentos' // Investimentos
 ];
 
 async function checkTables() {
-  console.log('🔍 Verificando tabelas no Supabase BOVINEXT...\n');
+  console.log('ðŸ” Verificando tabelas no Supabase WHILAB...\n');
   
   const results = { existing: [], missing: [] };
   
@@ -36,29 +36,29 @@ async function checkTables() {
       
       if (error && error.code === 'PGRST205') {
         results.missing.push(table);
-        console.log(`❌ ${table} - NÃO EXISTE`);
+        console.log(`âŒ ${table} - NÃƒO EXISTE`);
       } else if (error) {
-        console.log(`⚠️  ${table} - Erro: ${error.message}`);
+        console.log(`âš ï¸  ${table} - Erro: ${error.message}`);
         results.missing.push(table);
       } else {
         results.existing.push(table);
-        console.log(`✅ ${table} - OK`);
+        console.log(`âœ… ${table} - OK`);
       }
     } catch (err) {
-      console.log(`❌ ${table} - Erro: ${err.message}`);
+      console.log(`âŒ ${table} - Erro: ${err.message}`);
       results.missing.push(table);
     }
   }
   
-  console.log('\n📊 Resumo:');
-  console.log(`   ✅ Existentes: ${results.existing.length}`);
-  console.log(`   ❌ Faltando: ${results.missing.length}`);
+  console.log('\nðŸ“Š Resumo:');
+  console.log(`   âœ… Existentes: ${results.existing.length}`);
+  console.log(`   âŒ Faltando: ${results.missing.length}`);
   
   if (results.missing.length > 0) {
-    console.log('\n📋 Tabelas que precisam ser criadas:');
+    console.log('\nðŸ“‹ Tabelas que precisam ser criadas:');
     results.missing.forEach(t => console.log(`   - ${t}`));
     
-    console.log('\n📝 SQL para criar tabelas faltantes:\n');
+    console.log('\nðŸ“ SQL para criar tabelas faltantes:\n');
     console.log('------ COPIE E EXECUTE NO SUPABASE SQL EDITOR ------\n');
     
     // Gerar SQL para tabelas faltantes
@@ -198,3 +198,4 @@ CREATE TABLE IF NOT EXISTS investimentos (
 }
 
 checkTables().catch(console.error);
+

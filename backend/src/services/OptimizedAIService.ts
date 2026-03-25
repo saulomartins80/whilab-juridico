@@ -1,11 +1,11 @@
-import { OpenAI } from 'openai';
+﻿import { OpenAI } from 'openai';
 import { contextManager } from './ContextManager';
 import { User } from '../models/User';
 import { Transacao } from '../models/Transacao';
 import { Meta } from '../models/Meta';
 import { Investimento } from '../models/Investimento';
 import { EventEmitter } from 'events';
-import { bovinextSupabaseService } from './BovinextSupabaseService';
+import { whilabSupabaseService } from './WhiLabSupabaseService';
 import logger from '../utils/logger';
 import { CHATBOT_OPTIMIZATION_CONFIG, QUICK_RESPONSES } from '../config/chatbotOptimization';
 import {
@@ -23,7 +23,7 @@ interface ChatMessage {
   timestamp?: Date;
 }
 
-// ===== CONFIGURAÇÃO OTIMIZADA =====
+// ===== CONFIGURAÃ‡ÃƒO OTIMIZADA =====
 type AITarget = {
   client: OpenAI;
   provider: 'deepseek' | 'openai';
@@ -174,22 +174,22 @@ class IntelligentCache {
   }
 }
 
-// ===== SISTEMA DE DETECÇÃO DE INTENÇÕES RÁPIDO ADAPTADO PARA PECUÁRIA =====
+// ===== SISTEMA DE DETECÃ‡ÃƒO DE INTENÃ‡Ã•ES RÃPIDO ADAPTADO PARA PECUÃRIA =====
 class FastIntentDetector {
   private patterns = {
-    // CONSULTA DE DADOS EXISTENTES - ADAPTADO PARA PECUÁRIA
+    // CONSULTA DE DADOS EXISTENTES - ADAPTADO PARA PECUÃRIA
     view_animals: [
       /(?:ver|mostrar|consultar|visualizar).*(?:animal|gado|rebanho)/i,
       /(?:meu|meus).*(?:animal|gado|rebanho)/i,
-      /(?:quantos|quantas).*(?:animal|cabeça|gado)/i,
+      /(?:quantos|quantas).*(?:animal|cabeÃ§a|gado)/i,
       /consegue.*ver.*rebanho/i,
       /tem.*animal/i
     ],
     view_management: [
-      /(?:ver|mostrar|consultar).*(?:manejo|vacinação|tratamento)/i,
+      /(?:ver|mostrar|consultar).*(?:manejo|vacinaÃ§Ã£o|tratamento)/i,
       /(?:minha|minhas).*(?:atividade|manejo)/i,
-      /(?:últimas|ultimas).*(?:vacinação|manejo)/i,
-      /histórico.*manejo/i
+      /(?:Ãºltimas|ultimas).*(?:vacinaÃ§Ã£o|manejo)/i,
+      /histÃ³rico.*manejo/i
     ],
     view_investments: [
       /(?:ver|mostrar|consultar).*(?:investimento|equipamento)/i,
@@ -209,7 +209,7 @@ class FastIntentDetector {
       /quero.*comprar|preciso.*comprar|vamos.*comprar/i,
       /plano.*fazenda|planejamento/i,
       /trator|equipamento|cerca|curral|pasto/i,
-      /até.*\d+\/\d+|prazo.*\d+/i
+      /atÃ©.*\d+\/\d+|prazo.*\d+/i
     ],
     create_investment: [
       /invest[ir]|comprar|adquirir|equipamento|trator|gado/i,
@@ -220,11 +220,11 @@ class FastIntentDetector {
       /comprei.*trator|comprei.*gado/i
     ],
     create_transaction: [
-      /gast[ei]|comprei|paguei|despesa|custo|ração|vacina/i,
-      /registr[ao].*transação|adicionar.*transação|nova.*transação/i,
-      /ração|vacina|vermífugo|sal.*mineral/i,
-      /veterinário|veterinario|consulta/i,
-      /combustível|diesel|gasolina/i,
+      /gast[ei]|comprei|paguei|despesa|custo|raÃ§Ã£o|vacina/i,
+      /registr[ao].*transaÃ§Ã£o|adicionar.*transaÃ§Ã£o|nova.*transaÃ§Ã£o/i,
+      /raÃ§Ã£o|vacina|vermÃ­fugo|sal.*mineral/i,
+      /veterinÃ¡rio|veterinario|consulta/i,
+      /combustÃ­vel|diesel|gasolina/i,
       /\d+\s*reais?/i,
       /r\$\s*\d+/i,
       /valor.*\d+/i,
@@ -232,18 +232,18 @@ class FastIntentDetector {
       /quero.*registrar/i
     ],
     analyze_data: [
-      /analis[ae]|relatório|gráfico|dashboard/i,
+      /analis[ae]|relatÃ³rio|grÃ¡fico|dashboard/i,
       /como.*gast[oa]|onde.*gast[oa]/i,
-      /resumo|balanço|situação.*fazenda/i,
+      /resumo|balanÃ§o|situaÃ§Ã£o.*fazenda/i,
       /performance|produtividade|gmd/i
     ],
     help: [
-      /ajuda|help|como.*usar|não.*sei/i,
+      /ajuda|help|como.*usar|nÃ£o.*sei/i,
       /tutorial|explicar|ensinar/i,
       /o que.*posso|funcionalidades/i
     ],
     greeting: [
-      /oi|olá|hey|bom.*dia|boa.*tarde|boa.*noite/i,
+      /oi|olÃ¡|hey|bom.*dia|boa.*tarde|boa.*noite/i,
       /tudo.*bem|como.*vai|beleza/i,
       /bovi|bovino/i
     ]
@@ -253,52 +253,52 @@ class FastIntentDetector {
     const lowerMessage = message.toLowerCase();
     let bestMatch = { intent: 'UNKNOWN', confidence: 0.0, entities: {} };
 
-    console.log(`[FastIntentDetector] 🔍 Analisando mensagem: "${message}"`);
+    console.log(`[FastIntentDetector] ðŸ” Analisando mensagem: "${message}"`);
 
-    // PRIORIZAR INTENTS DE CONSULTA SOBRE CRIAÇÃO
+    // PRIORIZAR INTENTS DE CONSULTA SOBRE CRIAÃ‡ÃƒO
     const consultaIntents = ['view_animals', 'view_management', 'view_investments', 'view_summary'];
     const criacaoIntents = ['create_goal', 'create_transaction', 'create_investment'];
     
-    // Verificar primeiro se é consulta
+    // Verificar primeiro se Ã© consulta
     for (const intent of consultaIntents) {
       const patterns = this.patterns[intent] || [];
       let matches = 0;
       
-      console.log(`[FastIntentDetector] 🎯 Testando intent de consulta: ${intent}`);
+      console.log(`[FastIntentDetector] ðŸŽ¯ Testando intent de consulta: ${intent}`);
       
       for (const pattern of patterns) {
         if (pattern.test(lowerMessage)) {
           matches++;
-          console.log(`[FastIntentDetector] ✅ Pattern match consulta: ${pattern} para intent: ${intent}`);
+          console.log(`[FastIntentDetector] âœ… Pattern match consulta: ${pattern} para intent: ${intent}`);
         }
       }
       
       if (matches > 0) {
         const confidence = Math.min(matches / patterns.length + 0.3, 1.0);
-        console.log(`[FastIntentDetector] 🎯 CONSULTA detectada: ${intent} com confiança: ${confidence}`);
+        console.log(`[FastIntentDetector] ðŸŽ¯ CONSULTA detectada: ${intent} com confianÃ§a: ${confidence}`);
         return { intent, confidence, entities: {} };
       }
     }
 
-    // Se não é consulta, verificar criação
+    // Se nÃ£o Ã© consulta, verificar criaÃ§Ã£o
     for (const [intent, patterns] of Object.entries(this.patterns)) {
-      if (consultaIntents.includes(intent)) continue; // Já verificado
+      if (consultaIntents.includes(intent)) continue; // JÃ¡ verificado
       
       let matches = 0;
       const entities: any = {};
 
-      console.log(`[FastIntentDetector] 🎯 Testando intent de criação: ${intent}`);
+      console.log(`[FastIntentDetector] ðŸŽ¯ Testando intent de criaÃ§Ã£o: ${intent}`);
 
       for (const pattern of patterns) {
         if (pattern.test(lowerMessage)) {
           matches++;
-          console.log(`[FastIntentDetector] ✅ Pattern match criação: ${pattern} para intent: ${intent}`);
+          console.log(`[FastIntentDetector] âœ… Pattern match criaÃ§Ã£o: ${pattern} para intent: ${intent}`);
         }
       }
 
-      // Extrair entidades específicas para TRANSAÇÃO - ADAPTADO PARA PECUÁRIA
+      // Extrair entidades especÃ­ficas para TRANSAÃ‡ÃƒO - ADAPTADO PARA PECUÃRIA
       if (intent === 'create_transaction') {
-        // Extrair descrição primeiro
+        // Extrair descriÃ§Ã£o primeiro
         let descricao = '';
         const pattern1 = message.match(/(?:comprei|gastei|paguei)\s+(?:um|uma|o|a)?\s*([^0-9,]+?)(?:\s+(?:de|por|no valor|hoje|ontem|na|no)\s*|$)/i);
         if (pattern1) {
@@ -317,18 +317,18 @@ class FastIntentDetector {
         // Data
         entities.data = new Date().toISOString().split('T')[0];
         
-        // Categoria - ADAPTADO PARA PECUÁRIA
-        if (lowerMessage.includes('ração') || lowerMessage.includes('racao') || lowerMessage.includes('milho') || lowerMessage.includes('soja')) {
-          entities.categoria = 'Alimentação';
-        } else if (lowerMessage.includes('vacina') || lowerMessage.includes('vacinação') || lowerMessage.includes('vermífugo') || lowerMessage.includes('veterinário')) {
-          entities.categoria = 'Saúde Animal';
-        } else if (lowerMessage.includes('combustível') || lowerMessage.includes('diesel') || lowerMessage.includes('gasolina')) {
-          entities.categoria = 'Combustível';
-        } else if (lowerMessage.includes('cerca') || lowerMessage.includes('curral') || lowerMessage.includes('instalação')) {
+        // Categoria - ADAPTADO PARA PECUÃRIA
+        if (lowerMessage.includes('raÃ§Ã£o') || lowerMessage.includes('racao') || lowerMessage.includes('milho') || lowerMessage.includes('soja')) {
+          entities.categoria = 'AlimentaÃ§Ã£o';
+        } else if (lowerMessage.includes('vacina') || lowerMessage.includes('vacinaÃ§Ã£o') || lowerMessage.includes('vermÃ­fugo') || lowerMessage.includes('veterinÃ¡rio')) {
+          entities.categoria = 'SaÃºde Animal';
+        } else if (lowerMessage.includes('combustÃ­vel') || lowerMessage.includes('diesel') || lowerMessage.includes('gasolina')) {
+          entities.categoria = 'CombustÃ­vel';
+        } else if (lowerMessage.includes('cerca') || lowerMessage.includes('curral') || lowerMessage.includes('instalaÃ§Ã£o')) {
           entities.categoria = 'Infraestrutura';
-        } else if (lowerMessage.includes('trator') || lowerMessage.includes('máquina') || lowerMessage.includes('equipamento')) {
+        } else if (lowerMessage.includes('trator') || lowerMessage.includes('mÃ¡quina') || lowerMessage.includes('equipamento')) {
           entities.categoria = 'Equipamentos';
-        } else if (lowerMessage.includes('venda') || lowerMessage.includes('vendeu') || lowerMessage.includes('frigorífico')) {
+        } else if (lowerMessage.includes('venda') || lowerMessage.includes('vendeu') || lowerMessage.includes('frigorÃ­fico')) {
           entities.categoria = 'Vendas';
         } else {
           entities.categoria = 'Manejo';
@@ -341,28 +341,28 @@ class FastIntentDetector {
           entities.tipo = 'despesa';
         }
         
-        // Conta padrão
+        // Conta padrÃ£o
         entities.conta = 'Principal';
         
-        // Extrair descrição mais específica baseada na categoria
-        if (lowerMessage.includes('ração')) {
-          entities.descricao = 'Ração para gado';
+        // Extrair descriÃ§Ã£o mais especÃ­fica baseada na categoria
+        if (lowerMessage.includes('raÃ§Ã£o')) {
+          entities.descricao = 'RaÃ§Ã£o para gado';
         } else if (lowerMessage.includes('vacina')) {
-          entities.descricao = 'Vacinação do rebanho';
-        } else if (lowerMessage.includes('vermífugo')) {
-          entities.descricao = 'Vermifugação';
+          entities.descricao = 'VacinaÃ§Ã£o do rebanho';
+        } else if (lowerMessage.includes('vermÃ­fugo')) {
+          entities.descricao = 'VermifugaÃ§Ã£o';
         } else if (lowerMessage.includes('sal')) {
           entities.descricao = 'Sal mineral';
-        } else if (lowerMessage.includes('veterinário')) {
-          entities.descricao = 'Consulta veterinária';
-        } else if (lowerMessage.includes('combustível') || lowerMessage.includes('diesel')) {
-          entities.descricao = 'Combustível';
+        } else if (lowerMessage.includes('veterinÃ¡rio')) {
+          entities.descricao = 'Consulta veterinÃ¡ria';
+        } else if (lowerMessage.includes('combustÃ­vel') || lowerMessage.includes('diesel')) {
+          entities.descricao = 'CombustÃ­vel';
         } else if (lowerMessage.includes('venda')) {
           entities.descricao = 'Venda de animais';
         }
       }
 
-      // Extrair entidades para META - ADAPTADO PARA METAS PECUÁRIAS
+      // Extrair entidades para META - ADAPTADO PARA METAS PECUÃRIAS
       if (intent === 'create_goal') {
         const valuePatterns = [
           /meta.*?r\$\s*(\d+(?:[.,]\d{1,2})?)/i,
@@ -380,12 +380,12 @@ class FastIntentDetector {
           }
         }
         
-        // Extrair nome da meta - ADAPTADO PARA PECUÁRIA
+        // Extrair nome da meta - ADAPTADO PARA PECUÃRIA
         const metaPatterns = [
-          /meta.*?(?:de|para)\s+([^0-9r$]+?)(?:\s+(?:de|no valor|até)|$)/i,
-          /comprar.*?(?:um|uma)?\s*([^0-9r$]+?)(?:\s+(?:de|no valor|até)|$)/i,
-          /adquirir.*?(?:um|uma)?\s*([^0-9r$]+?)(?:\s+(?:de|no valor|até)|$)/i,
-          /(trator|equipamento|máquina|cerca|curral|pasto|gado|reprodutor|matriz)/i
+          /meta.*?(?:de|para)\s+([^0-9r$]+?)(?:\s+(?:de|no valor|atÃ©)|$)/i,
+          /comprar.*?(?:um|uma)?\s*([^0-9r$]+?)(?:\s+(?:de|no valor|atÃ©)|$)/i,
+          /adquirir.*?(?:um|uma)?\s*([^0-9r$]+?)(?:\s+(?:de|no valor|atÃ©)|$)/i,
+          /(trator|equipamento|mÃ¡quina|cerca|curral|pasto|gado|reprodutor|matriz)/i
         ];
         
         for (const pattern of metaPatterns) {
@@ -396,7 +396,7 @@ class FastIntentDetector {
           }
         }
         
-        // Extrair descrição
+        // Extrair descriÃ§Ã£o
         entities.descricao = entities.nome_da_meta || 'Meta da fazenda';
         
         // Extrair prazo para data_conclusao
@@ -427,7 +427,7 @@ class FastIntentDetector {
           }
         }
         
-        // Campos obrigatórios com valores padrão
+        // Campos obrigatÃ³rios com valores padrÃ£o
         entities.nome_da_meta = entities.nome_da_meta || 'Meta da fazenda';
         entities.descricao = entities.descricao || 'Meta para desenvolvimento da fazenda';
         if (!entities.valor_total) entities.valor_total = 0;
@@ -459,31 +459,31 @@ class FastIntentDetector {
           }
         }
         
-        // Detectar tipo de investimento - ADAPTADO PARA PECUÁRIA
+        // Detectar tipo de investimento - ADAPTADO PARA PECUÃRIA
         if (lowerMessage.includes('gado') || lowerMessage.includes('animal') || lowerMessage.includes('boi') || lowerMessage.includes('vaca')) {
           entities.tipo = 'Rebanho';
-        } else if (lowerMessage.includes('trator') || lowerMessage.includes('máquina') || lowerMessage.includes('equipamento')) {
+        } else if (lowerMessage.includes('trator') || lowerMessage.includes('mÃ¡quina') || lowerMessage.includes('equipamento')) {
           entities.tipo = 'Equipamentos';
         } else if (lowerMessage.includes('terra') || lowerMessage.includes('hectare') || lowerMessage.includes('propriedade')) {
-          entities.tipo = 'Imóvel Rural';
-        } else if (lowerMessage.includes('cerca') || lowerMessage.includes('curral') || lowerMessage.includes('instalação')) {
+          entities.tipo = 'ImÃ³vel Rural';
+        } else if (lowerMessage.includes('cerca') || lowerMessage.includes('curral') || lowerMessage.includes('instalaÃ§Ã£o')) {
           entities.tipo = 'Infraestrutura';
-        } else if (lowerMessage.includes('ração') || lowerMessage.includes('vacina') || lowerMessage.includes('insumo')) {
+        } else if (lowerMessage.includes('raÃ§Ã£o') || lowerMessage.includes('vacina') || lowerMessage.includes('insumo')) {
           entities.tipo = 'Insumos';
         } else {
           entities.tipo = 'Outros';
         }
         
-        // Extrair nome do investimento - MANTER NOMES ESPECÍFICOS
+        // Extrair nome do investimento - MANTER NOMES ESPECÃFICOS
         if (entities.tipo === 'Equipamentos') {
           if (lowerMessage.includes('trator')) {
             entities.nome = 'Trator';
-          } else if (lowerMessage.includes('roçadeira')) {
-            entities.nome = 'Roçadeira';
+          } else if (lowerMessage.includes('roÃ§adeira')) {
+            entities.nome = 'RoÃ§adeira';
           } else if (lowerMessage.includes('plantadeira')) {
             entities.nome = 'Plantadeira';
           } else {
-            entities.nome = 'Equipamento agrícola';
+            entities.nome = 'Equipamento agrÃ­cola';
           }
         } else if (entities.tipo === 'Rebanho') {
           if (lowerMessage.includes('reprodutor') || lowerMessage.includes('touro')) {
@@ -497,12 +497,12 @@ class FastIntentDetector {
           entities.nome = entities.tipo;
         }
         
-        // Instituição/Fornecedor
+        // InstituiÃ§Ã£o/Fornecedor
         entities.instituicao = 'Fazenda';
         entities.data = new Date().toISOString().split('T')[0];
       }
 
-      // Calcular confiança de forma mais inteligente
+      // Calcular confianÃ§a de forma mais inteligente
       let confidence = 0;
       
       if (intent === 'create_goal') {
@@ -540,7 +540,7 @@ class FastIntentDetector {
 class OptimizedContext {
   private userContexts = new Map<string, any>();
 
-  // Buscar dados do usuário no Supabase
+  // Buscar dados do usuÃ¡rio no Supabase
   async getUserFarmData(userId: string): Promise<any> {
     try {
       const user = await User.findByFirebaseUid(userId);
@@ -557,18 +557,18 @@ class OptimizedContext {
         };
       }
 
-      // Buscar dados em paralelo - incluindo dados pecuários
+      // Buscar dados em paralelo - incluindo dados pecuÃ¡rios
       const [metas, transacoes, investimentos, animais, manejos, vendas, producao] = await Promise.all([
         Meta.findByUserId(user.id!),
         Transacao.findByUserId(user.id!),
         Investimento.findByUserId(user.id!),
-        bovinextSupabaseService.getAnimaisByUser(user.id!).catch(() => []),
-        bovinextSupabaseService.getManejosByUser(user.id!).catch(() => []),
-        bovinextSupabaseService.getVendasByUser(user.id!).catch(() => []),
-        bovinextSupabaseService.getProducaoByUser(user.id!).catch(() => [])
+        whilabSupabaseService.getAnimaisByUser(user.id!).catch(() => []),
+        whilabSupabaseService.getManejosByUser(user.id!).catch(() => []),
+        whilabSupabaseService.getVendasByUser(user.id!).catch(() => []),
+        whilabSupabaseService.getProducaoByUser(user.id!).catch(() => [])
       ]);
 
-      // Calcular estatísticas básicas
+      // Calcular estatÃ­sticas bÃ¡sicas
       const totalTransactions = transacoes.length;
       const totalGoals = metas.length;
       const totalInvestments = investimentos.reduce((sum, inv) => sum + inv.valor, 0);
@@ -576,7 +576,7 @@ class OptimizedContext {
         .filter(t => t.tipo === 'despesa' && new Date(t.data).getMonth() === new Date().getMonth())
         .reduce((sum, t) => sum + t.valor, 0);
 
-      // Estatísticas pecuárias
+      // EstatÃ­sticas pecuÃ¡rias
       const totalAnimais = animais.length;
       const animaisAtivos = animais.filter((a: any) => a.status === 'ativo').length;
       const totalManejos = manejos.length;
@@ -584,7 +584,7 @@ class OptimizedContext {
       const valorTotalVendas = (vendas as any[]).reduce((acc: number, v: any) => acc + (v.valor || 0), 0);
       const totalProducao = producao.length;
 
-      console.log(`[OptimizedContext] 📊 Dados carregados: ${totalAnimais} animais, ${totalManejos} manejos, ${totalVendas} vendas, ${totalProducao} produções`);
+      console.log(`[OptimizedContext] ðŸ“Š Dados carregados: ${totalAnimais} animais, ${totalManejos} manejos, ${totalVendas} vendas, ${totalProducao} produÃ§Ãµes`);
 
       return {
         goals: metas,
@@ -651,10 +651,10 @@ class OptimizedContext {
   private extractTopic(message: string): string {
     const topics = {
       'rebanho': /gado|animal|boi|vaca|rebanho/i,
-      'manejo': /manejo|vacinação|vermífugo|tratamento/i,
+      'manejo': /manejo|vacinaÃ§Ã£o|vermÃ­fugo|tratamento/i,
       'investimento': /invest|comprar|equipamento|trator/i,
-      'vendas': /venda|vendeu|frigorífico|preço/i,
-      'análise': /analis|relatório|gráfico|performance/i
+      'vendas': /venda|vendeu|frigorÃ­fico|preÃ§o/i,
+      'anÃ¡lise': /analis|relatÃ³rio|grÃ¡fico|performance/i
     };
 
     for (const [topic, pattern] of Object.entries(topics)) {
@@ -667,14 +667,14 @@ class OptimizedContext {
   }
 }
 
-// ===== CLASSE PRINCIPAL OTIMIZADA ADAPTADA PARA BOVINEXT =====
+// ===== CLASSE PRINCIPAL OTIMIZADA ADAPTADA PARA WHILAB =====
 export class OptimizedAIService {
   private cache = new IntelligentCache();
   private intentDetector = new FastIntentDetector();
   private contextManager = new OptimizedContext();
   private responseCount = 0;
 
-  // Sistema de prompts — importado de config/aiPrompts.ts (white-label)
+  // Sistema de prompts â€” importado de config/aiPrompts.ts (white-label)
   private SYSTEM_PROMPTS = {
     MAIN: SYSTEM_PROMPT
   };
@@ -705,40 +705,40 @@ export class OptimizedAIService {
     const animalSummary = animals.slice(0, 5).map((animal: any) => animal.identificacao || animal.brinco || 'Animal').join(', ');
     const manejoSummary = manejos.slice(0, 3).map((manejo: any) => manejo.tipo_manejo || 'manejo').join(', ');
     const vendaSummary = vendas.slice(0, 3).map((venda: any) => this.formatCurrency(Number(venda.valor_total || 0))).join(', ');
-    const producaoSummary = producao.slice(0, 3).map((item: any) => item.tipo || 'produção').join(', ');
+    const producaoSummary = producao.slice(0, 3).map((item: any) => item.tipo || 'produÃ§Ã£o').join(', ');
 
     switch (intent.intent) {
       case 'view_animals':
         if (!animals.length) {
-          return `Ainda não encontrei animais cadastrados em ${farmName}. Posso te ajudar a registrar o primeiro animal ou revisar os dados da fazenda.`;
+          return `Ainda nÃ£o encontrei animais cadastrados em ${farmName}. Posso te ajudar a registrar o primeiro animal ou revisar os dados da fazenda.`;
         }
-        return `Você tem ${animals.length} animais cadastrados${animals.length ? `, com ${animals.filter((animal: any) => animal.status === 'ativo').length} ativos` : ''}. Exemplos: ${animalSummary || 'sem identificação'}.`;
+        return `VocÃª tem ${animals.length} animais cadastrados${animals.length ? `, com ${animals.filter((animal: any) => animal.status === 'ativo').length} ativos` : ''}. Exemplos: ${animalSummary || 'sem identificaÃ§Ã£o'}.`;
       case 'view_management':
         if (!manejos.length) {
-          return `Não encontrei manejos registrados em ${farmName}. Se quiser, posso te ajudar a registrar vacinação, pesagem ou tratamento.`;
+          return `NÃ£o encontrei manejos registrados em ${farmName}. Se quiser, posso te ajudar a registrar vacinaÃ§Ã£o, pesagem ou tratamento.`;
         }
-        return `Encontrei ${manejos.length} manejos recentes. Exemplos: ${manejoSummary || 'manejos disponíveis'}.`;
+        return `Encontrei ${manejos.length} manejos recentes. Exemplos: ${manejoSummary || 'manejos disponÃ­veis'}.`;
       case 'view_investments':
         if (!investments.length) {
-          return `Não encontrei investimentos registrados em ${farmName}. Posso te ajudar a registrar equipamentos, compra de gado ou infraestrutura.`;
+          return `NÃ£o encontrei investimentos registrados em ${farmName}. Posso te ajudar a registrar equipamentos, compra de gado ou infraestrutura.`;
         }
-        return `Há ${investments.length} investimentos registrados. Se quiser, eu posso resumir os principais valores e categorias.`;
+        return `HÃ¡ ${investments.length} investimentos registrados. Se quiser, eu posso resumir os principais valores e categorias.`;
       case 'view_summary':
-        return `Resumo rápido de ${farmName}: ${animals.length} animais, ${manejos.length} manejos, ${vendas.length} vendas, ${producao.length} registros de produção, ${metas.length} metas e ${transactions.length} transações.`;
+        return `Resumo rÃ¡pido de ${farmName}: ${animals.length} animais, ${manejos.length} manejos, ${vendas.length} vendas, ${producao.length} registros de produÃ§Ã£o, ${metas.length} metas e ${transactions.length} transaÃ§Ãµes.`;
       case 'create_goal':
         return 'Posso te ajudar a registrar essa meta. Se quiser acelerar, me passe o valor, o prazo e o nome da meta.';
       case 'create_transaction':
-        return 'Posso registrar essa transação. Se você me informar valor, descrição e tipo de gasto, eu organizo o restante.';
+        return 'Posso registrar essa transaÃ§Ã£o. Se vocÃª me informar valor, descriÃ§Ã£o e tipo de gasto, eu organizo o restante.';
       case 'create_investment':
         return 'Posso registrar esse investimento. Me diga o valor e o nome do ativo para eu estruturar certinho.';
       case 'analyze_data':
-        return `Posso analisar os dados de ${farmName} com base no contexto atual. Hoje vejo ${animals.length} animais, ${vendas.length} vendas e ${producao.length} registros de produção.`;
+        return `Posso analisar os dados de ${farmName} com base no contexto atual. Hoje vejo ${animals.length} animais, ${vendas.length} vendas e ${producao.length} registros de produÃ§Ã£o.`;
       case 'help':
-        return 'Posso ajudar com rebanho, manejo, vendas, produção, metas e investimentos. Tente: "mostrar meu rebanho" ou "resumir a fazenda".';
+        return 'Posso ajudar com rebanho, manejo, vendas, produÃ§Ã£o, metas e investimentos. Tente: "mostrar meu rebanho" ou "resumir a fazenda".';
       case 'greeting':
         return QUICK_RESPONSES.GREETING;
       default:
-        return CHATBOT_OPTIMIZATION_CONFIG.FALLBACK_RESPONSES[0] || QUICK_RESPONSES.UNKNOWN || `Entendi sua mensagem, ${ownerName}. Posso ajudar com rebanho, manejo, vendas, produção, metas e investimentos.`;
+        return CHATBOT_OPTIMIZATION_CONFIG.FALLBACK_RESPONSES[0] || QUICK_RESPONSES.UNKNOWN || `Entendi sua mensagem, ${ownerName}. Posso ajudar com rebanho, manejo, vendas, produÃ§Ã£o, metas e investimentos.`;
     }
   }
 
@@ -800,12 +800,12 @@ export class OptimizedAIService {
       }
 
       // 2. Processar mensagem com IA
-      console.log(`🤖 ${AI_BRAND.assistantName} processando mensagem: "${message}"`);
+      console.log(`ðŸ¤– ${AI_BRAND.assistantName} processando mensagem: "${message}"`);
       
       // 3. Atualizar contexto
       this.contextManager.updateContext(userId, message, '');
 
-      // 4. BUSCAR DADOS REAIS DO USUÁRIO ANTES DE RESPONDER
+      // 4. BUSCAR DADOS REAIS DO USUÃRIO ANTES DE RESPONDER
       let userData = null;
       try {
         userData = await this.contextManager.getUserFarmData(userId);
@@ -818,7 +818,7 @@ export class OptimizedAIService {
         console.error(`[${AI_BRAND.logTag}] Erro ao carregar dados da fazenda:`, error);
       }
 
-      // 5. Gerar contexto com dados reais do usuário
+      // 5. Gerar contexto com dados reais do usuÃ¡rio
       const context = await this.buildContextPrompt(conversationHistory, userContext);
       
       let userDataContext = '';
@@ -835,25 +835,25 @@ export class OptimizedAIService {
 
 DADOS REAIS DA FAZENDA (CONSULTE SEMPRE ANTES DE CRIAR NOVOS):
 
-🐂 REBANHO (${animals.length} animais):
+ðŸ‚ REBANHO (${animals.length} animais):
 ${animals.slice(0, 10).map((a: any) => `- ${a.identificacao || a.brinco || 'Animal'}: ${a.raca || ''} - ${a.categoria || ''} - ${a.status || 'ativo'} - Peso: ${a.peso_atual || 'N/A'}kg`).join('\n') || 'Nenhum animal cadastrado'}
 
-🧪 MANEJOS (${manejosData.length} registros):
+ðŸ§ª MANEJOS (${manejosData.length} registros):
 ${manejosData.slice(0, 5).map((m: any) => `- ${m.tipo_manejo || 'Manejo'}: ${m.data_manejo || ''} - ${m.produto_usado || ''}`).join('\n') || 'Nenhum manejo registrado'}
 
-💰 VENDAS (${vendasData.length} vendas):
+ðŸ’° VENDAS (${vendasData.length} vendas):
 ${vendasData.slice(0, 5).map((v: any) => `- R$ ${v.valor || 0} - ${v.comprador || 'Comprador'} - ${v.data_venda || ''}`).join('\n') || 'Nenhuma venda registrada'}
 
-🥛 PRODUÇÃO (${producaoData.length} registros):
-${producaoData.slice(0, 5).map((p: any) => `- ${p.tipo || 'Produção'}: ${p.quantidade || 0} ${p.unidade || ''}`).join('\n') || 'Nenhuma produção registrada'}
+ðŸ¥› PRODUÃ‡ÃƒO (${producaoData.length} registros):
+${producaoData.slice(0, 5).map((p: any) => `- ${p.tipo || 'ProduÃ§Ã£o'}: ${p.quantidade || 0} ${p.unidade || ''}`).join('\n') || 'Nenhuma produÃ§Ã£o registrada'}
 
-🎯 METAS (${goals.length}):
+ðŸŽ¯ METAS (${goals.length}):
 ${goals.map(g => `- ${g.nome_da_meta}: R$ ${g.valor_atual || 0}/${g.valor_total || 0}`).join('\n') || 'Nenhuma meta'}
 
-📊 TRANSAÇÕES (${transactions.length}):
-${transactions.slice(0, 5).map(t => `- ${t.descricao || 'Transação'}: R$ ${t.valor || 0} (${t.tipo || ''})`).join('\n') || 'Nenhuma transação'}
+ðŸ“Š TRANSAÃ‡Ã•ES (${transactions.length}):
+${transactions.slice(0, 5).map(t => `- ${t.descricao || 'TransaÃ§Ã£o'}: R$ ${t.valor || 0} (${t.tipo || ''})`).join('\n') || 'Nenhuma transaÃ§Ã£o'}
 
-🏦 INVESTIMENTOS (${investments.length}):
+ðŸ¦ INVESTIMENTOS (${investments.length}):
 ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor || 0}`).join('\n') || 'Nenhum investimento'}`;
       }
 
@@ -862,7 +862,7 @@ ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor 
 ${ADDITIONAL_INSTRUCTIONS}
 
 Contexto: ${context}${userDataContext}
-Usuário: ${message}
+UsuÃ¡rio: ${message}
 ${AI_BRAND.assistantName}:`;
 
       const intentResult = this.intentDetector.detect(message);
@@ -895,7 +895,7 @@ ${AI_BRAND.assistantName}:`;
 
       console.log(`[${AI_BRAND.logTag}] Intent detectado: ${intentResult.intent}, confianca: ${intentResult.confidence}`);
       
-      // Sistema simplificado - sem botões de confirmação
+      // Sistema simplificado - sem botÃµes de confirmaÃ§Ã£o
       const validActionIntents = ['create_investment', 'create_goal', 'create_transaction'];
       const shouldExecuteDirectly = validActionIntents.includes(intentResult.intent) && 
                                    intentResult.confidence > 0.6 &&
@@ -907,7 +907,7 @@ ${AI_BRAND.assistantName}:`;
       let actionData = null;
       const requiresConfirmation = false; // DESABILITADO
 
-      // 7. Pós-processamento
+      // 7. PÃ³s-processamento
       const finalResponse = this.postProcessResponse(response, userContext);
 
       // 8. Salvar no cache
@@ -956,7 +956,7 @@ ${AI_BRAND.assistantName}:`;
     let fullResponse = '';
 
     try {
-      console.log(`🤖 ${AI_BRAND.assistantName} streaming mensagem: "${message}"`);
+      console.log(`ðŸ¤– ${AI_BRAND.assistantName} streaming mensagem: "${message}"`);
 
       this.contextManager.updateContext(userId, message, '');
 
@@ -983,25 +983,25 @@ ${AI_BRAND.assistantName}:`;
 
 DADOS REAIS DA FAZENDA (CONSULTE SEMPRE ANTES DE CRIAR NOVOS):
 
-🐂 REBANHO (${animals.length} animais):
+ðŸ‚ REBANHO (${animals.length} animais):
 ${animals.slice(0, 10).map((a: any) => `- ${a.identificacao || a.brinco || 'Animal'}: ${a.raca || ''} - ${a.categoria || ''} - ${a.status || 'ativo'} - Peso: ${a.peso_atual || 'N/A'}kg`).join('\n') || 'Nenhum animal cadastrado'}
 
-🧪 MANEJOS (${manejosArr.length} registros):
+ðŸ§ª MANEJOS (${manejosArr.length} registros):
 ${manejosArr.slice(0, 5).map((m: any) => `- ${m.tipo_manejo || 'Manejo'}: ${m.data_manejo || ''} - ${m.produto_usado || ''}`).join('\n') || 'Nenhum manejo registrado'}
 
-💰 VENDAS (${vendasArr.length} vendas):
+ðŸ’° VENDAS (${vendasArr.length} vendas):
 ${vendasArr.slice(0, 5).map((v: any) => `- R$ ${v.valor || 0} - ${v.comprador || 'Comprador'} - ${v.data_venda || ''}`).join('\n') || 'Nenhuma venda registrada'}
 
-🥛 PRODUÇÃO (${producaoArr.length} registros):
-${producaoArr.slice(0, 5).map((p: any) => `- ${p.tipo || 'Produção'}: ${p.quantidade || 0} ${p.unidade || ''}`).join('\n') || 'Nenhuma produção registrada'}
+ðŸ¥› PRODUÃ‡ÃƒO (${producaoArr.length} registros):
+${producaoArr.slice(0, 5).map((p: any) => `- ${p.tipo || 'ProduÃ§Ã£o'}: ${p.quantidade || 0} ${p.unidade || ''}`).join('\n') || 'Nenhuma produÃ§Ã£o registrada'}
 
-🎯 METAS (${goals.length}):
+ðŸŽ¯ METAS (${goals.length}):
 ${goals.map(g => `- ${g.nome_da_meta}: R$ ${g.valor_atual || 0}/${g.valor_total || 0}`).join('\n') || 'Nenhuma meta'}
 
-📊 TRANSAÇÕES (${transactions.length}):
-${transactions.slice(0, 5).map(t => `- ${t.descricao || 'Transação'}: R$ ${t.valor || 0} (${t.tipo || ''})`).join('\n') || 'Nenhuma transação'}
+ðŸ“Š TRANSAÃ‡Ã•ES (${transactions.length}):
+${transactions.slice(0, 5).map(t => `- ${t.descricao || 'TransaÃ§Ã£o'}: R$ ${t.valor || 0} (${t.tipo || ''})`).join('\n') || 'Nenhuma transaÃ§Ã£o'}
 
-🏦 INVESTIMENTOS (${investments.length}):
+ðŸ¦ INVESTIMENTOS (${investments.length}):
 ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor || 0}`).join('\n') || 'Nenhum investimento'}`;
       }
 
@@ -1010,7 +1010,7 @@ ${investments.slice(0, 5).map(i => `- ${i.nome || 'Investimento'}: R$ ${i.valor 
 ${ADDITIONAL_INSTRUCTIONS}
 
 Contexto: ${context}${userDataContext}
-Usuário: ${message}
+UsuÃ¡rio: ${message}
 ${AI_BRAND.assistantName}:`;
 
       const intentResult = this.intentDetector.detect(message);
@@ -1073,7 +1073,7 @@ ${AI_BRAND.assistantName}:`;
     }
     
     if (conversationHistory.length > 0) {
-      context += 'HISTÓRICO COMPLETO DA CONVERSA:\n';
+      context += 'HISTÃ“RICO COMPLETO DA CONVERSA:\n';
       conversationHistory.forEach((msg) => {
         const roleValue = (msg as any).role || (msg as any).sender;
         const role = roleValue === 'user' ? 'Fazendeiro' : AI_BRAND.assistantName;
@@ -1085,14 +1085,14 @@ ${AI_BRAND.assistantName}:`;
   }
 
   private postProcessResponse(response: string, userContext?: any): string {
-    // Remover formatação excessiva e limitar tamanho
+    // Remover formataÃ§Ã£o excessiva e limitar tamanho
     let cleanResponse = response
       .replace(/\*\*/g, '') // Remove ** 
       .replace(/\n\n+/g, '\n') // Remove quebras duplas
-      .replace(/\s+/g, ' ') // Remove espaços extras
+      .replace(/\s+/g, ' ') // Remove espaÃ§os extras
       .trim();
 
-    // Limitar tamanho da resposta (máximo 600 caracteres)
+    // Limitar tamanho da resposta (mÃ¡ximo 600 caracteres)
     if (cleanResponse.length > 600) {
       const sentences = cleanResponse.split(/[.!?]/);
       let truncated = '';
@@ -1127,7 +1127,7 @@ ${AI_BRAND.assistantName}:`;
     this.cache.clear();
   }
 
-  // Método para compatibilidade com o sistema existente
+  // MÃ©todo para compatibilidade com o sistema existente
   async generateContextualResponse(
     systemPrompt: string,
     userMessage: string,
@@ -1150,3 +1150,4 @@ ${AI_BRAND.assistantName}:`;
 }
 
 export default OptimizedAIService;
+

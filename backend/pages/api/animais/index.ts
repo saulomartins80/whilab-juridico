@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
 import { resolveRequestUserId } from '../../../src/utils/requestContext';
-import { Animal } from '../../../src/types/bovinext.types';
+import { Animal } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function getAnimais(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const { 
@@ -60,15 +60,15 @@ async function getAnimais(req: NextApiRequest, res: NextApiResponse) {
 async function createAnimal(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const animalData: Omit<Animal, 'id'> = req.body;
 
-  // Validação básica
+  // ValidaÃ§Ã£o bÃ¡sica
   if (!animalData.brinco || !animalData.categoria || !animalData.peso) {
     return res.status(400).json({
-      error: 'Campos obrigatórios: brinco, categoria, peso'
+      error: 'Campos obrigatÃ³rios: brinco, categoria, peso'
     });
   }
 
@@ -85,3 +85,4 @@ async function createAnimal(req: NextApiRequest, res: NextApiResponse) {
     message: 'Animal criado com sucesso'
   });
 }
+

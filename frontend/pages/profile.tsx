@@ -601,7 +601,7 @@ export default function Profile() {
                     Assinatura
                   </h3>
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700/50 dark:to-gray-800/60 p-6 rounded-lg border border-blue-100 dark:border-gray-700">
-                    {loading ? ( // Mock loading for BOVINEXT
+                    {loading ? ( // Mock loading for WhiLab
                       <div className="flex items-center justify-center py-4">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                       </div>

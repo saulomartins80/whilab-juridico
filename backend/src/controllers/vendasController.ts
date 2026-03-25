@@ -1,12 +1,12 @@
-// =====================================================
-// BOVINEXT - CONTROLLER DE VENDAS
-// Gestão comercial e financeira com Supabase
+﻿// =====================================================
+// WHILAB - CONTROLLER DE VENDAS
+// GestÃ£o comercial e financeira com Supabase
 // =====================================================
 
 import { Request, Response } from 'express';
-import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
-import { bovinextAIService } from '../services/BovinextAIService';
-import { IVendaCreate } from '../types/bovinext-supabase.types';
+import { whilabSupabaseService } from '../services/WhiLabSupabaseService';
+import { whilabAIService } from '../services/WhiLabAIService';
+import { IVendaCreate } from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 
 export class VendasController {
@@ -19,26 +19,26 @@ export class VendasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { vendaData, animaisIds } = req.body;
       
-      // Validações básicas
+      // ValidaÃ§Ãµes bÃ¡sicas
       if (!vendaData.comprador || !vendaData.valor_total || !animaisIds?.length) {
         return res.status(400).json({ 
-          error: 'Campos obrigatórios: comprador, valor_total, animaisIds' 
+          error: 'Campos obrigatÃ³rios: comprador, valor_total, animaisIds' 
         });
       }
 
-      const novaVenda = await bovinextSupabaseService.createVenda(userId, vendaData, animaisIds);
+      const novaVenda = await whilabSupabaseService.createVenda(userId, vendaData, animaisIds);
       
-      logger.info(`Venda criada: R$ ${novaVenda.valor_total} para usuário ${userId}`);
+      logger.info(`Venda criada: R$ ${novaVenda.valor_total} para usuÃ¡rio ${userId}`);
       
       res.status(201).json({
         success: true,
         data: novaVenda,
-        message: `💰 Venda de R$ ${novaVenda.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} registrada com sucesso!`
+        message: `ðŸ’° Venda de R$ ${novaVenda.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} registrada com sucesso!`
       });
 
     } catch (error: any) {
@@ -54,7 +54,7 @@ export class VendasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { page = 1, limit = 20, dataInicio, dataFim, comprador } = req.query;
@@ -65,9 +65,9 @@ export class VendasController {
         comprador: comprador as string
       };
 
-      const relatorio = await bovinextSupabaseService.getVendasByUser(userId, filtros);
+      const relatorio = await whilabSupabaseService.getVendasByUser(userId, filtros);
       
-      // Paginação
+      // PaginaÃ§Ã£o
       const startIndex = (Number(page) - 1) * Number(limit);
       const endIndex = startIndex + Number(limit);
       const paginatedVendas = relatorio.slice(startIndex, endIndex);
@@ -96,14 +96,14 @@ export class VendasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { id } = req.params;
-      const venda = await bovinextSupabaseService.getVendaById(id);
+      const venda = await whilabSupabaseService.getVendaById(id);
       
       if (!venda) {
-        return res.status(404).json({ error: 'Venda não encontrada' });
+        return res.status(404).json({ error: 'Venda nÃ£o encontrada' });
       }
 
       res.json({
@@ -121,27 +121,27 @@ export class VendasController {
   }
 
   // =====================================================
-  // RELATÓRIOS FINANCEIROS
+  // RELATÃ“RIOS FINANCEIROS
   // =====================================================
 
   async getRelatorioVendas(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { periodo = 'mes' } = req.query;
       
-      const vendas = await bovinextSupabaseService.getVendasByUser(userId, {});
+      const vendas = await whilabSupabaseService.getVendasByUser(userId, {});
       
-      // Calcular métricas
+      // Calcular mÃ©tricas
       const valorTotal = vendas.reduce((sum, v) => sum + v.valor_total, 0);
       const quantidadeAnimais = vendas.reduce((sum, v) => sum + (v.quantidade_animais || 0), 0);
       const ticketMedio = vendas.length > 0 ? valorTotal / vendas.length : 0;
       const precoMedioPorCabeca = quantidadeAnimais > 0 ? valorTotal / quantidadeAnimais : 0;
 
-      // Vendas por mês
+      // Vendas por mÃªs
       const vendasPorMes = vendas.reduce((acc: any, venda) => {
         const mes = new Date(venda.data_venda).toISOString().slice(0, 7);
         if (!acc[mes]) {
@@ -186,7 +186,7 @@ export class VendasController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao gerar relatório de vendas:', error);
+      logger.error('Erro ao gerar relatÃ³rio de vendas:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -195,28 +195,28 @@ export class VendasController {
   }
 
   // =====================================================
-  // ANÁLISE DE PREÇOS COM IA
+  // ANÃLISE DE PREÃ‡OS COM IA
   // =====================================================
 
   async analisarPrecos(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { categoria, peso, idade, sexo } = req.query;
       
       // Buscar vendas similares
-      const vendas = await bovinextSupabaseService.getVendasByUser(userId, {});
+      const vendas = await whilabSupabaseService.getVendasByUser(userId, {});
       
-      // Buscar preços de mercado
-      const precosMercado = await bovinextSupabaseService.getPrecosMercado();
+      // Buscar preÃ§os de mercado
+      const precosMercado = await whilabSupabaseService.getPrecosMercado();
       
-      // Análise de preços com IA (mock)
+      // AnÃ¡lise de preÃ§os com IA (mock)
       const analisePrecos = {
         tendencia: 'estavel',
-        recomendacao: 'Preço dentro da média do mercado',
+        recomendacao: 'PreÃ§o dentro da mÃ©dia do mercado',
         comparacao_mercado: 'adequado',
         precos_mercado: precosMercado,
         vendas_similares: vendas.slice(0, 5)
@@ -228,7 +228,7 @@ export class VendasController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao analisar preços:', error);
+      logger.error('Erro ao analisar preÃ§os:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -244,47 +244,47 @@ export class VendasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { vendaId } = req.params;
-      const venda = await bovinextSupabaseService.getVendaById(vendaId);
+      const venda = await whilabSupabaseService.getVendaById(vendaId);
       
       if (!venda) {
-        return res.status(404).json({ error: 'Venda não encontrada' });
+        return res.status(404).json({ error: 'Venda nÃ£o encontrada' });
       }
 
-      // Template básico de contrato
+      // Template bÃ¡sico de contrato
       const contrato = {
         numero: `CONT-${venda.id.slice(-8).toUpperCase()}`,
         data: new Date().toLocaleDateString('pt-BR'),
         vendedor: {
           nome: '[NOME DO VENDEDOR]',
           cpf: '[CPF DO VENDEDOR]',
-          endereco: '[ENDEREÇO DO VENDEDOR]'
+          endereco: '[ENDEREÃ‡O DO VENDEDOR]'
         },
         comprador: {
           nome: venda.comprador,
           cpf: venda.cpf_comprador || '[CPF DO COMPRADOR]',
-          endereco: '[ENDEREÇO DO COMPRADOR]'
+          endereco: '[ENDEREÃ‡O DO COMPRADOR]'
         },
         objeto: {
-          descricao: `Venda de ${venda.quantidade_animais} cabeças de gado`,
+          descricao: `Venda de ${venda.quantidade_animais} cabeÃ§as de gado`,
           valor: venda.valor_total,
           valorExtenso: '[VALOR POR EXTENSO]'
         },
         condicoes: [
-          'O gado será entregue no prazo de 30 dias',
-          'O pagamento será realizado conforme acordado',
+          'O gado serÃ¡ entregue no prazo de 30 dias',
+          'O pagamento serÃ¡ realizado conforme acordado',
           'O vendedor garante a sanidade dos animais',
-          'Todas as documentações sanitárias serão fornecidas'
+          'Todas as documentaÃ§Ãµes sanitÃ¡rias serÃ£o fornecidas'
         ]
       };
 
       res.json({
         success: true,
         data: contrato,
-        message: '📄 Contrato gerado com sucesso!'
+        message: 'ðŸ“„ Contrato gerado com sucesso!'
       });
 
     } catch (error: any) {
@@ -304,17 +304,17 @@ export class VendasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { ano = new Date().getFullYear() } = req.query;
       
-      const vendas = await bovinextSupabaseService.getVendasByUser(userId, {
+      const vendas = await whilabSupabaseService.getVendasByUser(userId, {
         dataInicio: `${ano}-01-01`,
         dataFim: `${ano}-12-31`
       });
 
-      // Agrupar por mês
+      // Agrupar por mÃªs
       const fluxoPorMes = Array.from({ length: 12 }, (_, i) => {
         const mes = i + 1;
         const vendasDoMes = vendas.filter(v => {
@@ -355,3 +355,4 @@ export class VendasController {
 }
 
 export const vendasController = new VendasController();
+

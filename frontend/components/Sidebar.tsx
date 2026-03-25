@@ -14,6 +14,7 @@ import {
   HelpCircle,
   List,
   Menu,
+  Package,
   PieChart,
   Settings,
   ShieldCheck,
@@ -52,6 +53,37 @@ interface MenuGroup {
 }
 
 const menuGroups: MenuGroup[] = [
+  {
+    title: 'App de Encomendas',
+    eyebrow: 'Ordering',
+    items: [
+      {
+        path: '/encomendas',
+        icon: PieChart,
+        label: 'Resumo',
+        description: 'Pedidos do dia, status e operacao comercial',
+        badge: 'new',
+      },
+      {
+        path: '/encomendas/clientes',
+        icon: Users,
+        label: 'Clientes',
+        description: 'Base de clientes, contato e recorrencia',
+      },
+      {
+        path: '/encomendas/catalogo',
+        icon: Package,
+        label: 'Catalogo',
+        description: 'Produtos, preco e disponibilidade',
+      },
+      {
+        path: '/encomendas/cobrancas',
+        icon: CreditCard,
+        label: 'Cobrancas',
+        description: 'Pendencias, links de pagamento e repasse',
+      },
+    ],
+  },
   {
     title: 'Painel central',
     eyebrow: 'Overview',
@@ -153,15 +185,15 @@ const menuGroups: MenuGroup[] = [
 ];
 
 const quickLinks = [
-  { href: '/configuracoes', label: 'Ajustar marca', detail: 'Nome, cores e narrativa' },
-  { href: '/suporte', label: 'Abrir suporte', detail: 'Implantacao e operacao' },
-  { href: '/dashboard', label: 'Ver control tower', detail: 'Leitura premium da base' },
+  { href: '/encomendas', label: 'Abrir pedidos', detail: 'Leitura comercial do dia' },
+  { href: '/encomendas/catalogo', label: 'Ajustar catalogo', detail: 'Produtos, preco e estoque' },
+  { href: '/encomendas/cobrancas', label: 'Cobrar pendentes', detail: 'Links e follow-up rapido' },
 ];
 
 const sidebarSignals = [
-  { label: 'Deploy', value: 'Publico' },
-  { label: 'Auth', value: 'Validada' },
-  { label: 'Tema', value: 'Premium' },
+  { label: 'Deploy', value: 'Live' },
+  { label: 'Mobile', value: 'Ready' },
+  { label: 'Pagto', value: 'Link' },
 ];
 
 export default function Sidebar({
@@ -315,7 +347,8 @@ export default function Sidebar({
               <div>
                 <div className="app-shell-section-title">{dashboardBranding.workspaceLabel}</div>
                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  Camada executiva com paginas de operacao, financeiro e configuracao comercial.
+                  Camada executiva pronta para vender operacao de pedidos com clientes, catalogo,
+                  cobranca e acompanhamento do dia.
                 </p>
               </div>
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-950/10 dark:bg-white dark:text-slate-950">
@@ -420,7 +453,7 @@ export default function Sidebar({
               <div>
                 <div className="app-shell-section-title">Control tower</div>
                 <h3 className="mt-2 text-base font-semibold text-slate-950 dark:text-white">
-                  Ajuste o produto sem desmontar a base
+                  Escale o vertical sem desmontar a base
                 </h3>
               </div>
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-950">
@@ -438,8 +471,8 @@ export default function Sidebar({
                     Foco do dia
                   </div>
                   <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    Manter home publica, auth estavel e dashboard com leitura premium para
-                    fechamento comercial.
+                    Manter pedidos, clientes e cobrancas com leitura clara no desktop e no
+                    mobile, sem perder a estrutura white-label da plataforma.
                   </p>
                 </div>
               </div>

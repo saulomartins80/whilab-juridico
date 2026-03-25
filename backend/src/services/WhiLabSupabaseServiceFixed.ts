@@ -1,6 +1,6 @@
-// =====================================================
-// BOVINEXT SUPABASE SERVICE - VERSÃO CORRIGIDA
-// Gestão Pecuária com IA Especializada
+﻿// =====================================================
+// WHILAB SUPABASE SERVICE - VERSÃƒO CORRIGIDA
+// GestÃ£o PecuÃ¡ria com IA Especializada
 // =====================================================
 
 import { supabaseWrapper } from './SupabaseWrapper';
@@ -9,13 +9,13 @@ import {
   IUser, IAnimal, IManejo, IVenda, IProducao, IMeta, 
   IChatMessage, IAlerta, IEstatisticasDashboard,
   IAnimalCreate, IManejoCreate, IVendaCreate, IProducaoCreate, IMetaCreate
-} from '../types/bovinext-supabase.types';
+} from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 
-export class BovinextSupabaseService {
+export class WhiLabSupabaseService {
   
   // =====================================================
-  // USUÁRIOS E FAZENDAS
+  // USUÃRIOS E FAZENDAS
   // =====================================================
   
   async createUser(userData: Database['public']['Tables']['users']['Insert']): Promise<IUser> {
@@ -23,7 +23,7 @@ export class BovinextSupabaseService {
       const data = await supabaseWrapper.insertUser(userData);
       return data as IUser;
     } catch (error) {
-      logger.error('Erro ao criar usuário:', error);
+      logger.error('Erro ao criar usuÃ¡rio:', error);
       throw error;
     }
   }
@@ -33,7 +33,7 @@ export class BovinextSupabaseService {
       const data = await supabaseWrapper.selectUserByFirebaseUid(firebaseUid);
       return data as IUser | null;
     } catch (error) {
-      logger.error('Erro ao buscar usuário:', error);
+      logger.error('Erro ao buscar usuÃ¡rio:', error);
       throw error;
     }
   }
@@ -44,7 +44,7 @@ export class BovinextSupabaseService {
 
   async updateUserProfile(firebaseUid: string, userData: Record<string, unknown>): Promise<IUser> {
     const user = await this.getUserByFirebaseUid(firebaseUid);
-    if (!user) throw new Error('Usuário não encontrado');
+    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado');
     const payload: any = {};
     if ((userData as any).name !== undefined) payload.display_name = (userData as any).name;
     if ((userData as any).email !== undefined) payload.email = (userData as any).email;
@@ -59,7 +59,7 @@ export class BovinextSupabaseService {
       const data = await supabaseWrapper.updateUser(userId, userData);
       return data as IUser;
     } catch (error) {
-      logger.error('Erro ao atualizar usuário:', error);
+      logger.error('Erro ao atualizar usuÃ¡rio:', error);
       throw error;
     }
   }
@@ -280,7 +280,7 @@ export class BovinextSupabaseService {
   }
 
   // =====================================================
-  // PRODUÇÃO
+  // PRODUÃ‡ÃƒO
   // =====================================================
   
   async createProducao(userId: string, producaoCreate: IProducaoCreate): Promise<IProducao> {
@@ -304,7 +304,7 @@ export class BovinextSupabaseService {
         ganho_medio_diario: data.ganho_medio_diario ?? data.ganhoMedio,
       } as IProducao;
     } catch (error) {
-      logger.error('Erro ao criar produção:', error);
+      logger.error('Erro ao criar produÃ§Ã£o:', error);
       throw error;
     }
   }
@@ -336,7 +336,7 @@ export class BovinextSupabaseService {
         ganho_medio_diario: producao.ganho_medio_diario ?? producao.ganhoMedio
       })) as IProducao[];
     } catch (error) {
-      logger.error('Erro ao buscar produção:', error);
+      logger.error('Erro ao buscar produÃ§Ã£o:', error);
       throw error;
     }
   }
@@ -352,7 +352,7 @@ export class BovinextSupabaseService {
         ganho_medio_diario: (data as any).ganho_medio_diario ?? (data as any).ganhoMedio
       } as IProducao;
     } catch (error) {
-      logger.error('Erro ao buscar produção:', error);
+      logger.error('Erro ao buscar produÃ§Ã£o:', error);
       throw error;
     }
   }
@@ -367,7 +367,7 @@ export class BovinextSupabaseService {
         ganho_medio_diario: data.ganho_medio_diario ?? data.ganhoMedio
       } as IProducao;
     } catch (error) {
-      logger.error('Erro ao atualizar produção:', error);
+      logger.error('Erro ao atualizar produÃ§Ã£o:', error);
       throw error;
     }
   }
@@ -376,7 +376,7 @@ export class BovinextSupabaseService {
     try {
       return await supabaseWrapper.deleteProducao(producaoId);
     } catch (error) {
-      logger.error('Erro ao deletar produção:', error);
+      logger.error('Erro ao deletar produÃ§Ã£o:', error);
       throw error;
     }
   }
@@ -501,7 +501,7 @@ export class BovinextSupabaseService {
   }
 
   // =====================================================
-  // PREÇOS DE MERCADO
+  // PREÃ‡OS DE MERCADO
   // =====================================================
   
   async getPrecosMercado(): Promise<any[]> {
@@ -509,13 +509,13 @@ export class BovinextSupabaseService {
       const data = await supabaseWrapper.selectPrecosMercado();
       return data;
     } catch (error) {
-      logger.error('Erro ao buscar preços de mercado:', error);
+      logger.error('Erro ao buscar preÃ§os de mercado:', error);
       throw error;
     }
   }
 
   // =====================================================
-  // ESTATÍSTICAS E DASHBOARD
+  // ESTATÃSTICAS E DASHBOARD
   // =====================================================
   
   async getEstatisticasDashboard(userId: string): Promise<IEstatisticasDashboard> {
@@ -523,10 +523,11 @@ export class BovinextSupabaseService {
       const stats = await supabaseWrapper.getEstatisticasDashboard(userId);
       return stats as IEstatisticasDashboard;
     } catch (error) {
-      logger.error('Erro ao buscar estatísticas:', error);
+      logger.error('Erro ao buscar estatÃ­sticas:', error);
       throw error;
     }
   }
 }
 
-export const bovinextSupabaseService = new BovinextSupabaseService();
+export const whilabSupabaseService = new WhiLabSupabaseService();
+

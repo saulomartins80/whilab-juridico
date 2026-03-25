@@ -1,11 +1,11 @@
-// =====================================================
-// BOVINEXT - CONTROLLER DE MANEJO
-// Gestão sanitária e produtiva com Supabase
+﻿// =====================================================
+// WHILAB - CONTROLLER DE MANEJO
+// GestÃ£o sanitÃ¡ria e produtiva com Supabase
 // =====================================================
 
 import { Request, Response } from 'express';
-import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
-import { IManejoCreate } from '../types/bovinext-supabase.types';
+import { whilabSupabaseService } from '../services/WhiLabSupabaseService';
+import { IManejoCreate } from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 
 export class ManejoController {
@@ -18,26 +18,26 @@ export class ManejoController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const manejoData: IManejoCreate = req.body;
       
-      // Validações básicas
+      // ValidaÃ§Ãµes bÃ¡sicas
       if (!manejoData.animal_id || !manejoData.tipo_manejo || !manejoData.data_manejo) {
         return res.status(400).json({ 
-          error: 'Campos obrigatórios: animal_id, tipo_manejo, data_manejo' 
+          error: 'Campos obrigatÃ³rios: animal_id, tipo_manejo, data_manejo' 
         });
       }
 
-      const manejo = await bovinextSupabaseService.createManejo(userId, manejoData);
+      const manejo = await whilabSupabaseService.createManejo(userId, manejoData);
       
-      logger.info(`Manejo criado: ${manejo.tipo_manejo} para usuário ${userId}`);
+      logger.info(`Manejo criado: ${manejo.tipo_manejo} para usuÃ¡rio ${userId}`);
       
       res.status(201).json({
         success: true,
         data: manejo,
-        message: `💉 Manejo de ${manejo.tipo_manejo} registrado com sucesso!`
+        message: `ðŸ’‰ Manejo de ${manejo.tipo_manejo} registrado com sucesso!`
       });
 
     } catch (error: any) {
@@ -53,7 +53,7 @@ export class ManejoController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { animalId, tipoManejo, dataInicio, dataFim } = req.query;
@@ -65,7 +65,7 @@ export class ManejoController {
         dataFim: dataFim as string
       };
 
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, filters);
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, filters);
       
       res.json({
         success: true,
@@ -83,14 +83,14 @@ export class ManejoController {
   }
 
   // =====================================================
-  // CALENDÁRIO SANITÁRIO
+  // CALENDÃRIO SANITÃRIO
   // =====================================================
 
   async getCalendarioSanitario(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { mes, ano } = req.query;
@@ -98,20 +98,20 @@ export class ManejoController {
       const targetMonth = mes ? Number(mes) : currentDate.getMonth() + 1;
       const targetYear = ano ? Number(ano) : currentDate.getFullYear();
 
-      // Buscar manejos do mês
+      // Buscar manejos do mÃªs
       const dataInicio = new Date(targetYear, targetMonth - 1, 1).toISOString();
       const dataFim = new Date(targetYear, targetMonth, 0).toISOString();
 
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, {
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, {
         dataInicio,
         dataFim
       });
 
-      // Buscar próximas aplicações
+      // Buscar prÃ³ximas aplicaÃ§Ãµes
       const proximoMes = new Date();
       proximoMes.setMonth(proximoMes.getMonth() + 1);
 
-      const proximasAplicacoes = await bovinextSupabaseService.getManejosByUser(userId, {
+      const proximasAplicacoes = await whilabSupabaseService.getManejosByUser(userId, {
         tipoManejo: 'vacinacao'
       });
 
@@ -137,7 +137,7 @@ export class ManejoController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao buscar calendário sanitário:', error);
+      logger.error('Erro ao buscar calendÃ¡rio sanitÃ¡rio:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -146,30 +146,30 @@ export class ManejoController {
   }
 
   // =====================================================
-  // PROTOCOLOS DE VACINAÇÃO
+  // PROTOCOLOS DE VACINAÃ‡ÃƒO
   // =====================================================
 
   async getProtocolosVacinacao(req: Request, res: Response) {
     try {
-      // Protocolos padrão de vacinação bovina
+      // Protocolos padrÃ£o de vacinaÃ§Ã£o bovina
       const protocolos = {
         bezerros: [
           {
             idade: '2-4 meses',
             vacinas: ['Clostridioses', 'Pneumonia'],
-            observacoes: 'Primeira vacinação'
+            observacoes: 'Primeira vacinaÃ§Ã£o'
           },
           {
             idade: '4-6 meses',
-            vacinas: ['Clostridioses (reforço)', 'Raiva'],
-            observacoes: 'Reforço obrigatório'
+            vacinas: ['Clostridioses (reforÃ§o)', 'Raiva'],
+            observacoes: 'ReforÃ§o obrigatÃ³rio'
           }
         ],
         novilhos: [
           {
             idade: '12-15 meses',
-            vacinas: ['Febre Aftosa', 'Brucelose (fêmeas)'],
-            observacoes: 'Vacinação anual'
+            vacinas: ['Febre Aftosa', 'Brucelose (fÃªmeas)'],
+            observacoes: 'VacinaÃ§Ã£o anual'
           }
         ],
         adultos: [
@@ -189,7 +189,7 @@ export class ManejoController {
       res.json({
         success: true,
         data: protocolos,
-        disclaimer: '⚠️ Consulte sempre um veterinário para protocolos específicos da sua região'
+        disclaimer: 'âš ï¸ Consulte sempre um veterinÃ¡rio para protocolos especÃ­ficos da sua regiÃ£o'
       });
 
     } catch (error: any) {
@@ -209,7 +209,7 @@ export class ManejoController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { dataInicio, dataFim, tipoManejo } = req.query;
@@ -219,7 +219,7 @@ export class ManejoController {
       if (dataFim) filters.dataFim = dataFim as string;
       if (tipoManejo) filters.tipoManejo = tipoManejo as string;
 
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, filters);
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, filters);
       
       // Calcular custos por tipo
       const custosPorTipo = manejos.reduce((acc: any, manejo) => {
@@ -260,3 +260,4 @@ export class ManejoController {
 }
 
 export const manejoController = new ManejoController();
+

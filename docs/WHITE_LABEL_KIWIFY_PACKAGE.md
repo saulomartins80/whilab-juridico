@@ -2,11 +2,11 @@
 
 Data: 2026-03-19
 
-Nota: este documento organiza a embalagem comercial do BoviNext e a higiene de entrega. Nao substitui revisao juridica.
+Nota: este documento organiza a embalagem comercial do WhiLab e a higiene de entrega. Nao substitui revisao juridica.
 
 ## Resumo Do Pacote
 
-O BoviNext deve ser vendido como uma base SaaS white-label media, com autenticacao, dashboard, Supabase, IA basica e docs claras de rebranding.
+O WhiLab deve ser vendido como uma base SaaS white-label media, com autenticacao, dashboard, Supabase, IA basica e docs claras de rebranding.
 
 O objetivo da embalagem e simples:
 

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
 
@@ -40,6 +41,31 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       ? 'auth'
       : 'public';
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
+      return;
+    }
+
+    const register = () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+    };
+
+    if (document.readyState === 'complete') {
+      register();
+      return;
+    }
+
+    window.addEventListener('load', register, { once: true });
+
+    return () => {
+      window.removeEventListener('load', register);
+    };
+  }, []);
+
   const page = <Component {...pageProps} />;
 
   return (
@@ -47,7 +73,20 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>{`${dashboardBranding.brandName} - Plataforma white-label`}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content="#020617" />
+        <meta
+          name="description"
+          content="App de encomendas com painel operacional, clientes, catalogo e cobrancas."
+        />
+        <meta
+          name="application-name"
+          content={`${dashboardBranding.brandName} Encomendas`}
+        />
+        <meta
+          name="apple-mobile-web-app-title"
+          content={`${dashboardBranding.brandName} Encomendas`}
+        />
+        <meta name="format-detection" content="telephone=no" />
       </Head>
 
       <ToastContainer

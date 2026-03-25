@@ -1,16 +1,16 @@
-# COMANDO MESTRE DE ENGENHARIA - BOVINEXT WHITE-LABEL PREMIUM
+# COMANDO MESTRE DE ENGENHARIA - WHILAB WHITE-LABEL PREMIUM
 
 Data: 2026-03-21
 Responsavel: Caio
-Projeto: BoviNext
+Projeto: WhiLab
 Modo oficial: base SaaS white-label premium com IA operacional
 Banco de dados oficial: Supabase
 Referencia tecnica: Finnextho
-Repositorio de execucao: BoviNext
+Repositorio de execucao: WhiLab
 
 ## Leitura Obrigatoria
 
-Este documento e a ordem operacional completa para fechar o gap atual do BoviNext e levar o produto para um estado vendavel, seguro, premium e escalavel.
+Este documento e a ordem operacional completa para fechar o gap atual do WhiLab e levar o produto para um estado vendavel, seguro, premium e escalavel.
 
 Ele deve ser seguido a risca.
 
@@ -22,7 +22,7 @@ Trate como contrato de execucao de ponta a ponta.
 
 ## Verdade Executiva
 
-Hoje o BoviNext ainda nao esta assinavel.
+Hoje o WhiLab ainda nao esta assinavel.
 
 Os problemas reais atuais sao:
 
@@ -33,7 +33,7 @@ Os problemas reais atuais sao:
 - residuos de Finnextho ainda expostos
 - working tree misturando refactor valido com ruido de commit
 
-O objetivo deste comando e transformar o BoviNext em:
+O objetivo deste comando e transformar o WhiLab em:
 
 - produto white-label premium de ticket alto
 - base vendavel na faixa de `R$ 1.997 a R$ 2.497`
@@ -45,7 +45,7 @@ O objetivo deste comando e transformar o BoviNext em:
 
 ## Tese Oficial Do Produto
 
-O BoviNext deve ser vendido como:
+O WhiLab deve ser vendido como:
 
 - base SaaS white-label premium com IA
 - shell visual premium e rebrandavel
@@ -57,7 +57,7 @@ O BoviNext deve ser vendido como:
 - docs de setup, deploy e rebranding
 - demo vertical isolada
 
-O BoviNext nao deve ser vendido como:
+O WhiLab nao deve ser vendido como:
 
 - clone da Finnextho
 - ERP completo
@@ -71,7 +71,7 @@ O BoviNext nao deve ser vendido como:
 Regra de ouro:
 
 - `Finnextho` e referencia tecnica
-- `BoviNext` e produto proprio
+- `WhiLab` e produto proprio
 
 O time pode herdar da Finnextho:
 
@@ -99,7 +99,7 @@ O time nao pode herdar da Finnextho:
 Regra tecnica:
 
 - usar Finn como espelho
-- construir no BoviNext com Supabase como base de dados oficial
+- construir no WhiLab com Supabase como base de dados oficial
 
 ## Arquitetura Canonica
 
@@ -378,7 +378,7 @@ Entregas:
 
 ## Estrutura De Banco No Supabase
 
-O Supabase e a base oficial de dados do BoviNext.
+O Supabase e a base oficial de dados do WhiLab.
 
 Isso exige:
 
@@ -433,10 +433,10 @@ O time deve puxar do Finn:
 O time nao deve puxar do Finn:
 
 - peso estrutural desnecessario
-- naming de negocio que nao pertence ao BoviNext
+- naming de negocio que nao pertence ao WhiLab
 - fiscal, business e multiempresa sem tese
 - UX inchada
-- claims de produto que o BoviNext ainda nao sustenta
+- claims de produto que o WhiLab ainda nao sustenta
 
 ## Modelo De Trabalho Dos Engenheiros
 
@@ -563,7 +563,7 @@ So considerar o produto pronto para assinatura quando:
 
 ## Veredito Operacional
 
-O BoviNext so podera ser chamado de:
+O WhiLab so podera ser chamado de:
 
 - `premium`
 - `white-label`
@@ -599,4 +599,4 @@ escolha sempre:
 - verdade tecnica
 - produto sustentavel
 
-Esse e o comando mestre oficial do BoviNext.
+Esse e o comando mestre oficial do WhiLab.

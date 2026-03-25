@@ -1,14 +1,14 @@
-// ===== INTERFACES PARA ESTADO DA CONVERSA =====
+﻿// ===== INTERFACES PARA ESTADO DA CONVERSA =====
 export interface ConversationState {
   chatId: string;
   userId: string;
   currentAction: string | null;        // 'CREATE_GOAL', 'CREATE_INVESTMENT', 'CREATE_TRANSACTION'
   pendingEntities: any;               // { valor: 5000, meta: 'Equipamento', tipo: 'Trator' }
   confirmationRequired: boolean;
-  awaitingConfirmation: boolean;      // Flag para indicar se está aguardando confirmação
-  entities: any;                      // Entidades extraídas para a ação
+  awaitingConfirmation: boolean;      // Flag para indicar se estÃ¡ aguardando confirmaÃ§Ã£o
+  entities: any;                      // Entidades extraÃ­das para a aÃ§Ã£o
   lastUpdated: Date;
-  conversationFlow: string[];         // Histórico de ações na conversa
+  conversationFlow: string[];         // HistÃ³rico de aÃ§Ãµes na conversa
   missingFields: string[];           // Campos que ainda precisam ser preenchidos
 }
 
@@ -20,26 +20,26 @@ export interface EntityContext {
   timestamp: Date;
 }
 
-// ===== GERENCIADOR DE CONTEXTO INTELIGENTE ADAPTADO PARA BOVINEXT =====
+// ===== GERENCIADOR DE CONTEXTO INTELIGENTE ADAPTADO PARA WHILAB =====
 export class ContextManager {
   private conversationStates = new Map<string, ConversationState>();
   private entityContexts = new Map<string, Map<string, EntityContext>>();
   private readonly TTL = 30 * 60 * 1000; // 30 minutos
 
-  // ===== MÉTODOS PRINCIPAIS =====
+  // ===== MÃ‰TODOS PRINCIPAIS =====
   
   /**
-   * Obtém o estado atual da conversa (OTIMIZADO)
+   * ObtÃ©m o estado atual da conversa (OTIMIZADO)
    */
   getConversationState(chatId: string): ConversationState | null {
-    // ⚡ OTIMIZAÇÃO: Map lookup direto (0.01ms)
+    // âš¡ OTIMIZAÃ‡ÃƒO: Map lookup direto (0.01ms)
     const state = this.conversationStates.get(chatId);
     if (!state) return null;
 
-    // ⚡ OTIMIZAÇÃO: Verificação de expiração mais rápida
+    // âš¡ OTIMIZAÃ‡ÃƒO: VerificaÃ§Ã£o de expiraÃ§Ã£o mais rÃ¡pida
     const now = Date.now();
     if (now - state.lastUpdated.getTime() > this.TTL) {
-      // ⚡ OTIMIZAÇÃO: Limpeza assíncrona (não bloqueia resposta)
+      // âš¡ OTIMIZAÃ‡ÃƒO: Limpeza assÃ­ncrona (nÃ£o bloqueia resposta)
       setImmediate(() => this.clearConversationState(chatId));
       return null;
     }
@@ -57,7 +57,7 @@ export class ContextManager {
     entities: any,
     requiresConfirmation: boolean = false
   ): void {
-    // ⚡ OTIMIZAÇÃO: Operações em lote
+    // âš¡ OTIMIZAÃ‡ÃƒO: OperaÃ§Ãµes em lote
     const now = new Date();
     
     // Obter estado atual ou criar novo
@@ -66,7 +66,7 @@ export class ContextManager {
       state = this.createNewState(chatId, userId);
     }
 
-    // ⚡ OTIMIZAÇÃO: Atualização em lote
+    // âš¡ OTIMIZAÃ‡ÃƒO: AtualizaÃ§Ã£o em lote
     Object.assign(state, {
       currentAction: action,
       pendingEntities: { ...state.pendingEntities, ...entities },
@@ -76,23 +76,23 @@ export class ContextManager {
       lastUpdated: now
     });
     
-    // ⚡ OTIMIZAÇÃO: Manter apenas últimas 5 ações (reduzido de 10)
+    // âš¡ OTIMIZAÃ‡ÃƒO: Manter apenas Ãºltimas 5 aÃ§Ãµes (reduzido de 10)
     state.conversationFlow.push(action);
     if (state.conversationFlow.length > 5) {
       state.conversationFlow = state.conversationFlow.slice(-5);
     }
 
-    // ⚡ OTIMIZAÇÃO: Salvar estado (Map.set é instantâneo)
+    // âš¡ OTIMIZAÃ‡ÃƒO: Salvar estado (Map.set Ã© instantÃ¢neo)
     this.conversationStates.set(chatId, state);
     
-    // ⚡ OTIMIZAÇÃO: Contexto das entidades assíncrono
+    // âš¡ OTIMIZAÃ‡ÃƒO: Contexto das entidades assÃ­ncrono
     setImmediate(() => this.updateEntityContext(chatId, entities));
     
     console.log(`[ContextManager] Updated state for ${chatId}: ${action}`);
   }
 
   /**
-   * Completa uma ação com entidades adicionais
+   * Completa uma aÃ§Ã£o com entidades adicionais
    */
   completeAction(chatId: string, entities: any): boolean {
     const state = this.getConversationState(chatId);
@@ -102,11 +102,11 @@ export class ContextManager {
     state.pendingEntities = { ...state.pendingEntities, ...entities };
     state.lastUpdated = new Date();
 
-    // Verificar se tem todos os campos necessários
+    // Verificar se tem todos os campos necessÃ¡rios
     const missingFields = this.getMissingFields(state.currentAction, state.pendingEntities);
     state.missingFields = missingFields;
 
-    // Se não tem campos faltando, ação está completa
+    // Se nÃ£o tem campos faltando, aÃ§Ã£o estÃ¡ completa
     if (missingFields.length === 0) {
       state.confirmationRequired = false;
       console.log(`[ContextManager] Action ${state.currentAction} completed for ${chatId}`);
@@ -117,7 +117,7 @@ export class ContextManager {
   }
 
   /**
-   * Limpa o estado da conversa (após ação completada)
+   * Limpa o estado da conversa (apÃ³s aÃ§Ã£o completada)
    */
   clearConversationState(chatId: string): void {
     this.conversationStates.delete(chatId);
@@ -126,7 +126,7 @@ export class ContextManager {
   }
 
   /**
-   * Obtém contexto das entidades para uma conversa
+   * ObtÃ©m contexto das entidades para uma conversa
    */
   getEntityContext(chatId: string, entityType: string): EntityContext | null {
     const contexts = this.entityContexts.get(chatId);
@@ -143,7 +143,7 @@ export class ContextManager {
     return state !== null && state.currentAction !== null;
   }
 
-  // ===== MÉTODOS PRIVADOS =====
+  // ===== MÃ‰TODOS PRIVADOS =====
 
   private createNewState(chatId: string, userId: string): ConversationState {
     return {
@@ -196,10 +196,10 @@ export class ContextManager {
     return requirements[action] || [];
   }
 
-  // ===== MÉTODOS DE UTILIDADE =====
+  // ===== MÃ‰TODOS DE UTILIDADE =====
 
   /**
-   * Obtém estatísticas do contexto
+   * ObtÃ©m estatÃ­sticas do contexto
    */
   getStats(): any {
     return {
@@ -211,7 +211,7 @@ export class ContextManager {
   }
 
   private getMemoryUsage(): number {
-    // Estimativa simples de uso de memória
+    // Estimativa simples de uso de memÃ³ria
     let totalSize = 0;
     
     // Tamanho dos estados
@@ -249,10 +249,11 @@ export class ContextManager {
   }
 }
 
-// ===== INSTÂNCIA SINGLETON =====
+// ===== INSTÃ‚NCIA SINGLETON =====
 export const contextManager = new ContextManager();
 
-// ===== LIMPEZA AUTOMÁTICA =====
+// ===== LIMPEZA AUTOMÃTICA =====
 setInterval(() => {
   contextManager.cleanupExpiredStates();
 }, 5 * 60 * 1000); // A cada 5 minutos
+

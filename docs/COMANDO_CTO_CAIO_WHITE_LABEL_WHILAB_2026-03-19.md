@@ -1,19 +1,19 @@
-# COMANDO CTO CAIO - BOVINEXT WHITE-LABEL
+# COMANDO CTO CAIO - WHILAB WHITE-LABEL
 
 Data: 2026-03-19
 Responsavel: Caio
-Projeto: BoviNext
+Projeto: WhiLab
 Modo de operacao: white-label SaaS com IA
 
 ## Leitura Obrigatoria
 
-Este documento e o manual operacional para qualquer engenheiro que assumir o BoviNext daqui para frente.
+Este documento e o manual operacional para qualquer engenheiro que assumir o WhiLab daqui para frente.
 
 Nao trate este repositorio como extensao da Finnextho.
 Nao trate este repositorio como software de pecuaria pronto para qualquer cliente.
 Nao trate este repositorio como template cru pronto para vender sem criterio.
 
-Trate o BoviNext como um ativo de produto em recuperacao e productizacao.
+Trate o WhiLab como um ativo de produto em recuperacao e productizacao.
 
 ## Missao
 
@@ -45,7 +45,7 @@ Regra adicional:
 
 ## Tese Oficial
 
-O BoviNext deve ser vendido como:
+O WhiLab deve ser vendido como:
 
 - base SaaS white-label com IA
 - rebranding rapido
@@ -56,7 +56,7 @@ O BoviNext deve ser vendido como:
 - documentacao de setup e deploy
 - demo vertical pronta para inspirar customizacao
 
-O BoviNext nao deve ser vendido como:
+O WhiLab nao deve ser vendido como:
 
 - software universal plug and play
 - software de pecuaria que serve magicamente para qualquer nicho
@@ -95,21 +95,21 @@ Mas:
 - nao copie branding
 - nao copie promessa comercial
 - nao injete dependencias sem criterio
-- nao transforme o BoviNext em mini Finnextho por impulso
+- nao transforme o WhiLab em mini Finnextho por impulso
 
 Regra operacional:
 
-- `BoviNext` = projeto ativo
+- `WhiLab` = projeto ativo
 - `Finnextho` = espelho tecnico de referencia
 
 ## Documentos Canonicos
 
 Leia nesta ordem:
 
-1. [docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_BOVINEXT_2026-03-19.md](C:/Users/Saulo/bovinext/docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_BOVINEXT_2026-03-19.md)
-2. [docs/MAPA_EXTRACAO_WHITE_LABEL_BOVINEXT_2026-03-19.md](C:/Users/Saulo/bovinext/docs/MAPA_EXTRACAO_WHITE_LABEL_BOVINEXT_2026-03-19.md)
-3. [docs/WHITE_LABEL_KIWIFY_PACKAGE.md](C:/Users/Saulo/bovinext/docs/WHITE_LABEL_KIWIFY_PACKAGE.md)
-4. [docs/SUPABASE_NOVO_PROJETO_BOVINEXT_2026-03-19.md](C:/Users/Saulo/bovinext/docs/SUPABASE_NOVO_PROJETO_BOVINEXT_2026-03-19.md)
+1. [docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md](C:/Users/Saulo/whilab/docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md)
+2. [docs/MAPA_EXTRACAO_WHITE_LABEL_WHILAB_2026-03-19.md](C:/Users/Saulo/whilab/docs/MAPA_EXTRACAO_WHITE_LABEL_WHILAB_2026-03-19.md)
+3. [docs/WHITE_LABEL_KIWIFY_PACKAGE.md](C:/Users/Saulo/whilab/docs/WHITE_LABEL_KIWIFY_PACKAGE.md)
+4. [docs/SUPABASE_NOVO_PROJETO_WHILAB_2026-03-19.md](C:/Users/Saulo/whilab/docs/SUPABASE_NOVO_PROJETO_WHILAB_2026-03-19.md)
 
 Este documento e o orquestrador. Os demais sao apoio e detalhamento.
 
@@ -259,7 +259,7 @@ sempre escolher:
 
 ## Checklist De Assinatura
 
-So considerar o BoviNext pronto para venda quando tudo abaixo for verdadeiro:
+So considerar o WhiLab pronto para venda quando tudo abaixo for verdadeiro:
 
 - a home vender a tese white-label
 - o dashboard parecer produto serio
@@ -284,7 +284,7 @@ Comece sempre nesta ordem:
 
 ## Veredito Executivo
 
-O BoviNext nao deve morrer.
+O WhiLab nao deve morrer.
 
 Ele tambem nao deve ser vendido cru.
 

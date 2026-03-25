@@ -1,12 +1,12 @@
-// =====================================================
-// BOVINEXT - CONTROLLER DE ALERTAS
-// Sistema de notificações e alertas pecuários
+﻿// =====================================================
+// WHILAB - CONTROLLER DE ALERTAS
+// Sistema de notificaÃ§Ãµes e alertas pecuÃ¡rios
 // =====================================================
 
 import { Request, Response } from 'express';
-import { bovinextSupabaseService } from '../services/BovinextSupabaseService';
-import { bovinextAIService } from '../services/BovinextAIService';
-import { IAlertaCreate } from '../types/bovinext-supabase.types';
+import { whilabSupabaseService } from '../services/WhiLabSupabaseService';
+import { whilabAIService } from '../services/WhiLabAIService';
+import { IAlertaCreate } from '../types/whilab-supabase.types';
 import logger from '../utils/logger';
 
 export class AlertasController {
@@ -19,26 +19,26 @@ export class AlertasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const alertaData: IAlertaCreate = req.body;
       
-      // Validações básicas
+      // ValidaÃ§Ãµes bÃ¡sicas
       if (!alertaData.tipo_alerta || !alertaData.titulo || !alertaData.mensagem) {
         return res.status(400).json({ 
-          error: 'Campos obrigatórios: tipo_alerta, titulo, mensagem' 
+          error: 'Campos obrigatÃ³rios: tipo_alerta, titulo, mensagem' 
         });
       }
 
-      const alerta = await bovinextSupabaseService.createAlerta(userId, alertaData);
+      const alerta = await whilabSupabaseService.createAlerta(userId, alertaData);
       
-      logger.info(`Alerta criado: ${alerta.tipo_alerta} para usuário ${userId}`);
+      logger.info(`Alerta criado: ${alerta.tipo_alerta} para usuÃ¡rio ${userId}`);
       
       res.status(201).json({
         success: true,
         data: alerta,
-        message: `🚨 Alerta de ${alerta.tipo_alerta} criado com sucesso!`
+        message: `ðŸš¨ Alerta de ${alerta.tipo_alerta} criado com sucesso!`
       });
 
     } catch (error: any) {
@@ -54,12 +54,12 @@ export class AlertasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { tipo, prioridade, status, limit = 50 } = req.query;
       
-      const alertas = await bovinextSupabaseService.getAlertasByUser(userId);
+      const alertas = await whilabSupabaseService.getAlertasByUser(userId);
       
       // Ordenar por prioridade e data
       const alertasOrdenados = alertas
@@ -87,19 +87,19 @@ export class AlertasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const { id } = req.params;
       
-      const alertaAtualizado = await bovinextSupabaseService.updateAlerta(id, {
+      const alertaAtualizado = await whilabSupabaseService.updateAlerta(id, {
         lido: true
       });
 
       res.json({
         success: true,
         data: alertaAtualizado,
-        message: '✅ Alerta marcado como lido'
+        message: 'âœ… Alerta marcado como lido'
       });
 
     } catch (error: any) {
@@ -119,20 +119,20 @@ export class AlertasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
-      // Buscar dados para análise
-      const animais = await bovinextSupabaseService.getAnimaisByUser(userId, {});
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, {});
-      const producoes = await bovinextSupabaseService.getProducaoByUser(userId, {});
+      // Buscar dados para anÃ¡lise
+      const animais = await whilabSupabaseService.getAnimaisByUser(userId, {});
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, {});
+      const producoes = await whilabSupabaseService.getProducaoByUser(userId, {});
 
       // Gerar alertas com IA (mock por enquanto)
       const alertasIA = [
         {
           tipo: 'sanitario',
-          titulo: 'Vacinação Pendente',
-          mensagem: 'Alguns animais precisam de vacinação',
+          titulo: 'VacinaÃ§Ã£o Pendente',
+          mensagem: 'Alguns animais precisam de vacinaÃ§Ã£o',
           prioridade: 'media' as const,
           animalId: animais[0]?.id,
           dataPrevista: new Date().toISOString()
@@ -143,7 +143,7 @@ export class AlertasController {
       const alertasSalvos = [];
       for (const alertaIA of alertasIA) {
         try {
-          const alerta = await bovinextSupabaseService.createAlerta(userId, {
+          const alerta = await whilabSupabaseService.createAlerta(userId, {
             tipo_alerta: alertaIA.tipo,
             titulo: alertaIA.titulo,
             mensagem: alertaIA.mensagem,
@@ -159,7 +159,7 @@ export class AlertasController {
       res.json({
         success: true,
         data: alertasSalvos,
-        message: `🤖 ${alertasSalvos.length} alertas inteligentes gerados!`
+        message: `ðŸ¤– ${alertasSalvos.length} alertas inteligentes gerados!`
       });
 
     } catch (error: any) {
@@ -172,22 +172,22 @@ export class AlertasController {
   }
 
   // =====================================================
-  // ALERTAS SANITÁRIOS
+  // ALERTAS SANITÃRIOS
   // =====================================================
 
   async getAlertasSanitarios(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const hoje = new Date();
       const proximoMes = new Date();
       proximoMes.setMonth(proximoMes.getMonth() + 1);
 
-      // Buscar manejos com próximas aplicações
-      const manejos = await bovinextSupabaseService.getManejosByUser(userId, {});
+      // Buscar manejos com prÃ³ximas aplicaÃ§Ãµes
+      const manejos = await whilabSupabaseService.getManejosByUser(userId, {});
       
       const alertasSanitarios = [];
 
@@ -205,7 +205,7 @@ export class AlertasController {
 
         alertasSanitarios.push({
           tipo: 'vacinacao',
-          titulo: `Vacinação Pendente`,
+          titulo: `VacinaÃ§Ã£o Pendente`,
           mensagem: `Vacina deve ser aplicada em ${diasRestantes} dias`,
           prioridade: diasRestantes <= 7 ? 'alta' : diasRestantes <= 15 ? 'media' : 'baixa',
           animalId: vacina.animal_id,
@@ -214,7 +214,7 @@ export class AlertasController {
         });
       }
 
-      // Verificar vermifugações atrasadas
+      // Verificar vermifugaÃ§Ãµes atrasadas
       const ultimasVermifugacoes = manejos
         .filter(m => m.tipo_manejo === 'vermifugacao')
         .reduce((acc: any, m) => {
@@ -233,8 +233,8 @@ export class AlertasController {
         if (diasDesde > 90) { // Mais de 3 meses
           alertasSanitarios.push({
             tipo: 'vermifugacao',
-            titulo: 'Vermifugação Atrasada',
-            mensagem: `Animal não recebe vermífugo há ${diasDesde} dias`,
+            titulo: 'VermifugaÃ§Ã£o Atrasada',
+            mensagem: `Animal nÃ£o recebe vermÃ­fugo hÃ¡ ${diasDesde} dias`,
             prioridade: diasDesde > 180 ? 'alta' : 'media',
             animalId: ultima.animal_id,
             categoria: 'sanitario'
@@ -248,7 +248,7 @@ export class AlertasController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao buscar alertas sanitários:', error);
+      logger.error('Erro ao buscar alertas sanitÃ¡rios:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -257,14 +257,14 @@ export class AlertasController {
   }
 
   // =====================================================
-  // ALERTAS DE PRODUÇÃO
+  // ALERTAS DE PRODUÃ‡ÃƒO
   // =====================================================
 
   async getAlertasProducao(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       const alertasProducao = [];
@@ -272,12 +272,12 @@ export class AlertasController {
       const seteDiasAtras = new Date();
       seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
 
-      // Buscar produções recentes
-      const producoes = await bovinextSupabaseService.getProducaoByUser(userId, {
+      // Buscar produÃ§Ãµes recentes
+      const producoes = await whilabSupabaseService.getProducaoByUser(userId, {
         dataInicio: seteDiasAtras.toISOString()
       });
 
-      // Verificar queda na produção
+      // Verificar queda na produÃ§Ã£o
       const producaoLeite = producoes.filter(p => p.tipo === 'leite');
       const leitePorAnimal = producaoLeite.reduce((acc: any, p) => {
         const animalId = p.animal_id;
@@ -299,8 +299,8 @@ export class AlertasController {
           if (reducao > 20) { // Queda de mais de 20%
             alertasProducao.push({
               tipo: 'producao',
-              titulo: 'Queda na Produção de Leite',
-              mensagem: `Redução de ${reducao.toFixed(1)}% na produção nos últimos dias`,
+              titulo: 'Queda na ProduÃ§Ã£o de Leite',
+              mensagem: `ReduÃ§Ã£o de ${reducao.toFixed(1)}% na produÃ§Ã£o nos Ãºltimos dias`,
               prioridade: reducao > 40 ? 'alta' : 'media',
               animalId,
               categoria: 'producao'
@@ -310,7 +310,7 @@ export class AlertasController {
       });
 
       // Verificar animais sem registro de peso recente
-      const animais = await bovinextSupabaseService.getAnimaisByUser(userId, {});
+      const animais = await whilabSupabaseService.getAnimaisByUser(userId, {});
       const pesagensRecentes = producoes.filter(p => p.tipo === 'peso');
       const animaisComPeso = new Set(pesagensRecentes.map(p => p.animal_id));
 
@@ -324,7 +324,7 @@ export class AlertasController {
           alertasProducao.push({
             tipo: 'pesagem',
             titulo: 'Pesagem Pendente',
-            mensagem: `Animal não tem registro de peso nos últimos 7 dias`,
+            mensagem: `Animal nÃ£o tem registro de peso nos Ãºltimos 7 dias`,
             prioridade: 'baixa',
             animalId: animal.id,
             categoria: 'producao'
@@ -338,7 +338,7 @@ export class AlertasController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao buscar alertas de produção:', error);
+      logger.error('Erro ao buscar alertas de produÃ§Ã£o:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -354,11 +354,11 @@ export class AlertasController {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
       // Buscar todos os alertas
-      const alertas = await bovinextSupabaseService.getAlertasByUser(userId);
+      const alertas = await whilabSupabaseService.getAlertasByUser(userId);
       
       // Contar por status
       const porStatus = alertas.reduce((acc: any, a) => {
@@ -376,10 +376,10 @@ export class AlertasController {
         return acc;
       }, {});
 
-      // Alertas críticos (não lidos)
+      // Alertas crÃ­ticos (nÃ£o lidos)
       const alertasCriticos = alertas.filter(a => !a.lido);
 
-      // Alertas recentes (últimas 24h)
+      // Alertas recentes (Ãºltimas 24h)
       const ontemAgora = new Date();
       ontemAgora.setDate(ontemAgora.getDate() - 1);
       
@@ -416,17 +416,17 @@ export class AlertasController {
   }
 
   // =====================================================
-  // CONFIGURAÇÕES DE NOTIFICAÇÃO
+  // CONFIGURAÃ‡Ã•ES DE NOTIFICAÃ‡ÃƒO
   // =====================================================
 
   async getConfiguracoes(req: Request, res: Response) {
     try {
       const userId = req.user?.uid;
       if (!userId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
+        return res.status(401).json({ error: 'UsuÃ¡rio nÃ£o autenticado' });
       }
 
-      // Configurações padrão (em produção, viria do banco)
+      // ConfiguraÃ§Ãµes padrÃ£o (em produÃ§Ã£o, viria do banco)
       const configuracoes = {
         notificacoesPush: true,
         notificacoesSMS: false,
@@ -452,7 +452,7 @@ export class AlertasController {
       });
 
     } catch (error: any) {
-      logger.error('Erro ao buscar configurações:', error);
+      logger.error('Erro ao buscar configuraÃ§Ãµes:', error);
       res.status(500).json({
         error: 'Erro interno do servidor',
         details: error.message
@@ -462,3 +462,4 @@ export class AlertasController {
 }
 
 export const alertasController = new AlertasController();
+

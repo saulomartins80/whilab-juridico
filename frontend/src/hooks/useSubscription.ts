@@ -13,7 +13,7 @@ export const useSubscription = (userId: string | undefined) => {
   }>({ subscription: null, loading: false, error: null });
 
   useEffect(() => {
-    // Assinaturas desativadas no BOVINEXT
+    // Assinaturas desativadas neste ambiente
     setState({ subscription: null, loading: false, error: null });
   }, [userId]);
 

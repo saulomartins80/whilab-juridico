@@ -35,7 +35,7 @@ export function useAuthSubscription(): UseAuthSubscriptionReturn {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const token = 'mock-token'; // Mock token for BOVINEXT development
+      const token = 'mock-token'; // Mock token for WhiLab development
       const res = await fetch(`/api/subscriptions/${user.uid}`, {
         headers: { 
           'Content-Type': 'application/json',

@@ -1,14 +1,14 @@
--- =====================================================
--- BOVINEXT - CRIAÇÃO DE TABELAS NO SUPABASE
--- Script para criar todas as tabelas necessárias
+﻿-- =====================================================
+-- WHILAB - CRIAÃ‡ÃƒO DE TABELAS NO SUPABASE
+-- Script para criar todas as tabelas necessÃ¡rias
 -- =====================================================
 
--- Extensões necessárias
+-- ExtensÃµes necessÃ¡rias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- =====================================================
--- 1. USUÁRIOS E FAZENDAS
+-- 1. USUÃRIOS E FAZENDAS
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS users (
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS vendas_animais (
 );
 
 -- =====================================================
--- 5. PRODUÇÃO
+-- 5. PRODUÃ‡ÃƒO
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS producao (
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS producao (
 );
 
 -- =====================================================
--- 6. TRANSAÇÕES FINANCEIRAS
+-- 6. TRANSAÃ‡Ã•ES FINANCEIRAS
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS transacoes (
@@ -195,19 +195,19 @@ CREATE TABLE IF NOT EXISTS metas (
 CREATE TABLE IF NOT EXISTS chat_messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     chat_id VARCHAR(255) NOT NULL, -- ID da conversa
-    user_id VARCHAR(255) NOT NULL, -- Firebase UID do usuário
+    user_id VARCHAR(255) NOT NULL, -- Firebase UID do usuÃ¡rio
     sender VARCHAR(20) NOT NULL CHECK (sender IN ('user', 'assistant')),
     content TEXT NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    metadata JSONB DEFAULT '{}', -- Metadados da mensagem (análise, confiança, etc.)
-    expires_at TIMESTAMP WITH TIME ZONE, -- Data de expiração da mensagem
+    metadata JSONB DEFAULT '{}', -- Metadados da mensagem (anÃ¡lise, confianÃ§a, etc.)
+    expires_at TIMESTAMP WITH TIME ZONE, -- Data de expiraÃ§Ã£o da mensagem
     is_important BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- =====================================================
--- 10. PREÇOS DE MERCADO
+-- 10. PREÃ‡OS DE MERCADO
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS precos_mercado (
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS precos_mercado (
 );
 
 -- =====================================================
--- 11. ALERTAS E NOTIFICAÇÕES
+-- 11. ALERTAS E NOTIFICAÃ‡Ã•ES
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS alertas (
@@ -239,10 +239,10 @@ CREATE TABLE IF NOT EXISTS alertas (
 );
 
 -- =====================================================
--- ÍNDICES PARA PERFORMANCE
+-- ÃNDICES PARA PERFORMANCE
 -- =====================================================
 
--- Usuários
+-- UsuÃ¡rios
 CREATE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(firebase_uid);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
@@ -262,12 +262,12 @@ CREATE INDEX IF NOT EXISTS idx_manejos_tipo ON manejos(tipo_manejo);
 CREATE INDEX IF NOT EXISTS idx_vendas_user_id ON vendas(user_id);
 CREATE INDEX IF NOT EXISTS idx_vendas_data ON vendas(data_venda);
 
--- Produção
+-- ProduÃ§Ã£o
 CREATE INDEX IF NOT EXISTS idx_producao_user_id ON producao(user_id);
 CREATE INDEX IF NOT EXISTS idx_producao_animal_id ON producao(animal_id);
 CREATE INDEX IF NOT EXISTS idx_producao_data ON producao(data_producao);
 
--- Transações
+-- TransaÃ§Ãµes
 CREATE INDEX IF NOT EXISTS idx_transacoes_user_id ON transacoes(user_id);
 CREATE INDEX IF NOT EXISTS idx_transacoes_data ON transacoes(data);
 CREATE INDEX IF NOT EXISTS idx_transacoes_tipo ON transacoes(tipo);
@@ -331,10 +331,10 @@ DROP TRIGGER IF EXISTS update_chat_messages_updated_at ON chat_messages;
 CREATE TRIGGER update_chat_messages_updated_at BEFORE UPDATE ON chat_messages FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- =====================================================
--- VIEWS PARA RELATÓRIOS
+-- VIEWS PARA RELATÃ“RIOS
 -- =====================================================
 
--- View: Resumo do Rebanho por Usuário
+-- View: Resumo do Rebanho por UsuÃ¡rio
 CREATE OR REPLACE VIEW vw_resumo_rebanho AS
 SELECT
     u.id as user_id,
@@ -366,7 +366,7 @@ LEFT JOIN vendas v ON u.id = v.user_id
 GROUP BY u.id, u.fazenda_nome, DATE_TRUNC('month', v.data_venda);
 
 -- =====================================================
--- POLÍTICAS RLS (ROW LEVEL SECURITY)
+-- POLÃTICAS RLS (ROW LEVEL SECURITY)
 -- =====================================================
 
 -- Habilitar RLS em todas as tabelas
@@ -382,13 +382,13 @@ ALTER TABLE metas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE alertas ENABLE ROW LEVEL SECURITY;
 
--- Políticas para usuários (cada usuário só vê seus dados)
+-- PolÃ­ticas para usuÃ¡rios (cada usuÃ¡rio sÃ³ vÃª seus dados)
 DROP POLICY IF EXISTS "Users can view own data" ON users;
 CREATE POLICY "Users can view own data" ON users FOR SELECT USING (firebase_uid = auth.jwt() ->> 'sub');
 DROP POLICY IF EXISTS "Users can update own data" ON users;
 CREATE POLICY "Users can update own data" ON users FOR UPDATE USING (firebase_uid = auth.jwt() ->> 'sub');
 
--- Políticas para animais
+-- PolÃ­ticas para animais
 DROP POLICY IF EXISTS "Users can view own animals" ON animais;
 CREATE POLICY "Users can view own animals" ON animais FOR SELECT USING (user_id IN (SELECT id FROM users WHERE firebase_uid = auth.jwt() ->> 'sub'));
 DROP POLICY IF EXISTS "Users can insert own animals" ON animais;
@@ -398,7 +398,7 @@ CREATE POLICY "Users can update own animals" ON animais FOR UPDATE USING (user_i
 DROP POLICY IF EXISTS "Users can delete own animals" ON animais;
 CREATE POLICY "Users can delete own animals" ON animais FOR DELETE USING (user_id IN (SELECT id FROM users WHERE firebase_uid = auth.jwt() ->> 'sub'));
 
--- Aplicar políticas similares para outras tabelas
+-- Aplicar polÃ­ticas similares para outras tabelas
 DROP POLICY IF EXISTS "Users can manage own manejos" ON manejos;
 CREATE POLICY "Users can manage own manejos" ON manejos FOR ALL USING (user_id IN (SELECT id FROM users WHERE firebase_uid = auth.jwt() ->> 'sub'));
 DROP POLICY IF EXISTS "Users can manage own vendas" ON vendas;
@@ -406,19 +406,19 @@ CREATE POLICY "Users can manage own vendas" ON vendas FOR ALL USING (user_id IN 
 DROP POLICY IF EXISTS "Users can manage own producao" ON producao;
 CREATE POLICY "Users can manage own producao" ON producao FOR ALL USING (user_id IN (SELECT id FROM users WHERE firebase_uid = auth.jwt() ->> 'sub'));
 
--- Políticas para transações (usa Firebase UID diretamente)
+-- PolÃ­ticas para transaÃ§Ãµes (usa Firebase UID diretamente)
 DROP POLICY IF EXISTS "Users can manage own transacoes" ON transacoes;
 CREATE POLICY "Users can manage own transacoes" ON transacoes FOR ALL USING (user_id = auth.jwt() ->> 'sub');
 
--- Políticas para investimentos (usa Firebase UID diretamente)
+-- PolÃ­ticas para investimentos (usa Firebase UID diretamente)
 DROP POLICY IF EXISTS "Users can manage own investimentos" ON investimentos;
 CREATE POLICY "Users can manage own investimentos" ON investimentos FOR ALL USING (user_id = auth.jwt() ->> 'sub');
 
--- Políticas para metas
+-- PolÃ­ticas para metas
 DROP POLICY IF EXISTS "Users can manage own metas" ON metas;
 CREATE POLICY "Users can manage own metas" ON metas FOR ALL USING (user_id IN (SELECT id FROM users WHERE firebase_uid = auth.jwt() ->> 'sub'));
 
--- Políticas para chat (usa Firebase UID diretamente)
+-- PolÃ­ticas para chat (usa Firebase UID diretamente)
 DROP POLICY IF EXISTS "Users can manage own chat" ON chat_messages;
 CREATE POLICY "Users can manage own chat" ON chat_messages FOR ALL USING (user_id = auth.jwt() ->> 'sub');
 
@@ -429,7 +429,7 @@ CREATE POLICY "Users can manage own alertas" ON alertas FOR ALL USING (user_id I
 -- DADOS INICIAIS (SEEDS)
 -- =====================================================
 
--- Inserir preços de mercado iniciais (apenas se a tabela estiver vazia)
+-- Inserir preÃ§os de mercado iniciais (apenas se a tabela estiver vazia)
 INSERT INTO precos_mercado (data_preco, preco_arroba, categoria, regiao, fonte)
 SELECT '2024-01-15', 280.50, 'boi_gordo', 'SP', 'cepea'
 WHERE NOT EXISTS (SELECT 1 FROM precos_mercado WHERE data_preco = '2024-01-15' AND categoria = 'boi_gordo' AND regiao = 'SP');
@@ -447,10 +447,10 @@ SELECT '2024-01-15', 255.00, 'vaca_gorda', 'MS', 'cepea'
 WHERE NOT EXISTS (SELECT 1 FROM precos_mercado WHERE data_preco = '2024-01-15' AND categoria = 'vaca_gorda' AND regiao = 'MS');
 
 -- =====================================================
--- FUNÇÕES AUXILIARES
+-- FUNÃ‡Ã•ES AUXILIARES
 -- =====================================================
 
--- Função para calcular GMD (Ganho Médio Diário)
+-- FunÃ§Ã£o para calcular GMD (Ganho MÃ©dio DiÃ¡rio)
 CREATE OR REPLACE FUNCTION calcular_gmd(animal_uuid UUID, data_inicial DATE, data_final DATE)
 RETURNS DECIMAL AS $$
 DECLARE
@@ -489,23 +489,24 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- =====================================================
--- COMENTÁRIOS FINAIS
+-- COMENTÃRIOS FINAIS
 -- =====================================================
 
-COMMENT ON DATABASE CURRENT_DATABASE IS 'BOVINEXT - Plataforma de Gestão Pecuária com IA Especializada';
-COMMENT ON TABLE users IS 'Usuários e informações das fazendas';
-COMMENT ON TABLE animais IS 'Rebanho completo com genealogia e histórico';
-COMMENT ON TABLE manejos IS 'Atividades de manejo sanitário e produtivo';
+COMMENT ON DATABASE CURRENT_DATABASE IS 'WHILAB - Plataforma de GestÃ£o PecuÃ¡ria com IA Especializada';
+COMMENT ON TABLE users IS 'UsuÃ¡rios e informaÃ§Ãµes das fazendas';
+COMMENT ON TABLE animais IS 'Rebanho completo com genealogia e histÃ³rico';
+COMMENT ON TABLE manejos IS 'Atividades de manejo sanitÃ¡rio e produtivo';
 COMMENT ON TABLE vendas IS 'Registro de vendas de animais';
-COMMENT ON TABLE producao IS 'Dados de produção e performance';
+COMMENT ON TABLE producao IS 'Dados de produÃ§Ã£o e performance';
 COMMENT ON TABLE metas IS 'Metas e objetivos da fazenda';
-COMMENT ON TABLE chat_messages IS 'Histórico de conversas com IA';
-COMMENT ON TABLE precos_mercado IS 'Preços de mercado em tempo real';
-COMMENT ON TABLE alertas IS 'Sistema de alertas e notificações';
+COMMENT ON TABLE chat_messages IS 'HistÃ³rico de conversas com IA';
+COMMENT ON TABLE precos_mercado IS 'PreÃ§os de mercado em tempo real';
+COMMENT ON TABLE alertas IS 'Sistema de alertas e notificaÃ§Ãµes';
 
--- Log de criação das tabelas
+-- Log de criaÃ§Ã£o das tabelas
 DO $$
 BEGIN
-    RAISE NOTICE 'Tabelas BOVINEXT criadas com sucesso!';
+    RAISE NOTICE 'Tabelas WHILAB criadas com sucesso!';
     RAISE NOTICE 'Estrutura completa implementada no Supabase';
 END $$;
+

@@ -1,4 +1,4 @@
-export const backendScopeMap = {
+﻿export const backendScopeMap = {
   platformCore: [
     'src/config/runtime.ts',
     'src/config/env.ts',
@@ -9,12 +9,12 @@ export const backendScopeMap = {
     'src/services/SupabaseService.ts',
     'src/services/SupabaseWrapper.ts'
   ],
-  pecuariaDomain: [
-    'src/routes/bovinextRoutes.ts',
+  whilabDomain: [
+    'src/routes/whilabRoutes.ts',
     'src/routes/optimizedChatbotRoutes.ts',
-    'src/services/BovinextSupabaseServiceFixed.ts',
-    'src/services/BovinextOptimizedAIService.ts',
-    'src/services/BovinextAIService.ts',
+    'src/services/WhiLabSupabaseServiceFixed.ts',
+    'src/services/WhiLabOptimizedAIService.ts',
+    'src/services/WhiLabAIService.ts',
     'src/controllers/*'
   ],
   legacyPagesApi: [
@@ -31,6 +31,8 @@ export const backendScopeMap = {
 
 export const getBackendScopeSummary = () => ({
   platformCore: backendScopeMap.platformCore.length,
-  pecuariaDomain: backendScopeMap.pecuariaDomain.length,
+  whilabDomain: backendScopeMap.whilabDomain.length,
   legacyPagesApi: backendScopeMap.legacyPagesApi.length
 });
+
+

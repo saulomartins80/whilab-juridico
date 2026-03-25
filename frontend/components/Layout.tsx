@@ -44,6 +44,22 @@ export const useLayoutContext = (): LayoutContextType => {
 };
 
 function getPageTitle(pathname: string): string {
+  if (pathname === '/encomendas') {
+    return 'App de Encomendas';
+  }
+
+  if (pathname.startsWith('/encomendas/clientes')) {
+    return 'Clientes';
+  }
+
+  if (pathname.startsWith('/encomendas/catalogo')) {
+    return 'Catalogo';
+  }
+
+  if (pathname.startsWith('/encomendas/cobrancas')) {
+    return 'Cobrancas';
+  }
+
   switch (pathname) {
     case '/dashboard':
       return 'Painel executivo';
@@ -97,6 +113,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
 
     const currentPath = router.pathname;
+
+    if (currentPath === '/encomendas') {
+      router.push('/encomendas?action=new-order');
+      return;
+    }
+
+    if (currentPath === '/encomendas/clientes') {
+      router.push('/encomendas/clientes?action=new-customer');
+      return;
+    }
+
+    if (currentPath === '/encomendas/catalogo') {
+      router.push('/encomendas/catalogo?action=new-product');
+      return;
+    }
 
     switch (currentPath) {
       case '/transacoes':

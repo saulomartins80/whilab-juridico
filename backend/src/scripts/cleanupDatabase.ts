@@ -1,17 +1,17 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 import path from 'path';
 
-// Carrega variáveis de ambiente
+// Carrega variÃ¡veis de ambiente
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-// LEGADO: Este script era usado para limpeza de índices no MongoDB.
-// O projeto BOVINEXT agora é 100% Supabase. Mantemos o entrypoint
-// para compatibilidade, mas não executa nenhuma ação.
+// LEGADO: Este script era usado para limpeza de Ã­ndices no MongoDB.
+// O projeto WHILAB agora Ã© 100% Supabase. Mantemos o entrypoint
+// para compatibilidade, mas nÃ£o executa nenhuma aÃ§Ã£o.
 async function cleanupDatabase(): Promise<void> {
   try {
-    console.log('[cleanupDatabase] Projeto 100% Supabase - nenhuma limpeza MongoDB necessária.');
+    console.log('[cleanupDatabase] Projeto 100% Supabase - nenhuma limpeza MongoDB necessÃ¡ria.');
   } catch (error) {
-    console.error('❌ Erro durante limpeza:', error);
+    console.error('âŒ Erro durante limpeza:', error);
   }
 }
 

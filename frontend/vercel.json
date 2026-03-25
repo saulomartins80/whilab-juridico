@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "${NEXT_PUBLIC_BACKEND_URL}/api/$1"
+      "destination": "https://api.whilab.com.br/api/$1"
     }
   ]
 }

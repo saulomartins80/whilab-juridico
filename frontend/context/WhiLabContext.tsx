@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-import { Animal, Manejo, Producao, Venda } from '../types/bovinext.types';
+import { Animal, Manejo, Producao, Venda } from '../types/whilab.types';
 
-// Interface do contexto conforme especificação BOVINEXT
-interface BovinextContextType {
+// Interface do contexto do frontend WhiLab
+interface WhiLabContextType {
   // Dados principais
   animais: Animal[];
   manejos: Manejo[];
@@ -56,13 +56,13 @@ interface BovinextContextType {
   calculateKPIs: () => void;
 }
 
-const BovinextContext = createContext<BovinextContextType | undefined>(undefined);
+const WhiLabContext = createContext<WhiLabContextType | undefined>(undefined);
 
-interface BovinextProviderProps {
+interface WhiLabProviderProps {
   children: ReactNode;
 }
 
-export function BovinextProvider({ children }: BovinextProviderProps) {
+export function WhiLabProvider({ children }: WhiLabProviderProps) {
   // Estados principais
   const [animais, setAnimais] = useState<Animal[]>([]);
   const [manejos, setManejos] = useState<Manejo[]>([]);
@@ -434,7 +434,7 @@ export function BovinextProvider({ children }: BovinextProviderProps) {
     await initializeMockData();
   };
 
-  const value: BovinextContextType = {
+  const value: WhiLabContextType = {
     // Dados
     animais,
     manejos,
@@ -469,16 +469,16 @@ export function BovinextProvider({ children }: BovinextProviderProps) {
   };
 
   return (
-    <BovinextContext.Provider value={value}>
+    <WhiLabContext.Provider value={value}>
       {children}
-    </BovinextContext.Provider>
+    </WhiLabContext.Provider>
   );
 }
 
-export function useBovinext() {
-  const context = useContext(BovinextContext);
+export function useWhiLab() {
+  const context = useContext(WhiLabContext);
   if (context === undefined) {
-    throw new Error('useBovinext must be used within a BovinextProvider');
+    throw new Error('useWhiLab must be used within a WhiLabProvider');
   }
   return context;
 }

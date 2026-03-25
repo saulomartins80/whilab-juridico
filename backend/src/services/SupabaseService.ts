@@ -1,4 +1,4 @@
-import { bovinextSupabaseService } from './BovinextSupabaseService';
+﻿import { whilabSupabaseService } from './WhiLabSupabaseService';
 import { supabaseWrapper } from './SupabaseWrapper';
 import logger from '../utils/logger';
 
@@ -117,7 +117,7 @@ export class SupabaseService {
       categoria: typeof options.filters?.categoria === 'string' ? options.filters.categoria.toLowerCase() : options.filters?.categoria
     };
 
-    const rows = await bovinextSupabaseService.getAnimaisByUser(userId, filters);
+    const rows = await whilabSupabaseService.getAnimaisByUser(userId, filters);
     const filtered = applySearch(rows, options.search, ['brinco', 'raca', 'lote', 'pasto', 'categoria']);
     return applyPagination(filtered, options.limit, options.offset);
   }
@@ -125,10 +125,10 @@ export class SupabaseService {
   async createAnimal(animalData: any): Promise<any> {
     const userId = animalData.user_id || animalData.userId;
     if (!userId) {
-      throw new Error('user_id é obrigatório para criar animal');
+      throw new Error('user_id Ã© obrigatÃ³rio para criar animal');
     }
 
-    return bovinextSupabaseService.createAnimal(String(userId), normalizeLegacyAnimal(animalData, String(userId)) as any);
+    return whilabSupabaseService.createAnimal(String(userId), normalizeLegacyAnimal(animalData, String(userId)) as any);
   }
 
   async getAnimalById(id: string): Promise<any | null> {
@@ -152,7 +152,7 @@ export class SupabaseService {
       tipoManejo: typeof options.filters?.tipoManejo === 'string' ? options.filters.tipoManejo.toLowerCase() : options.filters?.tipoManejo
     };
 
-    const rows = await bovinextSupabaseService.getManejosByUser(userId, filters);
+    const rows = await whilabSupabaseService.getManejosByUser(userId, filters);
     const filtered = applySearch(rows, options.search, ['tipo_manejo', 'observacoes', 'produto_usado', 'veterinario']);
     return applyPagination(filtered, options.limit, options.offset);
   }
@@ -160,10 +160,10 @@ export class SupabaseService {
   async createManejo(manejoData: any): Promise<any> {
     const userId = manejoData.user_id || manejoData.userId;
     if (!userId) {
-      throw new Error('user_id é obrigatório para criar manejo');
+      throw new Error('user_id Ã© obrigatÃ³rio para criar manejo');
     }
 
-    return bovinextSupabaseService.createManejo(String(userId), normalizeLegacyManejo(manejoData, String(userId)) as any);
+    return whilabSupabaseService.createManejo(String(userId), normalizeLegacyManejo(manejoData, String(userId)) as any);
   }
 
   async getManejoById(id: string): Promise<any | null> {
@@ -187,7 +187,7 @@ export class SupabaseService {
       tipoVenda: typeof options.filters?.tipoVenda === 'string' ? options.filters.tipoVenda.toLowerCase() : options.filters?.tipoVenda
     };
 
-    const rows = await bovinextSupabaseService.getVendasByUser(userId, filters);
+    const rows = await whilabSupabaseService.getVendasByUser(userId, filters);
     const filtered = applySearch(rows, options.search, ['comprador', 'observacoes', 'tipo_venda']);
     return applyPagination(filtered, options.limit, options.offset);
   }
@@ -195,11 +195,11 @@ export class SupabaseService {
   async createVenda(vendaData: any): Promise<any> {
     const userId = vendaData.user_id || vendaData.userId;
     if (!userId) {
-      throw new Error('user_id é obrigatório para criar venda');
+      throw new Error('user_id Ã© obrigatÃ³rio para criar venda');
     }
 
     const animaisIds = Array.isArray(vendaData.animais_ids) ? vendaData.animais_ids : Array.isArray(vendaData.animaisIds) ? vendaData.animaisIds : [];
-    return bovinextSupabaseService.createVenda(String(userId), normalizeLegacyVenda(vendaData, String(userId), animaisIds) as any, animaisIds);
+    return whilabSupabaseService.createVenda(String(userId), normalizeLegacyVenda(vendaData, String(userId), animaisIds) as any, animaisIds);
   }
 
   async getVendaById(id: string): Promise<any | null> {
@@ -223,7 +223,7 @@ export class SupabaseService {
       tipoProducao: typeof options.filters?.tipoProducao === 'string' ? options.filters.tipoProducao.toLowerCase() : options.filters?.tipoProducao
     };
 
-    const rows = await bovinextSupabaseService.getProducaoByUser(userId, filters);
+    const rows = await whilabSupabaseService.getProducaoByUser(userId, filters);
     const filtered = applySearch(rows, options.search, ['tipo', 'tipo_producao', 'observacoes']);
     return applyPagination(filtered, options.limit, options.offset);
   }
@@ -231,10 +231,10 @@ export class SupabaseService {
   async createProducao(producaoData: any): Promise<any> {
     const userId = producaoData.user_id || producaoData.userId;
     if (!userId) {
-      throw new Error('user_id é obrigatório para criar produção');
+      throw new Error('user_id Ã© obrigatÃ³rio para criar produÃ§Ã£o');
     }
 
-    return bovinextSupabaseService.createProducao(String(userId), normalizeLegacyProducao(producaoData, String(userId)) as any);
+    return whilabSupabaseService.createProducao(String(userId), normalizeLegacyProducao(producaoData, String(userId)) as any);
   }
 
   async getProducaoById(id: string): Promise<any | null> {
@@ -251,12 +251,12 @@ export class SupabaseService {
 
   async getDashboardKPIs(userId: string): Promise<any> {
     const [stats, animais, vendas, producoes, alertas, precos] = await Promise.all([
-      bovinextSupabaseService.getEstatisticasDashboard(userId),
-      bovinextSupabaseService.getAnimaisByUser(userId),
-      bovinextSupabaseService.getVendasByUser(userId),
-      bovinextSupabaseService.getProducaoByUser(userId),
-      bovinextSupabaseService.getAlertasByUser(userId).catch(() => []),
-      bovinextSupabaseService.getPrecosMercado().catch(() => [])
+      whilabSupabaseService.getEstatisticasDashboard(userId),
+      whilabSupabaseService.getAnimaisByUser(userId),
+      whilabSupabaseService.getVendasByUser(userId),
+      whilabSupabaseService.getProducaoByUser(userId),
+      whilabSupabaseService.getAlertasByUser(userId).catch(() => []),
+      whilabSupabaseService.getPrecosMercado().catch(() => [])
     ]);
 
     const totalAnimais = animais.length;
@@ -290,8 +290,9 @@ export class SupabaseService {
   }
 
   async getAlertas(userId: string): Promise<any[]> {
-    return bovinextSupabaseService.getAlertasByUser(userId);
+    return whilabSupabaseService.getAlertasByUser(userId);
   }
 }
 
 export const supabaseService = new SupabaseService();
+

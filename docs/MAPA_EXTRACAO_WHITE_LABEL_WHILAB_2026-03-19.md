@@ -1,11 +1,11 @@
-# MAPA DE EXTRACAO WHITE-LABEL - BOVINEXT
+# MAPA DE EXTRACAO WHITE-LABEL - WHILAB
 
 Data: 2026-03-19
 Responsavel: Caio
 
 ## Objetivo
 
-Transformar o BoviNext em uma base SaaS white-label media, reaproveitando o que tem valor de plataforma e isolando o que ainda esta preso ao nicho pecuaria.
+Transformar o WhiLab em uma base SaaS white-label media, reaproveitando o que tem valor de plataforma e isolando o que ainda esta preso ao nicho pecuaria.
 
 ## Regra De Decisao
 
@@ -88,7 +88,7 @@ Se o texto ainda depender de contexto antigo, a extracao ainda nao acabou.
 
 ## Supabase
 
-Para o BoviNext nascer separado da Finnextho, a recomendacao correta e usar credenciais exclusivas.
+Para o WhiLab nascer separado da Finnextho, a recomendacao correta e usar credenciais exclusivas.
 
 O conjunto minimo esperado e:
 
@@ -105,4 +105,4 @@ Opcional conforme operacao:
 
 ## Decisao Executiva
 
-O projeto deve continuar como extracao orientada por plataforma, nao como remendo em cima do BoviNext bruto.
+O projeto deve continuar como extracao orientada por plataforma, nao como remendo em cima do WhiLab bruto.

@@ -1,13 +1,13 @@
-// services/bovinext-api.ts - BOVINEXT API Service
-import { Animal, Manejo, Producao, Venda } from '../types/bovinext.types';
+// services/whilab-api.ts - WhiLab API Service
+import { Animal, Manejo, Producao, Venda } from '../types/whilab.types';
 import logger from '../utils/logger';
 
 import api from './api';
 
 // Usa o cliente API unificado (com token Supabase e redaction)
 
-// BOVINEXT API Endpoints
-export const bovinextAPI = {
+// WhiLab API Endpoints
+export const whilabAPI = {
   // Animais (Rebanho)
   animals: {
     getAll: async (): Promise<Animal[]> => {
@@ -281,4 +281,4 @@ export const bovinextAPI = {
   }
 };
 
-export default bovinextAPI;
+export default whilabAPI;

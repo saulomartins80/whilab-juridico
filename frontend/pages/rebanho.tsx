@@ -8,7 +8,7 @@ import {
 import { toast } from 'react-toastify';
 
 import { animalsAPI } from '../services/api';
-import { Animal } from '../types/bovinext.types';
+import { Animal } from '../types/whilab.types';
 
 // ---------------------------------------------------------------------------
 // Types

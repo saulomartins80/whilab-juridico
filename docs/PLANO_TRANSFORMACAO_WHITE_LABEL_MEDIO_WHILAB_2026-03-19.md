@@ -1,17 +1,17 @@
-# PLANO DE TRANSFORMACAO - BOVINEXT WHITE-LABEL MEDIO
+# PLANO DE TRANSFORMACAO - WHILAB WHITE-LABEL MEDIO
 
 Data: 2026-03-19
 Responsavel: Caio
-Projeto: BoviNext
+Projeto: WhiLab
 Objetivo: transformar o ativo atual em um produto white-label medio, vendavel na Kiwify e facil de adaptar por nicho.
 
 ## Decisao Executiva
 
-BoviNext nao e Finnextho.
+WhiLab nao e Finnextho.
 
-BoviNext nao e um template cru.
+WhiLab nao e um template cru.
 
-BoviNext e uma base SaaS white-label media, com cara de produto serio, docs claras e narrativa comercial honesta.
+WhiLab e uma base SaaS white-label media, com cara de produto serio, docs claras e narrativa comercial honesta.
 
 O nicho de pecuaria continua existindo, mas apenas como demo vertical e prova de valor.
 
@@ -160,4 +160,4 @@ escolha:
 - clareza
 - produto de verdade
 
-Esse e o norte comercial do BoviNext.
+Esse e o norte comercial do WhiLab.

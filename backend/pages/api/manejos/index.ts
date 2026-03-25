@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+﻿import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseService } from '../../../src/services/SupabaseService';
 import { resolveRequestUserId } from '../../../src/utils/requestContext';
-import { Manejo } from '../../../src/types/bovinext.types';
+import { Manejo } from '../../../src/types/whilab.types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function getManejos(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const { 
@@ -62,7 +62,7 @@ async function getManejos(req: NextApiRequest, res: NextApiResponse) {
 async function createManejo(req: NextApiRequest, res: NextApiResponse) {
   const userId = await resolveRequestUserId(req);
   if (!userId) {
-    return res.status(401).json({ error: 'user_id ou token de autenticação é obrigatório' });
+    return res.status(401).json({ error: 'user_id ou token de autenticaÃ§Ã£o Ã© obrigatÃ³rio' });
   }
 
   const manejoData: Omit<Manejo, 'id'> = req.body;
@@ -71,10 +71,10 @@ async function createManejo(req: NextApiRequest, res: NextApiResponse) {
   const data = (manejoData as any).data || (manejoData as any).data_manejo;
   const responsavel = (manejoData as any).responsavel || (manejoData as any).veterinario;
 
-  // Validação básica
+  // ValidaÃ§Ã£o bÃ¡sica
   if (!tipo || !animais || !data || !responsavel) {
     return res.status(400).json({
-      error: 'Campos obrigatórios: tipo, animais, data, responsavel (ou tipo_manejo, animal_id, data_manejo, veterinario)'
+      error: 'Campos obrigatÃ³rios: tipo, animais, data, responsavel (ou tipo_manejo, animal_id, data_manejo, veterinario)'
     });
   }
 
@@ -89,3 +89,4 @@ async function createManejo(req: NextApiRequest, res: NextApiResponse) {
     message: 'Manejo criado com sucesso'
   });
 }
+

@@ -1,8 +1,8 @@
-#!/usr/bin/env ts-node
+﻿#!/usr/bin/env ts-node
 
 // =====================================================
-// BOVINEXT - SCRIPT PARA CRIAR TABELAS NO SUPABASE
-// Executa o SQL de criação das tabelas necessárias
+// WHILAB - SCRIPT PARA CRIAR TABELAS NO SUPABASE
+// Executa o SQL de criaÃ§Ã£o das tabelas necessÃ¡rias
 // =====================================================
 
 import { createClient } from '@supabase/supabase-js';
@@ -10,12 +10,12 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import logger from '../utils/logger';
 
-// Configurações do Supabase
+// ConfiguraÃ§Ãµes do Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ SUPABASE_URL e SUPABASE_SERVICE_KEY são obrigatórios');
+  console.error('âŒ SUPABASE_URL e SUPABASE_SERVICE_KEY sÃ£o obrigatÃ³rios');
   process.exit(1);
 }
 
@@ -24,10 +24,10 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function createTables(): Promise<void> {
   try {
-    console.log('🚀 Iniciando criação das tabelas BOVINEXT...');
+    console.log('ðŸš€ Iniciando criaÃ§Ã£o das tabelas WHILAB...');
 
     // Ler arquivo SQL
-    const sqlPath = join(__dirname, '../../scripts/create_bovinext_tables.sql');
+    const sqlPath = join(__dirname, '../../scripts/create_whilab_tables.sql');
     const sqlContent = await fs.readFile(sqlPath, 'utf-8');
 
     // Dividir SQL em comandos individuais
@@ -45,58 +45,58 @@ async function createTables(): Promise<void> {
       if (!command) continue;
 
       try {
-        console.log(`📝 Executando comando ${i + 1}/${commands.length}...`);
+        console.log(`ðŸ“ Executando comando ${i + 1}/${commands.length}...`);
         const { error } = await supabase.rpc('exec', { sql: command });
 
         if (error) {
-          // Alguns erros são esperados (tabela já existe, etc.)
+          // Alguns erros sÃ£o esperados (tabela jÃ¡ existe, etc.)
           if (error.message.includes('already exists') ||
               error.message.includes('does not exist') ||
               error.message.includes('duplicate key')) {
-            console.log(`⚠️  ${error.message}`);
+            console.log(`âš ï¸  ${error.message}`);
           } else {
-            console.error(`❌ Erro no comando ${i + 1}:`, error.message);
+            console.error(`âŒ Erro no comando ${i + 1}:`, error.message);
             errorCount++;
           }
         } else {
-          console.log(`✅ Comando ${i + 1} executado com sucesso`);
+          console.log(`âœ… Comando ${i + 1} executado com sucesso`);
           successCount++;
         }
       } catch (error: any) {
-        console.error(`❌ Erro ao executar comando ${i + 1}:`, error.message);
+        console.error(`âŒ Erro ao executar comando ${i + 1}:`, error.message);
         errorCount++;
       }
     }
 
-    console.log(`\n📊 Resumo da execução:`);
-    console.log(`✅ Comandos executados com sucesso: ${successCount}`);
-    console.log(`❌ Comandos com erro: ${errorCount}`);
-    console.log(`📝 Total de comandos: ${commands.length}`);
+    console.log(`\nðŸ“Š Resumo da execuÃ§Ã£o:`);
+    console.log(`âœ… Comandos executados com sucesso: ${successCount}`);
+    console.log(`âŒ Comandos com erro: ${errorCount}`);
+    console.log(`ðŸ“ Total de comandos: ${commands.length}`);
 
     if (errorCount === 0) {
-      console.log('\n🎉 Todas as tabelas foram criadas com sucesso!');
-      console.log('🌱 BOVINEXT está pronto para uso!');
+      console.log('\nðŸŽ‰ Todas as tabelas foram criadas com sucesso!');
+      console.log('ðŸŒ± WHILAB estÃ¡ pronto para uso!');
     } else {
-      console.log('\n⚠️  Algumas tabelas podem não ter sido criadas corretamente');
-      console.log('🔧 Verifique os logs acima para mais detalhes');
+      console.log('\nâš ï¸  Algumas tabelas podem nÃ£o ter sido criadas corretamente');
+      console.log('ðŸ”§ Verifique os logs acima para mais detalhes');
     }
 
   } catch (error: any) {
-    console.error('❌ Erro geral na criação das tabelas:', error.message);
+    console.error('âŒ Erro geral na criaÃ§Ã£o das tabelas:', error.message);
     process.exit(1);
   }
 }
 
-// Função RPC para executar SQL (se não existir)
+// FunÃ§Ã£o RPC para executar SQL (se nÃ£o existir)
 async function createExecFunction(): Promise<void> {
   try {
     const { error } = await supabase.rpc('exec', {
       sql: 'SELECT 1'
     });
 
-    // Se a função não existir, tentar criá-la
+    // Se a funÃ§Ã£o nÃ£o existir, tentar criÃ¡-la
     if (error && error.message.includes('function exec')) {
-      console.log('🔧 Criando função RPC exec...');
+      console.log('ðŸ”§ Criando funÃ§Ã£o RPC exec...');
 
       const createFunctionSQL = `
         CREATE OR REPLACE FUNCTION exec(sql text)
@@ -113,17 +113,17 @@ async function createExecFunction(): Promise<void> {
       });
 
       if (createError) {
-        console.log('⚠️  Não foi possível criar função RPC, continuando sem ela...');
+        console.log('âš ï¸  NÃ£o foi possÃ­vel criar funÃ§Ã£o RPC, continuando sem ela...');
       }
     }
   } catch (error: any) {
-    console.log('⚠️  Erro ao verificar função RPC:', error.message);
+    console.log('âš ï¸  Erro ao verificar funÃ§Ã£o RPC:', error.message);
   }
 }
 
 // Executar script
 async function main(): Promise<void> {
-  console.log('🐂 BOVINEXT - Setup de Tabelas');
+  console.log('ðŸ‚ WHILAB - Setup de Tabelas');
   console.log('================================\n');
 
   await createExecFunction();
@@ -135,7 +135,8 @@ async function main(): Promise<void> {
 // Executar apenas se for chamado diretamente
 if (require.main === module) {
   main().catch((error) => {
-    console.error('❌ Erro fatal:', error);
+    console.error('âŒ Erro fatal:', error);
     process.exit(1);
   });
 }
+
