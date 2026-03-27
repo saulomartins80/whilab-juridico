@@ -1,42 +1,55 @@
-# WhiLab
+# WhiLab Juridico
 
-WhiLab e uma base SaaS white-label medio, pensada para rebranding rapido, venda na Kiwify e adaptacao por nicho sem exagero de promessa.
+WhiLab Juridico e a vertical juridica da base SaaS WhiLab, orientada para escritorios e operacoes legais que precisam de CRM, gestao de processos, automacao e IA aplicada.
 
-O produto deve ser lido como:
+Neste repositorio, o produto deve ser lido como:
 
-- base SaaS com autenticacao e dashboard
-- integracao com Supabase
-- IA basica contextual
-- docs de setup, deploy e rebranding
-- demo vertical de pecuaria, nao identidade obrigatoria
+- plataforma juridica multi-tenant
+- CRM para captacao e relacionamento
+- gestao de processos, tarefas e documentos
+- nuvem juridica com segregacao por cliente e processo
+- base para automacoes, cobranca e fluxos assistidos por IA
 
-Nao trate o WhiLab como:
+Nao trate este projeto como:
 
-- clone da Finnextho
-- software universal pronto para qualquer nicho sem ajuste
-- ERP completo
-- pacote com suporte infinito
+- software juridico completo pronto em 30 dias
+- promessa de IA ilimitada sem politica de uso
+- plataforma pronta para qualquer escritorio sem fase de implantacao
+- substituto de validacao juridica, compliance e revisao humana
 
-## Fonte De Verdade
+## Direcao Do Produto
 
-- [Plano de transformacao do produto medio](docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md)
-- [Pacote white-label para Kiwify](docs/WHITE_LABEL_KIWIFY_PACKAGE.md)
-- [Mapa de extracao: manter, adaptar e aposentar](docs/MAPA_EXTRACAO_WHITE_LABEL_WHILAB_2026-03-19.md)
-- [Comando CTO para proximos engenheiros](docs/COMANDO_CTO_CAIO_WHITE_LABEL_WHILAB_2026-03-19.md)
-- [Auditoria executiva white-label](docs/AUDITORIA_WHITE_LABEL_KIWIFY_WHILAB_2026-03-19.md)
-- [Guia Supabase do novo projeto](docs/SUPABASE_NOVO_PROJETO_WHILAB_2026-03-19.md)
+O objetivo comercial atual e entregar uma plataforma juridica por fases:
 
-## Leitura Rapida
+1. Base operacional
+- login seguro
+- CRM juridico
+- cadastro de clientes
+- cadastro de processos
+- tarefas e agenda
+- nuvem juridica vinculada a processos
 
-O comprador ideal precisa entender, em menos de 2 minutos, o que recebe, o que precisa configurar, o que nao esta incluso e quais upsells fazem sentido.
+2. Automacao operacional
+- pagina de captura
+- automacoes de aniversario e datas especiais
+- cobranca automatizada
+- fluxo interno de atendimento e acompanhamento
 
-Esse repo deve vender clareza:
+3. IA juridica
+- chatbot juridico
+- apoio a peticoes e recursos
+- analise de contratos
+- sugestao de tarefas a partir de publicacoes
+- evolucao de modulos juridicos avancados
 
-- o que entra no pacote base
-- o que fica para customizacao
-- o que nao deve ser prometido
-- qual e a faixa de preco sugerida
+## Referencias Atuais
 
-## Posicionamento Final
+- [Plano inicial da vertical juridica](docs/PLANO_VERTICAL_JURIDICO_2026-03-27.md)
+- [Plano de transformacao da base original](docs/PLANO_TRANSFORMACAO_WHITE_LABEL_MEDIO_WHILAB_2026-03-19.md)
+- [Pacote white-label de origem](docs/WHITE_LABEL_KIWIFY_PACKAGE.md)
 
-Venda o WhiLab como uma base SaaS white-label media, com cara de produto serio, docs honestas e caminho claro para rebranding. A pecuaria serve como demo vertical e prova de conceito, nao como limite comercial.
+## Posicionamento
+
+Venda o WhiLab Juridico como um produto serio, implantado por fases, com base SaaS ja existente e aceleracao real de entrega.
+
+Nao venda como milagre tecnico.

@@ -44,25 +44,16 @@ export const useLayoutContext = (): LayoutContextType => {
 };
 
 function getPageTitle(pathname: string): string {
-  if (pathname === '/encomendas') {
-    return 'App de Encomendas';
-  }
+  if (pathname === '/crm') return 'CRM juridico';
+  if (pathname === '/processos') return 'Processos';
+  if (pathname === '/peticoes') return 'Peticoes e IA';
+  if (pathname === '/publicacoes') return 'Publicacoes';
+  if (pathname === '/cobrancas') return 'Cobrancas';
+  if (pathname === '/agenda') return 'Agenda';
 
-  if (pathname.startsWith('/encomendas/clientes')) {
-    return 'Clientes';
-  }
-
-  if (pathname.startsWith('/encomendas/catalogo')) {
-    return 'Catalogo';
-  }
-
-  if (pathname.startsWith('/encomendas/cobrancas')) {
-    return 'Cobrancas';
-  }
-
-  switch (pathname) {
-    case '/dashboard':
-      return 'Painel executivo';
+    switch (pathname) {
+      case '/dashboard':
+        return 'Painel juridico';
     case '/rebanho':
       return 'Rebanho';
     case '/manejo':
@@ -114,18 +105,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const currentPath = router.pathname;
 
-    if (currentPath === '/encomendas') {
-      router.push('/encomendas?action=new-order');
+    if (currentPath === '/crm') {
+      router.push('/crm?action=new-contact');
       return;
     }
 
-    if (currentPath === '/encomendas/clientes') {
-      router.push('/encomendas/clientes?action=new-customer');
+    if (currentPath === '/processos') {
+      router.push('/processos?action=new-case');
       return;
     }
 
-    if (currentPath === '/encomendas/catalogo') {
-      router.push('/encomendas/catalogo?action=new-product');
+    if (currentPath === '/peticoes') {
+      router.push('/peticoes?action=new-draft');
+      return;
+    }
+
+    if (currentPath === '/publicacoes') {
+      router.push('/publicacoes?action=new-monitoring');
+      return;
+    }
+
+    if (currentPath === '/cobrancas') {
+      router.push('/cobrancas?action=new-charge');
+      return;
+    }
+
+    if (currentPath === '/agenda') {
+      router.push('/agenda?action=new-event');
       return;
     }
 

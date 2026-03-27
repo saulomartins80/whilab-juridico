@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Activity,
   ArrowUpRight,
   Building,
   ChevronLeft,
@@ -14,13 +13,11 @@ import {
   HelpCircle,
   List,
   Menu,
-  Package,
   PieChart,
   Settings,
   ShieldCheck,
   Sparkles,
   Target,
-  TrendingUp,
   User,
   Users,
 } from 'lucide-react';
@@ -54,119 +51,76 @@ interface MenuGroup {
 
 const menuGroups: MenuGroup[] = [
   {
-    title: 'App de Encomendas',
-    eyebrow: 'Ordering',
-    items: [
-      {
-        path: '/encomendas',
-        icon: PieChart,
-        label: 'Resumo',
-        description: 'Pedidos do dia, status e operacao comercial',
-        badge: 'new',
-      },
-      {
-        path: '/encomendas/clientes',
-        icon: Users,
-        label: 'Clientes',
-        description: 'Base de clientes, contato e recorrencia',
-      },
-      {
-        path: '/encomendas/catalogo',
-        icon: Package,
-        label: 'Catalogo',
-        description: 'Produtos, preco e disponibilidade',
-      },
-      {
-        path: '/encomendas/cobrancas',
-        icon: CreditCard,
-        label: 'Cobrancas',
-        description: 'Pendencias, links de pagamento e repasse',
-      },
-    ],
-  },
-  {
-    title: 'Painel central',
-    eyebrow: 'Overview',
+    title: 'Hub juridico',
+    eyebrow: 'Core',
     items: [
       {
         path: '/dashboard',
         icon: PieChart,
         label: 'Dashboard',
-        description: 'Leituras de performance, agenda e alertas',
+        description: 'KPIs executivos, rotina e visao geral do escritorio',
+        badge: 'live',
+      },
+      {
+        path: '/crm',
+        icon: Users,
+        label: 'CRM',
+        description: 'Leads, clientes, contatos e relacionamento',
+      },
+      {
+        path: '/processos',
+        icon: Building,
+        label: 'Processos',
+        description: 'Carteira, ownership, status e andamentos',
+      },
+      {
+        path: '/agenda',
+        icon: Target,
+        label: 'Agenda',
+        description: 'Prazos, compromissos e tarefas do time',
       },
     ],
   },
   {
-    title: 'Operacao',
+    title: 'Producao juridica',
     eyebrow: 'Execution',
     items: [
       {
-        path: '/rebanho',
-        icon: Users,
-        label: 'Rebanho',
-        description: 'Base ativa, categorias e rastreio',
-        badge: 'core',
+        path: '/peticoes',
+        icon: Sparkles,
+        label: 'Peticoes',
+        description: 'Rascunhos, IA juridica e esteira de pecas',
+        badge: 'ia',
       },
       {
-        path: '/manejo',
+        path: '/publicacoes',
         icon: List,
-        label: 'Manejo',
-        description: 'Rotinas, protocolos e checklist diario',
+        label: 'Publicacoes',
+        description: 'Triagem de publicacoes e tarefas derivadas',
       },
       {
-        path: '/producao',
-        icon: Building,
-        label: 'Producao',
-        description: 'Capacidade, eficiencia e ritmos de entrega',
-      },
-      {
-        path: '/leite',
-        icon: Activity,
-        label: 'Leite',
-        description: 'Volume, estabilidade e leitura de lote',
+        path: '/arquivos',
+        icon: ShieldCheck,
+        label: 'Arquivos',
+        description: 'Nuvem juridica e documentos por processo',
       },
     ],
   },
   {
-    title: 'Receita',
-    eyebrow: 'Revenue',
-    items: [
-      {
-        path: '/vendas',
-        icon: CreditCard,
-        label: 'Vendas',
-        description: 'Comercial, pipeline e fechamento',
-      },
-      {
-        path: '/transacoes',
-        icon: CreditCard,
-        label: 'Transacoes',
-        description: 'Fluxo de caixa, entradas e saidas',
-      },
-      {
-        path: '/investimentos',
-        icon: TrendingUp,
-        label: 'Investimentos',
-        description: 'Alocacao de capital e retorno',
-      },
-      {
-        path: '/metas',
-        icon: Target,
-        label: 'Metas',
-        description: 'Objetivos, progresso e ownership',
-        badge: 'okrs',
-      },
-    ],
-  },
-  {
-    title: 'Governanca',
+    title: 'Receita e conta',
     eyebrow: 'Account',
     items: [
+      {
+        path: '/cobrancas',
+        icon: CreditCard,
+        label: 'Cobrancas',
+        description: 'Honorarios, pendencias e follow-up financeiro',
+      },
       {
         path: '/configuracoes',
         icon: Settings,
         label: 'Configuracoes',
-        description: 'Marca, parametros e controles',
+        description: 'Marca, parametros e controles da operacao',
       },
       {
         path: '/profile',
@@ -185,15 +139,15 @@ const menuGroups: MenuGroup[] = [
 ];
 
 const quickLinks = [
-  { href: '/encomendas', label: 'Abrir pedidos', detail: 'Leitura comercial do dia' },
-  { href: '/encomendas/catalogo', label: 'Ajustar catalogo', detail: 'Produtos, preco e estoque' },
-  { href: '/encomendas/cobrancas', label: 'Cobrar pendentes', detail: 'Links e follow-up rapido' },
+  { href: '/crm', label: 'Abrir CRM', detail: 'Leads, clientes e relacionamento' },
+  { href: '/processos', label: 'Revisar processos', detail: 'Andamentos e ownership' },
+  { href: '/peticoes', label: 'Gerar peticao', detail: 'Fluxo inicial com IA juridica' },
 ];
 
 const sidebarSignals = [
-  { label: 'Deploy', value: 'Live' },
-  { label: 'Mobile', value: 'Ready' },
-  { label: 'Pagto', value: 'Link' },
+  { label: 'Deploy', value: 'Base' },
+  { label: 'IA', value: 'Setup' },
+  { label: 'Tenant', value: 'Roadmap' },
 ];
 
 export default function Sidebar({
@@ -295,7 +249,7 @@ export default function Sidebar({
                   </span>
                   <span className="app-shell-chip">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    pronto para venda
+                    vertical juridico
                   </span>
                 </div>
 
@@ -317,7 +271,7 @@ export default function Sidebar({
                       release
                     </div>
                     <div className="mt-2 text-sm font-semibold text-slate-950 dark:text-white">
-                      Operacao publica
+                      Kickoff 1
                     </div>
                   </div>
                 </div>
@@ -347,8 +301,8 @@ export default function Sidebar({
               <div>
                 <div className="app-shell-section-title">{dashboardBranding.workspaceLabel}</div>
                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  Camada executiva pronta para vender operacao de pedidos com clientes, catalogo,
-                  cobranca e acompanhamento do dia.
+                  Camada executiva pronta para organizar captacao, processos, documentos,
+                  cobranca e rotina juridica em uma base unica.
                 </p>
               </div>
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-950/10 dark:bg-white dark:text-slate-950">
@@ -471,8 +425,8 @@ export default function Sidebar({
                     Foco do dia
                   </div>
                   <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    Manter pedidos, clientes e cobrancas com leitura clara no desktop e no
-                    mobile, sem perder a estrutura white-label da plataforma.
+                    Priorizar CRM, processos, documentos e cobrancas com leitura clara no desktop
+                    e no mobile, sem perder a casca SaaS da plataforma.
                   </p>
                 </div>
               </div>

@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
-  ClipboardList,
+  BarChart3,
+  Building,
   CreditCard,
   Download,
-  DollarSign,
   Menu,
-  Package,
   Plus,
-  Target,
-  TrendingUp,
+  Sparkles,
   X,
-  BarChart3,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -48,65 +45,51 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
   const isActive = (path: string) => router.pathname === path;
-  const isEncomendasRoute =
-    router.pathname === '/encomendas' || router.pathname.startsWith('/encomendas/');
 
   const getCurrentPageActions = (): PageAction[] => {
     switch (router.pathname) {
-      case '/encomendas':
+      case '/crm':
         return [
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Novo pedido',
+            label: 'Novo contato',
             action: () => {
               onAddItem?.();
               setIsActionMenuOpen(false);
             },
           },
         ];
-      case '/encomendas/clientes':
+      case '/processos':
         return [
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Novo cliente',
+            label: 'Novo processo',
             action: () => {
               onAddItem?.();
               setIsActionMenuOpen(false);
             },
           },
         ];
-      case '/encomendas/catalogo':
+      case '/peticoes':
         return [
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Novo produto',
+            label: 'Nova peticao',
             action: () => {
               onAddItem?.();
               setIsActionMenuOpen(false);
             },
           },
         ];
-      case '/encomendas/cobrancas':
+      case '/cobrancas':
         return [
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Novo pedido',
-            action: () => {
-              router.push('/encomendas?action=new-order');
-              setIsActionMenuOpen(false);
-            },
-          },
-        ];
-      case '/transacoes':
-        return [
-          {
-            type: 'add',
-            icon: <Plus size={18} />,
-            label: 'Nova entrada',
+            label: 'Nova cobranca',
             action: () => {
               onAddItem?.();
               setIsActionMenuOpen(false);
@@ -122,36 +105,12 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
             },
           },
         ];
-      case '/investimentos':
+      case '/agenda':
         return [
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Investimento',
-            action: () => {
-              onAddItem?.();
-              setIsActionMenuOpen(false);
-            },
-          },
-        ];
-      case '/metas':
-        return [
-          {
-            type: 'add',
-            icon: <Plus size={18} />,
-            label: 'Meta',
-            action: () => {
-              onAddItem?.();
-              setIsActionMenuOpen(false);
-            },
-          },
-        ];
-      case '/milhas':
-        return [
-          {
-            type: 'add',
-            icon: <CreditCard size={18} />,
-            label: 'Cartão',
+            label: 'Novo compromisso',
             action: () => {
               onAddItem?.();
               setIsActionMenuOpen(false);
@@ -163,27 +122,27 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
           {
             type: 'add',
             icon: <Plus size={18} />,
-            label: 'Entrada',
+            label: 'Contato',
             action: () => {
-              router.push('/transacoes?action=new');
+              router.push('/crm?action=new-contact');
               setIsActionMenuOpen(false);
             },
           },
           {
             type: 'add',
-            icon: <Target size={18} />,
-            label: 'Meta',
+            icon: <Building size={18} />,
+            label: 'Processo',
             action: () => {
-              router.push('/metas?action=new');
+              router.push('/processos?action=new-case');
               setIsActionMenuOpen(false);
             },
           },
           {
             type: 'add',
-            icon: <TrendingUp size={18} />,
-            label: 'Investimento',
+            icon: <Sparkles size={18} />,
+            label: 'Peticao',
             action: () => {
-              router.push('/investimentos?action=new');
+              router.push('/peticoes?action=new-draft');
               setIsActionMenuOpen(false);
             },
           },
@@ -206,55 +165,30 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
     setIsActionMenuOpen(false);
   }, [router.pathname]);
 
-  const navigationItems: NavigationItem[] = isEncomendasRoute
-    ? [
-        {
-          path: '/encomendas',
-          icon: <ClipboardList size={18} />,
-          label: 'Pedidos',
-        },
-        {
-          path: '',
-          type: 'add-button',
-          icon: <Plus size={20} />,
-          label: '+',
-          action: handleCenterButtonClick,
-        },
-        {
-          path: '/encomendas/catalogo',
-          icon: <Package size={18} />,
-          label: 'Catalogo',
-        },
-        {
-          path: '/encomendas/cobrancas',
-          icon: <CreditCard size={18} />,
-          label: 'Cobrancas',
-        },
-      ]
-    : [
-        {
-          path: '/dashboard',
-          icon: <BarChart3 size={18} />,
-          label: 'Resumo',
-        },
-        {
-          path: '',
-          type: 'add-button',
-          icon: <Plus size={20} />,
-          label: '+',
-          action: handleCenterButtonClick,
-        },
-        {
-          path: '/investimentos',
-          icon: <DollarSign size={18} />,
-          label: 'Capital',
-        },
-        {
-          path: '/metas',
-          icon: <Target size={18} />,
-          label: 'Metas',
-        },
-      ];
+  const navigationItems: NavigationItem[] = [
+    {
+      path: '/dashboard',
+      icon: <BarChart3 size={18} />,
+      label: 'Painel',
+    },
+    {
+      path: '',
+      type: 'add-button',
+      icon: <Plus size={20} />,
+      label: '+',
+      action: handleCenterButtonClick,
+    },
+    {
+      path: '/processos',
+      icon: <Building size={18} />,
+      label: 'Processos',
+    },
+    {
+      path: '/cobrancas',
+      icon: <CreditCard size={18} />,
+      label: 'Cobrancas',
+    },
+  ];
 
   return (
     <>
@@ -292,7 +226,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
                   whileTap={{ scale: 0.95 }}
                   onClick={item.action}
                   className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg dark:bg-white dark:text-slate-950"
-                  aria-label="Ações rápidas"
+                  aria-label="Acoes rapidas"
                 >
                   <motion.div
                     animate={{ rotate: isActionMenuOpen ? 45 : 0 }}
@@ -357,7 +291,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
             >
               <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <div className="app-shell-section-title">Ações rápidas</div>
+                  <div className="app-shell-section-title">Acoes rapidas</div>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Atalhos contextuais da tela atual
                   </p>

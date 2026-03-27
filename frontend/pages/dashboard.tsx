@@ -44,7 +44,7 @@ export default function DashboardPage() {
             Acesso restrito
           </h1>
           <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-            Voce precisa fazer login para acessar o painel executivo da plataforma.
+            Voce precisa fazer login para acessar o painel juridico da plataforma.
           </p>
           <button
             onClick={() => router.push('/auth/login')}
@@ -88,21 +88,22 @@ export default function DashboardPage() {
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                  Seu workspace esta pronto para operar com dados, rotina e acompanhamento centralizados.
+                  Seu workspace juridico esta pronto para operar com clientes, processos,
+                  documentos e acompanhamento centralizados.
                 </p>
 
                 <div className="mt-6 space-y-3 text-left">
                   <div className="dashboard-surface-muted flex items-center gap-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
                     <BarChart2 className="h-4 w-4 flex-shrink-0 text-emerald-500" />
-                    Dashboard com KPIs em tempo real
+                    Dashboard com KPIs juridicos em tempo real
                   </div>
                   <div className="dashboard-surface-muted flex items-center gap-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
                     <Brain className="h-4 w-4 flex-shrink-0 text-emerald-500" />
-                    IA integrada para alertas e previsoes
+                    IA integrada para peticoes, triagem e automacoes
                   </div>
                   <div className="dashboard-surface-muted flex items-center gap-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
                     <Shield className="h-4 w-4 flex-shrink-0 text-emerald-500" />
-                    Dados protegidos e fluxos prontos para escala
+                    Dados protegidos e fluxos prontos para escala por escritorio
                   </div>
                 </div>
 

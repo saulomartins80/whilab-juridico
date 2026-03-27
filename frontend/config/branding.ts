@@ -36,7 +36,7 @@ const buildAssistantName = (brandName: string): string => {
 
 const brandName =
   trim(process.env.NEXT_PUBLIC_BRAND_NAME) ||
-  'WhiLab';
+  'WhiLab Juridico';
 
 const assistantName =
   trim(process.env.NEXT_PUBLIC_ASSISTANT_NAME) ||
@@ -80,13 +80,13 @@ export const dashboardBranding = {
     `${brandName} workspace`,
   shellSubtitle:
     trim(process.env.NEXT_PUBLIC_SHELL_SUBTITLE) ||
-    'Base SaaS white-label premium',
+    'Plataforma juridica com CRM, IA e automacao',
   shellDescription:
     trim(process.env.NEXT_PUBLIC_SHELL_DESCRIPTION) ||
-    'Base SaaS com dashboard, auth, IA assistida e estrutura pronta para rebrand, ativacao e revenda.',
+    'Plataforma juridica multi-tenant com dashboard, captacao, gestao operacional e estrutura pronta para evolucao por fases.',
   whiteLabelPrompt:
     trim(process.env.NEXT_PUBLIC_WHITE_LABEL_PROMPT) ||
-    'Troque marca, dominio e narrativa sem desmontar a base comercial.',
+    'Centralize atendimento, processos, documentos e automacoes em uma operacao juridica segura.',
   supportTeamName:
     trim(process.env.NEXT_PUBLIC_SUPPORT_TEAM_NAME) ||
     `equipe ${brandName}`,
@@ -98,13 +98,13 @@ export const dashboardBranding = {
   whatsAppUrl: `https://wa.me/${whatsAppNumber}`,
   marketingTagline:
     trim(process.env.NEXT_PUBLIC_MARKETING_TAGLINE) ||
-    'Licenca white-label de uma base SaaS pronta para marca propria.',
+    'CRM juridico, gestao de processos, nuvem juridica e IA aplicada em uma unica plataforma.',
   seoKeywords:
     trim(process.env.NEXT_PUBLIC_SEO_KEYWORDS) ||
-    'white-label saas, base saas, rebrand saas, dashboard white-label, licenca saas, supabase white-label',
+    'software juridico, crm juridico, gestao de processos, peticoes com ia, nuvem juridica, plataforma juridica',
   verticalLabel:
     trim(process.env.NEXT_PUBLIC_VERTICAL_LABEL) ||
-    'White-label premium',
+    'Juridico',
   checkoutUrl:
     trim(process.env.NEXT_PUBLIC_CHECKOUT_URL) ||
     'https://pay.kiwify.com.br/JFkbSsJ',

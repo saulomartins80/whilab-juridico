@@ -71,21 +71,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       <Head>
-        <title>{`${dashboardBranding.brandName} - Plataforma white-label`}</title>
+        <title>{`${dashboardBranding.brandName} - Plataforma juridica`}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#020617" />
         <meta
           name="description"
-          content="App de encomendas com painel operacional, clientes, catalogo e cobrancas."
+          content="Plataforma juridica com CRM, processos, documentos, cobrancas e IA aplicada."
         />
-        <meta
-          name="application-name"
-          content={`${dashboardBranding.brandName} Encomendas`}
-        />
-        <meta
-          name="apple-mobile-web-app-title"
-          content={`${dashboardBranding.brandName} Encomendas`}
-        />
+        <meta name="application-name" content={dashboardBranding.brandName} />
+        <meta name="apple-mobile-web-app-title" content={dashboardBranding.brandName} />
         <meta name="format-detection" content="telephone=no" />
       </Head>
 

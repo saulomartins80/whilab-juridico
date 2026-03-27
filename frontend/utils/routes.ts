@@ -7,6 +7,12 @@
 export const PROTECTED_ROUTES = [
   '/arquivos',
   '/dashboard',
+  '/crm',
+  '/processos',
+  '/peticoes',
+  '/publicacoes',
+  '/cobrancas',
+  '/agenda',
   '/encomendas',
   '/rebanho',
   '/manejo',

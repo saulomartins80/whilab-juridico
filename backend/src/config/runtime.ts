@@ -77,7 +77,7 @@ const allowedOrigins = unique(
 
 export const runtimeConfig = {
   projectKey: trim(process.env.APP_PROJECT_KEY) || trim(process.env.NEXT_PUBLIC_APP_KEY) || 'whilab',
-  brandName: trim(process.env.APP_BRAND_NAME) || trim(process.env.NEXT_PUBLIC_BRAND_NAME) || 'WhiLab',
+  brandName: trim(process.env.APP_BRAND_NAME) || trim(process.env.NEXT_PUBLIC_BRAND_NAME) || 'WhiLab Juridico',
   backendUrl,
   frontendUrl,
   allowedOrigins,

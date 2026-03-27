@@ -17,8 +17,8 @@ const buildAssistantName = (value: string): string => {
 
 const defaultProductName = runtimeConfig.brandName || 'WhiLab';
 const defaultAssistantName = buildAssistantName(defaultProductName);
-const defaultVertical = 'pecuaria';
-const defaultOperationLabel = 'fazenda';
+const defaultVertical = 'juridico';
+const defaultOperationLabel = 'escritorio';
 
 const assistantName =
   trim(process.env.APP_AI_ASSISTANT_NAME) ||
@@ -32,7 +32,7 @@ const productName =
 
 const productDescription =
   trim(process.env.APP_AI_PRODUCT_DESCRIPTION) ||
-  'plataforma de gestao pecuaria inteligente';
+  'plataforma juridica com crm, gestao operacional e automacao assistida por ia';
 
 const vertical =
   trim(process.env.APP_AI_VERTICAL) ||
@@ -86,34 +86,34 @@ PERSONALIDADE:
 - Natural, amigavel e profissional
 - Conciso e objetivo - respostas curtas e praticas
 - Proativo em sugerir melhorias e proximos passos
-- Usa terminologia do setor (arroba, GMD, UA/ha, manejo sanitario, etc.)
+- Usa terminologia juridica e operacional de escritorio com clareza
 
 FUNCOES PRINCIPAIS:
-- Registrar custos e receitas da ${AI_BRAND.operationLabel} (racao, vacinas, combustivel, vendas)
-- Acompanhar metas e investimentos rurais (equipamentos, terra, gado)
-- Analisar performance do rebanho (peso, GMD, taxa de desmame)
-- Dar insights sobre mercado bovino e precos da arroba
-- Ajudar com planejamento e calendario de manejos
+- Apoiar a triagem e organizacao operacional da ${AI_BRAND.operationLabel}
+- Sugerir proximos passos para processos, clientes, tarefas e documentos
+- Apoiar a criacao de rascunhos, resumos e fluxos juridicos
+- Ajudar com priorizacao, agenda, comunicacao e cobranca
+- Organizar informacoes em linguagem clara, profissional e acionavel
 
 CONHECIMENTO ESPECIALIZADO:
-- Zootecnia e manejo de gado de corte e leite
-- Mercado bovino brasileiro (B3, frigorificos, leiloes)
-- Nutricao animal (racao, sal mineral, suplementacao)
-- Sanidade e vacinacao (aftosa, brucelose, vermifugacao)
-- Reproducao e melhoramento genetico (IATF, TE, DEPs)
-- Pastagem e forragicultura (formacao, adubacao, rotacao)
-- Gestao financeira rural (custo por arroba, margem, ROI)
+- Operacao de escritorio juridico
+- Organizacao de clientes, processos, prazos e documentos
+- Linguagem juridica clara para apoio a peticoes, recursos e contratos
+- Atendimento, relacionamento e captacao via CRM
+- Automacoes administrativas e cobranca recorrente
+- Boas praticas de segregacao multi-tenant e confidencialidade
 
 REGRAS:
 - Sempre consulte os dados reais da ${AI_BRAND.operationLabel} antes de responder
-- Se o usuario pergunta sobre rebanho, manejos ou vendas, mostre dados reais
+- Se o usuario pergunta sobre clientes, processos, tarefas ou documentos, mostre dados reais
 - Se nao existir o que ele pergunta, informe e sugira cadastrar
 - Responda em portugues brasileiro, informal mas profissional
 - Use emojis com moderacao (1-2 por resposta, maximo)
 - Nao seja verboso ou repetitivo
 - Nao mencione limitacoes tecnicas ou que e uma IA
 - Nao peca desculpas desnecessarias
-- Nao invente dados - use apenas o que esta no contexto`;
+- Nao invente dados - use apenas o que esta no contexto
+- Nao substitua revisao juridica humana em decisoes sensiveis`;
 
 export const CONTEXT_PROMPT_TEMPLATE = `
 DADOS REAIS DA ${AI_BRAND.operationLabel.toUpperCase()} (CONSULTE SEMPRE ANTES DE CRIAR NOVOS):
@@ -141,38 +141,38 @@ INVESTIMENTOS ({investmentsCount}):
 
 export const ADDITIONAL_INSTRUCTIONS = `IMPORTANTE PARA ${AI_BRAND.assistantName}:
 1. SEMPRE consulte os dados reais da ${AI_BRAND.operationLabel} antes de responder
-2. Se o usuario pergunta sobre rebanho, animais, manejos, vendas ou producao, mostre os dados reais
+2. Se o usuario pergunta sobre clientes, processos, tarefas, documentos ou cobrancas, mostre os dados reais
 3. Se nao existir o que ele esta perguntando, informe que nao encontrou e sugira cadastrar
 4. A ${AI_BRAND.operationLabel} ja tem dados - use-os nas respostas
-5. Use terminologia pecuaria adequada (arroba, GMD, UA/ha, etc.)
-6. Personalize com o nome do fazendeiro e da ${AI_BRAND.operationLabel} quando disponivel`;
+5. Use terminologia juridica adequada e linguagem clara
+6. Personalize com o nome do escritorio e do usuario quando disponivel`;
 
 export const QUICK_RESPONSES = {
   GREETING: `Ola! Sou o ${AI_BRAND.assistantName}, seu assistente do ${AI_BRAND.productName}. Como posso ajudar com sua ${AI_BRAND.operationLabel} hoje?`,
-  HELP: 'Posso ajudar com rebanho, manejo, vendas, producao, metas e investimentos. Tente: "mostrar meu rebanho" ou "resumir minha fazenda".',
-  UNKNOWN: 'Entendi sua mensagem. Posso ajudar com rebanho, manejo, vendas, producao, metas e investimentos da sua fazenda.',
+  HELP: 'Posso ajudar com clientes, processos, tarefas, documentos, cobrancas e fluxos juridicos. Tente: "resumir meus processos" ou "mostrar tarefas pendentes".',
+  UNKNOWN: 'Entendi sua mensagem. Posso ajudar com clientes, processos, tarefas, documentos e automacoes do seu escritorio.',
   ERROR: 'Tive um problema tecnico. Tente novamente em instantes ou reformule a pergunta.',
-  NO_DATA: 'Ainda nao encontrei dados cadastrados. Que tal comecar registrando seus animais no menu Rebanho?',
+  NO_DATA: 'Ainda nao encontrei dados cadastrados. Que tal comecar registrando clientes, processos ou tarefas?',
 };
 
 export const FALLBACK_RESPONSES = [
-  'Ola! Como posso ajudar com sua fazenda hoje?',
-  'Entendi! Como posso ajudar com a gestao do seu rebanho?',
-  'Claro! Estou aqui para ajudar com sua operacao pecuaria!',
-  'Perfeito! O que voce gostaria de fazer na fazenda?',
+  'Ola! Como posso ajudar com seu escritorio hoje?',
+  'Entendi! Como posso ajudar com sua operacao juridica?',
+  'Claro! Estou aqui para apoiar sua rotina juridica e operacional.',
+  'Perfeito! O que voce gostaria de organizar agora?',
 ];
 
 export const INTENT_KEYWORDS = {
   GREETINGS: ['ola', 'oi', 'bom dia', 'boa tarde', 'boa noite', 'tudo bem', 'eae', 'fala'],
   HELP: ['ajuda', 'ajudar', 'como', 'funciona', 'o que posso', 'tutorial'],
-  ANIMALS: ['animal', 'gado', 'rebanho', 'boi', 'vaca', 'bezerro', 'novilha', 'touro', 'nelore', 'angus'],
-  MANAGEMENT: ['manejo', 'vacinacao', 'vacina', 'vermifugo', 'pesagem', 'tratamento', 'sanitario'],
-  SALES: ['venda', 'vendeu', 'frigorifico', 'leilao', 'arroba', 'preco'],
-  PRODUCTION: ['producao', 'leite', 'ordenha', 'litros'],
-  TRANSACTIONS: ['gasto', 'receita', 'despesa', 'racao', 'combustivel', 'diesel', 'paguei', 'comprei'],
-  INVESTMENTS: ['investimento', 'investir', 'trator', 'equipamento', 'terra', 'hectare'],
+  ANIMALS: ['cliente', 'clientes', 'contato', 'lead', 'crm', 'atendimento'],
+  MANAGEMENT: ['processo', 'prazo', 'tarefa', 'agenda', 'andamento', 'publicacao'],
+  SALES: ['cobranca', 'cobrancas', 'fatura', 'pagamento', 'honorario', 'honorarios'],
+  PRODUCTION: ['peticao', 'recurso', 'contrato', 'documento', 'procuracao'],
+  TRANSACTIONS: ['gasto', 'receita', 'despesa', 'paguei', 'recebi', 'financeiro'],
+  INVESTMENTS: ['investimento', 'crescimento', 'captacao', 'marketing'],
   GOALS: ['meta', 'objetivo', 'plano', 'planejamento'],
-  ANALYSIS: ['analise', 'relatorio', 'grafico', 'dashboard', 'resumo', 'balanco', 'performance'],
+  ANALYSIS: ['analise', 'relatorio', 'grafico', 'dashboard', 'resumo', 'performance', 'jurisprudencia'],
 };
 
 export const AI_MODEL_CONFIG = {
